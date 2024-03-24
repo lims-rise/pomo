@@ -2,7 +2,7 @@
 	<section class="content">
 		<div class="box box-black box-solid">
 			<div class="box-header with-border">
-				<h3 class="box-title">Purchase Order | Budged Request Detail</h3>
+				<h3 class="box-title">Purchase Order | Budged Expenses Detail</h3>
 			</div>
 			<form role="form"  id="formKeg" method="post" class="form-horizontal">
 				<div class="box-body">
@@ -15,9 +15,9 @@
 							<input class="form-control " id="po_number" name="po_number" value="<?php echo $po_number ?>"  disabled>
 						</div>
 
-						<label for="date_po" class="col-sm-2 control-label">Date PO</label>
+						<label for="date_expenses" class="col-sm-2 control-label">Date Expenses</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="date_po" name="date_po" value="<?php echo $date_po ?>"  disabled>
+							<input class="form-control" type="date" id="date_expenses" name="date_expenses" value="<?php echo date("Y-m-d"); ?>" >
 						</div>
 					</div>
 
@@ -49,14 +49,6 @@
 				</form>
 
 				<div class="box-footer">
-					<div class="form-group">
-						<div class="modal-footer clearfix">
-	<!--                                            <button type="submit" name="Save" value="simpan" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> -->
-							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_request/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
-							<button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button> -->
-							<button type="button" name="batal" value="batal" class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button>
-						</div>
-					</div>
 
                 <!-- <div class="row"> -->
                     <div class="col-xs-12"> 
@@ -81,8 +73,8 @@
 										<th>Items</th>
 										<th>Qty</th>
 										<th>Unit</th>
-										<th>Estimate Price</th>
-										<th>Total Estimate</th>
+										<th>Price per-Unit</th>
+										<th>Total Price</th>
 										<th>Remarks</th>
 										<th>Action</th>
 									</tr>
@@ -93,7 +85,16 @@
                         </div><!-- box box-warning -->
                     </div>  <!--col-xs-12 -->
                 <!--</div> row -->    
-				</div>
+					<div class="form-group">
+						<div class="modal-footer clearfix">
+	<!--                                            <button type="submit" name="Save" value="simpan" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> -->
+							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_request/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
+							<button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button> -->
+							<button type="button" name="batal" value="batal" class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button>
+						</div>
+					</div>
+
+				</div> <!--footer-->
 
 		</div>
 	</section>
