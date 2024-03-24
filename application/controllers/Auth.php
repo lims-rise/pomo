@@ -92,7 +92,7 @@ Class Auth extends CI_Controller{
                 $this->email->subject('PO-MONASH Password Reset');
     
                 $message = 'Hi There, <br />';
-                $message .= 'This is an automatic generated code for LIMS password reset<br />';
+                $message .= 'This is an automatic generated code for POMO password reset<br />';
                 $message .= '<br />';
                 $message .= 'Here`s your code : <h1>' . $data . '</h1><br />';
                 $message .= '<br />';
@@ -121,7 +121,7 @@ Class Auth extends CI_Controller{
                 echo json_encode($response);
             }
         } else {
-            $response = array('status' => 'error', 'message' => 'LIMS login email not found !!.');
+            $response = array('status' => 'error', 'message' => 'POMO login email not found !!.');
             echo json_encode($response);
         }
         // redirect(site_url("Auth"));

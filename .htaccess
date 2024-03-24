@@ -1,4 +1,4 @@
 AuthType Basic
 AuthName "Restricted Content"
-AuthUserFile C:\laragon\www\pomonash\.htpasswd
+AuthUserFile C:\laragon\www\pomo\.htpasswd
 Require valid-user

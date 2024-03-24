@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>LIMS Application</title>
+        <title>POMO Application</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.7 -->
@@ -227,7 +227,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                         <input id="mode" name="mode" type="hidden" class="form-control input-sm">
-                            <label for="email" class="col-sm-4 control-label">Enter your LIMS login email</label>
+                            <label for="email" class="col-sm-4 control-label">Enter your POMO login email</label>
                             <div class="col-sm-8">
                                 <input id="email" name="email" type="text" class="form-control" placeholder="Email" required>
                                 <!-- <div class="val1tip"></div> -->
@@ -461,7 +461,7 @@
                     else {
                         // alert(response.message);
                         $('#quickMessage').empty();
-                        var loadingMessage = $('<p></p>').addClass('text-info').text('Email not found, please enter the correct LIMS login email');
+                        var loadingMessage = $('<p></p>').addClass('text-info').text('Email not found, please enter the correct POMO login email');
                         $('#quickMessage').append(loadingMessage);
                         $('#email').val('');
                         $('#formSample button[type="submit"]').prop('disabled', false);

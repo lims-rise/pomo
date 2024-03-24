@@ -57,9 +57,9 @@ class Welcome extends CI_Controller {
         // setting jenis font yang akan digunakan
         $pdf->SetFont('Arial', 'B', 16);
         // mencetak string 
-        $pdf->Cell(190, 7, 'LIMS RISE', 0, 1, 'C');
+        $pdf->Cell(190, 7, 'POMO RISE', 0, 1, 'C');
         $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(190, 7, 'LIMS RISE', 0, 1, 'C');
+        $pdf->Cell(190, 7, 'POMO RISE', 0, 1, 'C');
         $pdf->Output();
     }
 
