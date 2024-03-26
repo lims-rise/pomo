@@ -18,49 +18,51 @@ class Budged_expenses_model extends CI_Model
     // datatables
     function json() {
         $this->datatables->select('a.po_number, a.date_po, d.objective, b.title, 
-        FORMAT(b.budged_req, 0, "de_DE") AS budged_req, c.expenses, b.id_req');
+        FORMAT(b.budged_req, 0, "de_DE") AS budged_req, 
+        FORMAT(c.expenses, 0, "de_DE") AS expenses, 
+        FORMAT(b.budged_req - c.expenses, 0, "de_DE") AS budged_rem, 
+        b.id_req');
         $this->datatables->from('approved_po a');
         $this->datatables->join('budged_request b', 'a.id_req=b.id_req', 'left');
         $this->datatables->join('ref_objective d', 'b.id_objective=d.id_objective', 'left');
-        $this->datatables->join('v_tot_expenses c', 'b.id_req=c.id_req', 'left');
-        $this->datatables->where('b.id_country', $this->session->userdata('lab'));
+        $this->datatables->join('v_tot_expenses c', 'a.po_number=c.po_number', 'left');
+        // $this->datatables->where('b.id_country', $this->session->userdata('lab'));
         $this->datatables->where('b.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){
             $this->datatables->add_column('action', '', 'id_req');
         }
         else if (($lvl == 2) | ($lvl == 3)){
-            $this->datatables->add_column('action', anchor(site_url('Budged_expenses/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')) ."
-                ".'<button type="button" class="btn_edit btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>', 'id_req');
+            $this->datatables->add_column('action', anchor(site_url('Budged_expenses/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
         }
         else {
-            $this->datatables->add_column('action', anchor(site_url('Budged_expenses/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')) ."
-                ".'<button type="button" class="btn_edit btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('Budged_expenses/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_req');
+            $this->datatables->add_column('action', anchor(site_url('Budged_expenses/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
         }
         return $this->datatables->generate();
     }
 
     function subjson($id) {
-      $this->datatables->select('Budged_expenses_detail.id_reqdetail, Budged_expenses_detail.items, Budged_expenses_detail.qty, 
-      ref_unit.unit, FORMAT(Budged_expenses_detail.estimate_price, 0, "de_DE") AS estimate_price, 
-      FORMAT(Budged_expenses_detail.estimate_price * Budged_expenses_detail.qty, 0, "de_DE") AS tot_estimate, 
-      Budged_expenses_detail.remarks, Budged_expenses_detail.id_req, Budged_expenses_detail.id_unit, Budged_expenses_detail.flag');
-      $this->datatables->from('Budged_expenses_detail');
-      $this->datatables->join('ref_unit', 'Budged_expenses_detail.id_unit = ref_unit.id_unit', 'left');
+      $this->datatables->select('budged_expenses_detail.id_exp, budged_expenses_detail.date_expenses, budged_expenses_detail.items, budged_expenses_detail.qty, 
+      ref_unit.unit, FORMAT(budged_expenses_detail.expenses, 0, "de_DE") AS expenses, 
+      FORMAT(budged_expenses_detail.expenses * budged_expenses_detail.qty, 0, "de_DE") AS tot_expenses, 
+      budged_expenses_detail.remarks, budged_expenses_detail.id_exp, budged_expenses_detail.id_unit, budged_expenses_detail.flag, budged_expenses_detail.po_number');
+      $this->datatables->from('budged_expenses_detail');
+    //   $this->datatables->join('budged_expenses', 'budged_expenses_detail.id_exp = budged_expenses.id_exp', 'left');
+      $this->datatables->join('ref_unit', 'budged_expenses_detail.id_unit = ref_unit.id_unit', 'left');
       //   $this->datatables->where('lab', $this->session->userdata('lab'));
-      $this->datatables->where('Budged_expenses_detail.flag', '0');
-      $this->datatables->where('Budged_expenses_detail.id_req', $id);
+      $this->datatables->where('budged_expenses_detail.flag', '0');
+      $this->datatables->where('budged_expenses_detail.po_number', $id);
+
       $lvl = $this->session->userdata('id_user_level');
       if ($lvl == 7){
-          $this->datatables->add_column('action', '', 'id_reqdetail');
+          $this->datatables->add_column('action', '', 'id_exp');
       }
       else if (($lvl == 2) | ($lvl == 3)){
-            $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>', 'id_reqdetail');
+            $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>', 'id_exp');
       }
       else {
             $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('Budged_expenses/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_reqdetail');
+                ".anchor(site_url('Budged_expenses/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_exp');
         }
       return $this->datatables->generate();
   }
@@ -192,7 +194,7 @@ class Budged_expenses_model extends CI_Model
 
     function insert_det($data)
     {
-        $this->db->insert('Budged_expenses_detail', $data);
+        $this->db->insert('budged_expenses_detail', $data);
     }
     
     // update data
@@ -204,8 +206,8 @@ class Budged_expenses_model extends CI_Model
 
     function update_det($id, $data)
     {
-        $this->db->where('id_reqdetail', $id);
-        $this->db->update('Budged_expenses_detail', $data);
+        $this->db->where('id_exp', $id);
+        $this->db->update('budged_expenses_detail', $data);
     }
 
     // delete data

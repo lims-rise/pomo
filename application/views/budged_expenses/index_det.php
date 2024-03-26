@@ -10,26 +10,14 @@
 					<!-- <input id="id_req" name="id_req" type="hidden" class="form-control input-sm"> -->
 
 					<div class="form-group">
-						<label for="po_number" class="col-sm-2 control-label">PO number</label>
+						<label for="po_number2" class="col-sm-2 control-label">PO number</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="po_number" name="po_number" value="<?php echo $po_number ?>"  disabled>
+							<input class="form-control " id="po_number2" name="po_number2" value="<?php echo $po_number ?>"  disabled>
 						</div>
 
-						<label for="date_expenses" class="col-sm-2 control-label">Date Expenses</label>
-						<div class="col-sm-4">
-							<input class="form-control" type="date" id="date_expenses" name="date_expenses" value="<?php echo date("Y-m-d"); ?>" >
-						</div>
-					</div>
-
-					<div class="form-group">
 						<label for="objective" class="col-sm-2 control-label">Objective</label>
 						<div class="col-sm-4">
 							<input class="form-control " id="objective" name="objective" value="<?php echo $objective ?>" disabled>
-						</div>
-
-						<label for="title" class="col-sm-2 control-label">Title</label>
-						<div class="col-sm-4">
-							<input class="form-control " id="title" name="title" value="<?php echo $title ?>"  disabled>
 						</div>
 					</div>
 
@@ -37,6 +25,17 @@
 						<label for="budged_req" class="col-sm-2 control-label">Budged Request</label>
 						<div class="col-sm-4">
 							<input class="form-control " id="budged_req" name="budged_req" value="<?php echo $budged_req ?>"  disabled>
+						</div>
+						<label for="title" class="col-sm-2 control-label">Title</label>
+						<div class="col-sm-4">
+							<input class="form-control " id="title" name="title" value="<?php echo $title ?>"  disabled>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="budged_tot" class="col-sm-2 control-label">Total Budged Expenses</label>
+						<div class="col-sm-4">
+							<input class="form-control " id="budged_tot" name="budged_tot" value="<?php echo $budged_tot ?>" disabled>
 						</div>
 
 						<label for="budged_rem" class="col-sm-2 control-label">Budged Expenses Remaining</label>
@@ -69,7 +68,7 @@
 							<table id="example2" class="table display table-bordered table-striped" width="100%">
 								<thead>
 									<tr>
-										<!-- <th>PO Number</th> -->
+										<th>Date Expenses</th>
 										<th>Items</th>
 										<th>Qty</th>
 										<th>Unit</th>
@@ -88,7 +87,7 @@
 					<div class="form-group">
 						<div class="modal-footer clearfix">
 	<!--                                            <button type="submit" name="Save" value="simpan" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> -->
-							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_request/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
+							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_expenses/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
 							<button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button> -->
 							<button type="button" name="batal" value="batal" class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button>
 						</div>
@@ -109,14 +108,15 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="modal-title-detail">Add Budged Items<span id="my-another-cool-loader"></span></h4>
                     </div>
-                    <form id="formDetail" action=<?php echo site_url('Budged_request/savedetail') ?> method="post" class="form-horizontal">
+                    <form id="formDetail" action=<?php echo site_url('Budged_expenses/savedetail') ?> method="post" class="form-horizontal">
                         <div class="modal-body">
 						<div class="form-group">
                                 <div class="col-sm-9">
                                     <input id="mode_det" name="mode_det" type="hidden" class="form-control input-sm">
                                     <!-- <input id="id_reqdet" name="id_reqdet" type="hidden" class="form-control input-sm"> -->
-									<input id="id_req2" name="id_req2" type="hidden" class="form-control input-sm">
-                                    <input id="id_reqdetail" name="id_reqdetail" type="hidden" class="form-control input-sm noEnterSubmit" placeholder="PO Number" required>
+									<input id="id_exp" name="id_exp" type="hidden" class="form-control input-sm">
+									<input type="hidden" class="form-control " id="id_req" name="id_req" value="<?php echo $id_req ?>">
+									<input class="form-control" type="hidden" id="po_number" name="po_number" value="<?php echo $po_number ?>">
                                 </div>
                             </div>
                             <!-- <div class="form-group">
@@ -125,10 +125,16 @@
                                     <input id="id_reqdetail" name="id_reqdetail" type="text" class="form-control input-sm noEnterSubmit" placeholder="PO Number" required>
                                 </div>
                             </div> -->
-
+                            <div class="form-group">
+                                <label for="items" class="col-sm-4 control-label">Date Expenses</label>
+                                <div class="col-sm-8">
+									<input class="form-control" type="date" id="date_expenses" name="date_expenses" value="<?php echo date("Y-m-d"); ?>" >
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="items" class="col-sm-4 control-label">Item</label>
                                 <div class="col-sm-8">
+									<!-- <input class="form-control" type="hidden" id="po_number" name="po_number" value="<?php echo $po_number ?>"  disabled> -->
                                     <input id="items" name="items" type="text" placeholder="Item" class="form-control" required>
                                 </div>
                             </div>
@@ -160,9 +166,9 @@
 							</div>
 														
 							<div class="form-group">
-								<label for="estimate_price" class="col-sm-4 control-label">Estimate Price</label>
+								<label for="expenses" class="col-sm-4 control-label">Actual Price</label>
 								<div class="col-sm-8">
-									<input id="estimate_price" name="estimate_price" type="text" class="form-control" placeholder="Estimate Price">
+									<input id="expenses" name="expenses" type="text" class="form-control" placeholder="Actual Price" required>
 								</div>
 							</div>							
 							<div class="form-group">
@@ -193,9 +199,10 @@
 		});
 						
         $('#compose-modal').on('shown.bs.modal', function () {
+			$('#items').focus();
 			// $.ajax({
 			// 	type: "POST",
-			// 	url: "<?php echo site_url('Budged_request/getSumEstimatePrice/') ?>" + id_req,
+			// 	url: "<?php //echo site_url('Budged_expenses/getSumEstimatePrice/') ?>" + id_req,
 			// 	success: function(data) {
 			// 		var sumEstimatePrice = parseFloat(data);
 			// 		var budgedReq = parseFloat($('#budged_req').val().replace(/,/g, ''));
@@ -205,7 +212,7 @@
 			// 	}
 			// });
 
-			$('#estimate_price').on('input', function() {
+			$('#expenses').on('input', function() {
                 formatNumber(this);
                 });
 
@@ -224,7 +231,7 @@
         }
 
 		
-		var id_req = $('#id_req').val();
+		var id = $('#po_number').val();
 		var base_url = location.hostname;
 		$.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
 		{
@@ -249,14 +256,14 @@
 			// ordering: false,
 			info: false,
 			bFilter: false,
-			ajax: {"url": "../../Budged_request/subjson?id="+id_req, "type": "POST"},
+			ajax: {"url": "../../Budged_expenses/subjson?id="+id, "type": "POST"},
 			columns: [
-				// {"data": "id_reqdetail"},
+				{"data": "date_expenses"},
 				{"data": "items"}, 
 				{"data": "qty"},
 				{"data": "unit"},
-				{"data": "estimate_price"},
-				{"data": "tot_estimate"},
+				{"data": "expenses"},
+				{"data": "tot_expenses"},
 				{"data": "remarks"},
 				{
 					"data" : "action",
@@ -266,10 +273,16 @@
 			],
 			columnDefs: [
 				{
-					targets: [3, 4], // Index of the 'estimate_price' column
+					targets: [4, 5], // Index of the 'estimate_price' column
 					className: 'text-right' // Apply right alignment to this column
 				}
 			],
+			// columnDefs: [
+			// 	{
+			// 		targets: [0, 1, 2, 3, 6, 7], // Index of the 'estimate_price' column
+			// 		className: 'text-center' // Apply right alignment to this column
+			// 	}
+			// ],
 			order: [[0, 'asc']],
 			rowCallback: function(row, data, iDisplayIndex) {
 				var info = this.fnPagingInfo();
@@ -289,21 +302,20 @@
         //     $('#result').focus();
 		// });        
 
-		$('#print').click(function() {
-			location.href = '../../Budged_request/budreq_print/'+id_req;
-		});
+		// $('#print').click(function() {
+		// 	location.href = '../../Budged_expenses/budreq_print/'+id_req;
+		// });
 
 
 		$('#addtombol_det').click(function() {
 			$('#mode_det').val('insert');
-            $('#modal-title').html('<i class="fa fa-wpforms"></i> New spectro detail<span id="my-another-cool-loader"></span>');
-			$('#id_reqdetail').attr('readonly', false);
-		    $('#id_reqdetail').val('');
+            $('#modal-title-detail').html('<i class="fa fa-wpforms"></i> New detail expenses<span id="my-another-cool-loader"></span>');
+			$('#id_exp').attr('readonly', false);
+		    $('#id_exp').val('');
 		    $('#items').val('');
-		    $('#id_req2').val(id_req);
 		    $('#qty').val('');
 		    $('#id_unit').val('');
-		    $('#estimate_price').val('');
+		    $('#expenses').val('');
 		    $('#remarks').val('');
 			$('#compose-modal').modal('show');
 		});
@@ -314,14 +326,15 @@
 			let data = table.row(tr).data();
 			console.log(data);
 			$('#mode_det').val('edit');
-			$('#modal-title').html('<i class="fa fa-pencil-square"></i> Update spectro detail <span id="my-another-cool-loader"></span>');
-			$('#id_reqdetail').attr('readonly', true);
-		    $('#id_reqdetail').val(data.id_reqdetail);
+			$('#modal-title-detail').html('<i class="fa fa-pencil-square"></i> Update detail expenses<span id="my-another-cool-loader"></span>');
+			$('#id_exp').attr('readonly', true);
+		    $('#id_exp').val(data.id_exp);
+		    $('#po_number').val(data.po_number);
+		    $('#date_expenses').val(data.date_expenses);
 		    $('#items').val(data.items);
-		    $('#id_req2').val(data.id_req);
 		    $('#qty').val(data.qty);
 		    $('#id_unit').val(data.id_unit).trigger('change');
-		    $('#estimate_price').val(data.estimate_price);
+		    $('#expenses').val(data.expenses);
 		    $('#remarks').val(data.remarks);
 			$('#compose-modal').modal('show');
 		});  

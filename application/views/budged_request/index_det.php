@@ -116,7 +116,9 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="modal-title-detail">Add Budged Items<span id="my-another-cool-loader"></span></h4>
+                        <h4 class="modal-title" id="modal-title-detail">
+							<span id="my-another-cool-loader"></span></h4>
+                        <!-- <h4 class="modal-title" id="modal-title-detail">Add Budged Items<span id="my-another-cool-loader"></span></h4> -->
                     </div>
                     <form id="formDetail" action=<?php echo site_url('Budged_request/savedetail') ?> method="post" class="form-horizontal">
                         <div class="modal-body">
@@ -305,7 +307,7 @@
 
 		$('#addtombol_det').click(function() {
 			$('#mode_det').val('insert');
-            $('#modal-title').html('<i class="fa fa-wpforms"></i> New spectro detail<span id="my-another-cool-loader"></span>');
+            $('#modal-title-detail').html('<i class="fa fa-wpforms"></i> New detailed items<span id="my-another-cool-loader"></span>');
 			$('#id_reqdetail').attr('readonly', false);
 		    $('#id_reqdetail').val('');
 		    $('#items').val('');
@@ -323,7 +325,7 @@
 			let data = table.row(tr).data();
 			console.log(data);
 			$('#mode_det').val('edit');
-			$('#modal-title').html('<i class="fa fa-pencil-square"></i> Update spectro detail <span id="my-another-cool-loader"></span>');
+			$('#modal-title-detail').html('<i class="fa fa-pencil-square"></i> Update detailed items<span id="my-another-cool-loader"></span>');
 			$('#id_reqdetail').attr('readonly', true);
 		    $('#id_reqdetail').val(data.id_reqdetail);
 		    $('#items').val(data.items);
@@ -336,4 +338,4 @@
 		});  
 
 	});
-</script>
+</script>--

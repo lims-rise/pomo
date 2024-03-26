@@ -11,10 +11,10 @@
         <div class="box-body">
         <div style="padding-bottom: 10px;">
 <?php
-        $lvl = $this->session->userdata('id_user_level');
-        if ($lvl != 7){
-            echo "<button class='btn btn-primary' id='addtombol'><i class='fa fa-wpforms' aria-hidden='true'></i> New Budged Request</button>";
-        }
+        // $lvl = $this->session->userdata('id_user_level');
+        // if ($lvl != 7){
+            // echo "<button class='btn btn-primary' id='addtombol'><i class='fa fa-wpforms' aria-hidden='true'></i> New Budged Request</button>";
+        // }
 ?>        
 		<?php echo anchor(site_url('Budged_expenses/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
         <table class="table table-bordered table-striped tbody" id="mytable" style="width:100%">
@@ -26,6 +26,7 @@
 		    <th>Title</th>
 		    <th>Budged request</th>
 		    <th>Total expenses</th>
+		    <th>Budged remaining</th>
 		    <th width="120px">Action</th>
                 </tr>
             </thead>
@@ -45,94 +46,7 @@
 
 </style>
 
-    <!-- MODAL FORM -->
-    <div class="modal fade" id="compose-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header box">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="modal-title">Budged Request | New</h4>
-                </div>
-                <form id="formSample"  action= <?php echo site_url('Budged_expenses/save') ?> method="post" class="form-horizontal">
-                    <div class="modal-body">
-                        <input id="mode" name="mode" type="hidden" class="form-control input-sm">
-                        <input id="id_req" name="id_req" type="hidden" class="form-control input-sm">
-
-                        <div class="form-group">
-                            <label for="date_req" class="col-sm-4 control-label">Date request</label>
-                            <div class="col-sm-8">
-                                <input id="date_req" name="date_req" type="date" class="form-control" placeholder="Date Request" value="<?php echo date("Y-m-d"); ?>">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="id_person" class="col-sm-4 control-label">Requested by</label>
-                            <div class="col-sm-8" >
-                            <select id='id_person' name="id_person" class="form-control">
-                                <option>-- Select staff --</option>
-                                <?php
-                                foreach($person as $row){
-									if ($id_person == $row['id_person']) {
-										echo "<option value='".$row['id_person']."' selected='selected'>".$row['realname']."</option>";
-									}
-									else {
-                                        echo "<option value='".$row['id_person']."'>".$row['realname']."</option>";
-                                    }
-                                }
-                                    ?>
-                            </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="id_objective" class="col-sm-4 control-label">Objectives</label>
-                            <div class="col-sm-8" >
-                            <select id='id_objective' name="id_objective" class="form-control">
-                                <option>-- Select objectives --</option>
-                                <?php
-                                foreach($objective as $row){
-									if ($id_objective == $row['id_objective']) {
-										echo "<option value='".$row['id_objective']."' selected='selected'>".$row['objective']."</option>";
-									}
-									else {
-                                        echo "<option value='".$row['id_objective']."'>".$row['objective']."</option>";
-                                    }
-                                }
-                                    ?>
-                            </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="title" class="col-sm-4 control-label">Title</label>
-                            <div class="col-sm-8">
-                                <input id="title" name="title" type="text" class="form-control" placeholder="Title" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="budged_req" class="col-sm-4 control-label">Budged Request</label>
-                            <div class="col-sm-8">
-                                <input id="budged_req" name="budged_req" type="text" class="form-control" placeholder="Budged Request">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                                <label for="comments" class="col-sm-4 control-label">Comments</label>
-                                <div class="col-sm-8">
-                                    <textarea id="comments" name="comments" class="form-control" placeholder="Comments"> </textarea>
-                                </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer clearfix">
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
-                        <button type="button" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
-                    </div>
-                </form>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->        
+    <!-- MODAL FORM -->  
 
 </div>
 
@@ -145,52 +59,6 @@
 
     var table
     $(document).ready(function() {
-
-        $('.clockpicker').clockpicker({
-        placement: 'bottom', // clock popover placement
-        align: 'left',       // popover arrow align
-        donetext: 'Done',     // done button text
-        autoclose: true,    // auto close when minute is selected
-        vibrate: true        // vibrate the device when dragging clock hand
-        });                
-
-        $('.val1tip, .val2tip, .val3tip').tooltipster({
-            animation: 'swing',
-            delay: 1,
-            theme: 'tooltipster-default',
-            autoClose: true,
-            position: 'bottom',
-        });
-
-        $("#compose-modal").on('hide.bs.modal', function(){
-            $('.val1tip,.val2tip,.val3tip').tooltipster('hide');   
-        });        
-
-        $('#compose-modal').on('shown.bs.modal', function () {
-            $('#budged_req').on('input', function() {
-                formatNumber(this);
-                });
-            });
-
-        function formatNumber(input) {
-            input.value = input.value.replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
-            if (input.value !== '') {
-                var numericValue = parseFloat(input.value.replace(/\./g, '').replace(',', '.'));
-                input.value = numericValue.toLocaleString('en-US', { maximumFractionDigits: 2 });
-                // Replace commas with dots for the display
-                input.value = input.value.replace(/,/g, '.');
-            }
-        }
-
-        $("input").keypress(function(){
-            $('.val1tip,.val2tip,.val3tip').tooltipster('hide');   
-        });
-
-        $("input").click(function(){
-            setTimeout(function(){
-                $('.val1tip,.val2tip,.val3tip').tooltipster('hide');   
-            }, 3000);                            
-        });
 
         var base_url = location.hostname;
         $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
@@ -207,16 +75,6 @@
         };
 
         table = $("#mytable").DataTable({
-            // initComplete: function() {
-            //     var api = this.api();
-            //     $('#mytable_filter input')
-            //             .off('.DT')
-            //             .on('keyup.DT', function(e) {
-            //                 if (e.keyCode == 13) {
-            //                     api.search(this.value).draw();
-            //                 }
-            //     });
-            // },
             oLanguage: {
                 sProcessing: "loading..."
             },
@@ -235,6 +93,7 @@
                 {"data": "title"},
                 {"data": "budged_req"},
                 {"data": "expenses"},
+                {"data": "budged_rem"},
                 {
                     "data" : "action",
                     "orderable": false,
@@ -243,7 +102,7 @@
             ],
 			columnDefs: [
 				{
-					targets: [4,5], // Index of the 'estimate_price' column
+					targets: [4,5,6], // Index of the 'estimate_price' column
 					className: 'text-right' // Apply right alignment to this column
 				}
 			],
@@ -258,38 +117,6 @@
                 // $('td:eq(0)', row).html(index);
             }
         });
-
-        $('#addtombol').click(function() {
-            $('#mode').val('insert');
-            $('#modal-title').html('<i class="fa fa-wpforms"></i> Budged Request | New<span id="my-another-cool-loader"></span>');
-            $('#id_req').attr('readonly', false);
-            $('#id_req').val('');
-            // $("#date_req").datepicker("setDate",'now');
-            $('#id_person').val('');
-            $('#id_objective').val('');
-            $('#title').val('');
-            $('#budged_req').val('');
-            $('#comments').val('');
-            $('#compose-modal').modal('show');
-        });
-
-        $('#mytable').on('click', '.btn_edit', function(){
-            let tr = $(this).parent().parent();
-            let data = table.row(tr).data();
-            console.log(data);
-            // var data = this.parents('tr').data();
-            $('#mode').val('edit');
-            $('#modal-title').html('<i class="fa fa-pencil-square"></i> Budged Request | Update<span id="my-another-cool-loader"></span>');
-            $('#id_req').attr('readonly', true);
-            $('#id_req').val(data.id_req);
-            $('#date_req').val(data.date_req);
-            $('#id_person').val(data.id_person).trigger('change');
-            $('#id_objective').val(data.id_objective).trigger('change');
-            $('#title').val(data.title);
-            $('#budged_req').val(data.budged_req);
-            $('#comments').val(data.comments);
-            $('#compose-modal').modal('show');
-        });  
 
         $('#mytable tbody').on('click', 'tr', function () {
             if ($(this).hasClass('active')) {

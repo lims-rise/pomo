@@ -58,6 +58,7 @@ class Budged_expenses extends CI_Controller
         // Return the sum of Estimate Price
         echo $sumEstimatePrice;
     }
+    
     public function read($id)
     {
         // $this->template->load('template','Budged_expenses/index_det', $data);
@@ -72,8 +73,10 @@ class Budged_expenses extends CI_Controller
                 'objective' => $row->objective,
                 'title' => $row->title,
                 'budged_req' => $row->budged_req,
+                'budged_tot' => $row->budged_tot,
                 'budged_rem' => $row->budged_rem,
                 'id_req' => $row->id_req,
+                'unit' => $this->Budged_expenses_model->getUnits(),
                 );
                 $this->template->load('template','Budged_expenses/index_det', $data);
         }
@@ -137,18 +140,19 @@ class Budged_expenses extends CI_Controller
     public function savedetail() 
     {
         $mode = $this->input->post('mode_det',TRUE);
-        $id_reqdetail = $this->input->post('id_reqdetail',TRUE);
-        $id_req = $this->input->post('id_req2',TRUE);
+        $po_number = $this->input->post('po_number',TRUE);
+        $id_req = $this->input->post('id_req',TRUE);
+        $id_exp = $this->input->post('id_exp',TRUE);
         $dt = new DateTime();
 
         if ($mode=="insert"){
             $data = array(
-                'id_reqdetail' => $this->input->post('id_reqdetail',TRUE),
-                'id_req' => $this->input->post('id_req2',TRUE),
+                'po_number' => $this->input->post('po_number',TRUE),
+                'date_expenses' => $this->input->post('date_expenses',TRUE),
                 'items' => $this->input->post('items',TRUE),
                 'qty' => $this->input->post('qty',TRUE),
                 'id_unit' => $this->input->post('id_unit',TRUE),
-                'estimate_price' => str_replace('.', '', $this->input->post('estimate_price')),
+                'expenses' => str_replace('.', '', $this->input->post('expenses')),
                 'remarks' => $this->input->post('remarks',TRUE),
                 'uuid' => $this->uuid->v4(),
                 // 'lab' => $this->session->userdata('lab'),
@@ -162,12 +166,12 @@ class Budged_expenses extends CI_Controller
         }
         else if ($mode=="edit"){
             $data = array(
-                'id_reqdetail' => $this->input->post('id_reqdetail',TRUE),
-                'id_req' => $this->input->post('id_req2',TRUE),
+                'po_number' => $this->input->post('po_number',TRUE),
+                'date_expenses' => $this->input->post('date_expenses',TRUE),
                 'items' => $this->input->post('items',TRUE),
                 'qty' => $this->input->post('qty',TRUE),
                 'id_unit' => $this->input->post('id_unit',TRUE),
-                'estimate_price' => str_replace('.', '', $this->input->post('estimate_price')),
+                'expenses' => str_replace('.', '', $this->input->post('expenses')),
                 'remarks' => $this->input->post('remarks',TRUE),
                 // 'uuid' => $this->uuid->v4(),
                 // 'lab' => $this->session->userdata('lab'),
@@ -175,7 +179,7 @@ class Budged_expenses extends CI_Controller
                 'date_updated' => $dt->format('Y-m-d H:i:s'),
                 );
     
-            $this->Budged_expenses_model->update_det($id_reqdetail, $data);
+            $this->Budged_expenses_model->update_det($id_exp, $data);
             $this->session->set_flashdata('message', 'Create Record Success');    
         }
 
