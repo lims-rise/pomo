@@ -2,57 +2,48 @@
 	<section class="content">
 		<div class="box box-black box-solid">
 			<div class="box-header with-border">
-				<h3 class="box-title">Purchase Order | Budget Request Detail</h3>
+				<h3 class="box-title">Purchase Order | Budget Request Remaining Detail</h3>
 			</div>
 			<form role="form"  id="formKeg" method="post" class="form-horizontal">
 				<div class="box-body">
-					<input type="hidden" class="form-control " id="id_req" name="id_req" value="<?php echo $id_req ?>">
-					<!-- <input id="id_req" name="id_req" type="hidden" class="form-control input-sm"> -->
+					<input id="id_req" name="id_req" type="hidden" class="form-control"  value="<?php echo $id_req ?>">
+					<input id="id_reqrem" name="id_reqrem" type="hidden" class="form-control" value="<?php echo $id_reqrem ?>">
 
 					<div class="form-group">
 						<label for="date_req" class="col-sm-2 control-label">Date request</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="date_req" name="date_req" value="<?php echo $date_req ?>"  disabled>
+							<input type = "date" class="form-control " id="date_req" name="date_req" value="<?php echo $date_req ?>" disabled>
 						</div>
 
-						<label for="realname" class="col-sm-2 control-label">Requested by</label>
+						<label for="budged_rem" class="col-sm-2 control-label">Budget Request</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="realname" name="realname" value="<?php echo $realname ?>"  disabled>
+							<input class="form-control " id="budged_rem" name="budged_rem" value="<?php echo $budged_rem ?>"  disabled>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label for="objective" class="col-sm-2 control-label">Objective</label>
+						<label for="new_title" class="col-sm-2 control-label">New Title</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="objective" name="objective" value="<?php echo $objective ?>" disabled>
+							<input class="form-control " id="new_title" name="new_title" value="<?php echo $new_title ?>" disabled>
 						</div>
 
-						<label for="title" class="col-sm-2 control-label">Title</label>
-						<div class="col-sm-4">
-							<input class="form-control " id="title" name="title" value="<?php echo $title ?>"  disabled>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="budged_req" class="col-sm-2 control-label">Budget Request</label>
-						<div class="col-sm-4">
-							<input class="form-control " id="budged_req" name="budged_req" value="<?php echo $budged_req ?>"  disabled>
-						</div>
-
-						<label for="comments" class="col-sm-2 control-label">Comments</label>
-						<div class="col-sm-4">
-							<input class="form-control " id="comments" name="comments" value="<?php echo $comments ?>"  disabled>
-						</div>
-					</div>
-
-					<div class="form-group">
 						<label for="budged_rem" class="col-sm-2 control-label">Budget Remaining</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="budged_rem" name="budged_rem" value="<?php echo $budged_rem ?>" disabled>
+							<input class="form-control " id="budged_rem" name="budged_rem" value="<?php echo $budged_rem_rem ?>" disabled>
 						</div>
 					</div>
 
+					<div class="form-group">
+					<label for="realname" class="col-sm-2 control-label">Requested by</label>
+						<div class="col-sm-4">
+							<input class="form-control " id="realname" name="realname" value="<?php echo $realname ?>" disabled>
+						</div>
 
+					<label for="comments" class="col-sm-2 control-label">Comments</label>
+						<div class="col-sm-4">
+							<input class="form-control " id="comments" name="comments" value="<?php echo $comments ?>" disabled>
+						</div>
+					</div>
 				</div><!-- /.box-body -->
 				</form>
 
@@ -63,7 +54,7 @@
                         <div class="box box-primary box-solid">
             
                             <div class="box-header">
-                                <h3 class="box-title">Detail Items</h3>
+                                <h3 class="box-title">Detail items for budget remaining</h3>
                             </div>
 							<div class="box-body pad table-responsive">
 							<?php
@@ -97,7 +88,7 @@
 				<div class="form-group">
 						<div class="modal-footer clearfix">
 	<!--                                            <button type="submit" name="Save" value="simpan" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> -->
-							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_request/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button> -->
+							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php// echo site_url('Budged_request_rem/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button> -->
 							<button type="button" name="excel" id="excel" class="btn btn-success" onclick="javascript:void(0);"><i class="fa fa-file-excel-o"></i> Excel</button>
 							<button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button>
 							<button type="button" name="batal" value="batal" class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button>
@@ -121,14 +112,14 @@
 							<span id="my-another-cool-loader"></span></h4>
                         <!-- <h4 class="modal-title" id="modal-title-detail">Add Budged Items<span id="my-another-cool-loader"></span></h4> -->
                     </div>
-                    <form id="formDetail" action=<?php echo site_url('Budged_request/savedetail') ?> method="post" class="form-horizontal">
+                    <form id="formDetail" action=<?php echo site_url('Budged_request_rem/savedetail') ?> method="post" class="form-horizontal">
                         <div class="modal-body">
 						<div class="form-group">
                                 <div class="col-sm-9">
                                     <input id="mode_det" name="mode_det" type="hidden" class="form-control input-sm">
-                                    <!-- <input id="id_reqdet" name="id_reqdet" type="hidden" class="form-control input-sm"> -->
 									<input id="id_req2" name="id_req2" type="hidden" class="form-control input-sm">
-                                    <input id="id_reqdetail" name="id_reqdetail" type="hidden" class="form-control input-sm noEnterSubmit" placeholder="PO Number" required>
+									<input id="id_reqrem2" name="id_reqrem2" type="hidden" class="form-control input-sm">
+                                    <input id="id_reqrem_det" name="id_reqrem_det" type="hidden" class="form-control input-sm">
                                 </div>
                             </div>
                             <!-- <div class="form-group">
@@ -178,9 +169,9 @@
 								</div>
 							</div>							
 							<div class="form-group">
-                                <label for="remarks" class="col-sm-4 control-label">Remarks</label>
+                                <label for="comments" class="col-sm-4 control-label">Remarks</label>
                                 <div class="col-sm-8">
-                                    <textarea id="remarks" name="remarks" class="form-control" placeholder="Remarks"> </textarea>
+                                    <textarea id="comments" name="comments" class="form-control" placeholder="Remarks"> </textarea>
                                 </div>
 	                        </div>
 						</div>
@@ -205,10 +196,28 @@
 		});
 						
         $('#compose-modal').on('shown.bs.modal', function () {
-			$('#items').focus();
+			// $.ajax({
+			// 	type: "POST",
+			// 	url: "<?php //echo site_url('Budged_request_rem/getSumEstimatePrice/') ?>" + id_req,
+			// 	success: function(data) {
+			// 		var sumEstimatePrice = parseFloat(data);
+			// 		var budgedReq = parseFloat($('#budged_req').val().replace(/,/g, ''));
+			// 		var budgedRem = budgedReq - sumEstimatePrice;
+			// 		$('#budged_rem').val(budgedRem.toLocaleString('en-US', { maximumFractionDigits: 2 }));
+			// 		// $('#budged_rem').val(budgedRem);
+			// 	}
+			// });
+
 			$('#estimate_price').on('input', function() {
                 formatNumber(this);
                 });
+
+			$('#items').focus();
+			$('#id_req2').val($('#id_req').val());
+
+			// let table = $('#example2').DataTable(); 
+			// let sumCount = table.rows().sum();
+			// $('#budged_rem').val(sumCount);				
             });
 
         function formatNumber(input) {
@@ -221,6 +230,7 @@
         }
 
 		
+		var id_reqrem = $('#id_reqrem').val();
 		var id_req = $('#id_req').val();
 		var base_url = location.hostname;
 		$.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
@@ -246,15 +256,15 @@
 			// ordering: false,
 			info: false,
 			bFilter: false,
-			ajax: {"url": "../../Budged_request/subjson?id="+id_req, "type": "POST"},
+			ajax: {"url": "../../Budged_request_rem/subjson?id="+id_reqrem, "type": "POST"},
 			columns: [
-				// {"data": "id_reqdetail"},
+				// {"data": "id_reqrem"},
 				{"data": "items"}, 
 				{"data": "qty"},
 				{"data": "unit"},
 				{"data": "estimate_price"},
 				{"data": "tot_estimate"},
-				{"data": "remarks"},
+				{"data": "comments"},
 				{
 					"data" : "action",
 					"orderable": false,
@@ -296,25 +306,27 @@
 		// });        
 
 		$('#print').click(function() {
-			location.href = '../../Budged_request/budreq_print/'+id_req;
+			location.href = '../../Budged_request_rem/budreq_print/'+id_reqrem;
 		});
 
 		$('#excel').click(function() {
-			location.href = '../../Budged_request/excel_print/'+id_req;
+			location.href = '../../Budged_request_rem/excel_print/'+id_reqrem;
 		});
+
+		// <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_request_rem/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
 
 
 		$('#addtombol_det').click(function() {
 			$('#mode_det').val('insert');
             $('#modal-title-detail').html('<i class="fa fa-wpforms"></i> New detailed items<span id="my-another-cool-loader"></span>');
-			$('#id_reqdetail').attr('readonly', false);
-		    $('#id_reqdetail').val('');
+			// $('#id_reqrem_det').attr('readonly', false);
+		    $('#id_reqrem_det').val('');
 		    $('#items').val('');
-		    $('#id_req2').val(id_req);
+		    $('#id_reqrem2').val(id_reqrem);
 		    $('#qty').val('');
 		    $('#id_unit').val('');
 		    $('#estimate_price').val('');
-		    $('#remarks').val('');
+		    $('#comments').val('');
 			$('#compose-modal').modal('show');
 		});
 
@@ -325,14 +337,14 @@
 			console.log(data);
 			$('#mode_det').val('edit');
 			$('#modal-title-detail').html('<i class="fa fa-pencil-square"></i> Update detailed items<span id="my-another-cool-loader"></span>');
-			$('#id_reqdetail').attr('readonly', true);
-		    $('#id_reqdetail').val(data.id_reqdetail);
+			// $('#id_reqrem_det').attr('readonly', true);
+		    $('#id_reqrem_det').val(data.id_reqrem_det);
 		    $('#items').val(data.items);
-		    $('#id_req2').val(data.id_req);
+		    $('#id_reqrem2').val(data.id_reqrem);
 		    $('#qty').val(data.qty);
 		    $('#id_unit').val(data.id_unit).trigger('change');
 		    $('#estimate_price').val(data.estimate_price);
-		    $('#remarks').val(data.remarks);
+		    $('#comments').val(data.comments);
 			$('#compose-modal').modal('show');
 		});  
 

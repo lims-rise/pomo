@@ -5,27 +5,21 @@
                 <div class="box box-black box-solid">
     
                     <div class="box-header">
-                        <h3 class="box-title">Purchase Order | Budget Request</h3>
+                        <h3 class="box-title">Purchase Order | Budget Request Remaining</h3>
                     </div>
         
         <div class="box-body">
-        <div style="padding-bottom: 10px;">
-<?php
-        $lvl = $this->session->userdata('id_user_level');
-        if ($lvl != 7){
-            echo "<button class='btn btn-primary' id='addtombol'><i class='fa fa-wpforms' aria-hidden='true'></i> New Budget Request</button>";
-        }
-?>        
-		<?php echo anchor(site_url('Budged_request/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
+        <div style="padding-bottom: 10px
+        <?php echo anchor(site_url('Budged_request_rem/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
         <table class="table table-bordered table-striped tbody" id="mytable" style="width:100%">
             <thead>
                 <tr>
-		    <th>ID</th>
-		    <th>Date request</th>
-		    <th>Requested by</th>
+            <th>PO number</th>
 		    <th>Objectives</th>
 		    <th>Title</th>
-		    <th>Budget request</th>
+		    <th>Budget remaining</th>
+		    <th>Date Request</th>
+		    <th>New Title</th>
 		    <th>Comments</th>
 		    <th width="120px">Action</th>
                 </tr>
@@ -54,10 +48,26 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="modal-title">Budget Request | New</h4>
                 </div>
-                <form id="formSample"  action= <?php echo site_url('Budged_request/save') ?> method="post" class="form-horizontal">
+                <form id="formSample"  action= <?php echo site_url('Budged_request_rem/save') ?> method="post" class="form-horizontal">
                     <div class="modal-body">
                         <input id="mode" name="mode" type="hidden" class="form-control input-sm">
-                        <input id="id_req" name="id_req" type="hidden" class="form-control input-sm">
+                        <input id="id_reqrem" name="id_reqrem" type="hidden" class="form-control input-sm">
+
+                        <div class="form-group">
+                            <label for="po_number" class="col-sm-4 control-label">PO Number</label>
+                            <div class="col-sm-8">
+                                <input id="po_number" name="po_number" type="text" class="form-control" placeholder="PO Number">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="budged_rem" class="col-sm-4 control-label">Budget Remaining</label>
+                            <div class="col-sm-8">
+                                <input id="budged_rem" name="budged_rem" type="text" class="form-control" placeholder="Budget Remaining">
+                            </div>
+                        </div>
+
+                        <hr>
 
                         <div class="form-group">
                             <label for="date_req" class="col-sm-4 control-label">Date request</label>
@@ -86,35 +96,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="id_objective" class="col-sm-4 control-label">Objectives</label>
-                            <div class="col-sm-8" >
-                            <select id='id_objective' name="id_objective" class="form-control">
-                                <option>-- Select objectives --</option>
-                                <?php
-                                foreach($objective as $row){
-									if ($id_objective == $row['id_objective']) {
-										echo "<option value='".$row['id_objective']."' selected='selected'>".$row['objective']."</option>";
-									}
-									else {
-                                        echo "<option value='".$row['id_objective']."'>".$row['objective']."</option>";
-                                    }
-                                }
-                                    ?>
-                            </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="title" class="col-sm-4 control-label">Title</label>
+                            <label for="new_title" class="col-sm-4 control-label">New Title</label>
                             <div class="col-sm-8">
-                                <input id="title" name="title" type="text" class="form-control" placeholder="Title" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="budged_req" class="col-sm-4 control-label">Budget Request</label>
-                            <div class="col-sm-8">
-                                <input id="budged_req" name="budged_req" type="text" class="form-control" placeholder="Budget Request">
+                                <input id="new_title" name="new_title" type="text" class="form-control" placeholder="New Title">
                             </div>
                         </div>
 
@@ -168,10 +152,7 @@
         });        
 
         $('#compose-modal').on('shown.bs.modal', function () {
-			$('#date_req').focus();
-            $('#budged_req').on('input', function() {
-                formatNumber(this);
-                });
+            $('#date_req').focus();
             });
 
         function formatNumber(input) {
@@ -184,15 +165,15 @@
             }
         }
 
-        $("input").keypress(function(){
-            $('.val1tip,.val2tip,.val3tip').tooltipster('hide');   
-        });
+        // $("input").keypress(function(){
+        //     $('.val1tip,.val2tip,.val3tip').tooltipster('hide');   
+        // });
 
-        $("input").click(function(){
-            setTimeout(function(){
-                $('.val1tip,.val2tip,.val3tip').tooltipster('hide');   
-            }, 3000);                            
-        });
+        // $("input").click(function(){
+        //     setTimeout(function(){
+        //         $('.val1tip,.val2tip,.val3tip').tooltipster('hide');   
+        //     }, 3000);                            
+        // });
 
         var base_url = location.hostname;
         $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
@@ -225,18 +206,14 @@
             // select: true;
             processing: true,
             serverSide: true,
-            ajax: {"url": "Budged_request/json", "type": "POST"},
+            ajax: {"url": "Budged_request_rem/json", "type": "POST"},
             columns: [
-                // {
-                //     "data": "barcode_sample",
-                //     "orderable": false
-                // },
-                {"data": "id_req"},
-                {"data": "date_req"},
-                {"data": "realname"},
+                {"data": "po_number"},
                 {"data": "objective"},
                 {"data": "title"},
-                {"data": "budged_req"},
+                {"data": "budged_rem"},
+                {"data": "date_req"},
+                {"data": "new_title"},
                 {"data": "comments"},
                 {
                     "data" : "action",
@@ -246,7 +223,7 @@
             ],
 			columnDefs: [
 				{
-					targets: [5], // Index of the 'estimate_price' column
+					targets: [3], // Index of the 'estimate_price' column
 					className: 'text-right' // Apply right alignment to this column
 				}
 			],
@@ -261,34 +238,43 @@
             }
         });
 
-        $('#addtombol').click(function() {
-            $('#mode').val('insert');
-            $('#modal-title').html('<i class="fa fa-wpforms"></i> Budged Request | New<span id="my-another-cool-loader"></span>');
-            $('#id_req').attr('readonly', false);
-            $('#id_req').val('');
-            // $("#date_req").datepicker("setDate",'now');
-            $('#id_person').val('');
-            $('#id_objective').val('');
-            $('#title').val('');
-            $('#budged_req').val('');
-            $('#comments').val('');
-            $('#compose-modal').modal('show');
-        });
+        // $('#addtombol').click(function() {
+        //     $('#mode').val('insert');
+        //     $('#modal-title').html('<i class="fa fa-wpforms"></i> Budged Request | New<span id="my-another-cool-loader"></span>');
+        //     $('#id_req').attr('readonly', false);
+        //     $('#id_req').val('');
+        //     // $("#date_req").datepicker("setDate",'now');
+        //     $('#id_person').val('');
+        //     $('#id_objective').val('');
+        //     $('#title').val('');
+        //     $('#budged_req').val('');
+        //     $('#comments').val('');
+        //     $('#compose-modal').modal('show');
+        // });
 
         $('#mytable').on('click', '.btn_edit', function(){
             let tr = $(this).parent().parent();
             let data = table.row(tr).data();
             console.log(data);
             // var data = this.parents('tr').data();
-            $('#mode').val('edit');
-            $('#modal-title').html('<i class="fa fa-pencil-square"></i> Budged Request | Update<span id="my-another-cool-loader"></span>');
-            $('#id_req').attr('readonly', true);
-            $('#id_req').val(data.id_req);
-            $('#date_req').val(data.date_req);
+            if (data.new_title !== undefined && data.new_title !== null) {
+                $('#mode').val('edit');
+            }
+            else {
+                $('#mode').val('insert');
+            }
+            $('#modal-title').html('<i class="fa fa-pencil-square"></i> Budged Request Remaining | New <span id="my-another-cool-loader"></span>');
+            $('#id_reqrem').attr('readonly', true);
+            $('#id_reqrem').val(data.id_reqrem);
+            $('#po_number').attr('readonly', true);
+            $('#po_number').val(data.po_number);
+            $('#budged_rem').attr('readonly', true);
+            $('#budged_rem').val(data.budged_rem);
+            if (data.date_req) {            
+                $('#date_req').val(data.date_req);
+            }
             $('#id_person').val(data.id_person).trigger('change');
-            $('#id_objective').val(data.id_objective).trigger('change');
-            $('#title').val(data.title);
-            $('#budged_req').val(data.budged_req);
+            $('#new_title').val(data.new_title);
             $('#comments').val(data.comments);
             $('#compose-modal').modal('show');
         });  

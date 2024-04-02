@@ -3,11 +3,11 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Budged_expenses_model extends CI_Model
+class Budged_exp_rem_model extends CI_Model
 {
 
-    public $table = 'budged_expenses_detail';
-    public $id = 'id_req';
+    public $table = 'budged_exp_rem_detail';
+    public $id = 'id_exprem';
     public $order = 'DESC';
 
     function __construct()
@@ -17,41 +17,39 @@ class Budged_expenses_model extends CI_Model
 
     // datatables
     function json() {
-        $this->datatables->select('a.po_number, a.date_po, d.objective, b.title, 
-        FORMAT(b.budged_req, 0, "de_DE") AS budged_req, 
-        FORMAT(c.expenses, 0, "de_DE") AS expenses, 
-        FORMAT(b.budged_req - c.expenses, 0, "de_DE") AS budged_rem, 
-        b.id_req');
-        $this->datatables->from('approved_po a');
-        $this->datatables->join('budged_request b', 'a.id_req=b.id_req', 'left');
-        $this->datatables->join('ref_objective d', 'b.id_objective=d.id_objective', 'left');
-        $this->datatables->join('v_tot_expenses c', 'a.po_number=c.po_number', 'left');
+        $this->datatables->select('a.id_reqrem, a.po_number, a.date_req, a.new_title, 
+        FORMAT(b.sum_tot, 0, "de_DE") AS sum_tot, 
+        FORMAT(CAST(COALESCE(c.expenses, 0) AS UNSIGNED), 0, "de_DE") AS expenses, 
+        FORMAT((b.sum_tot - CAST(COALESCE(c.expenses, 0) AS UNSIGNED)), 0, "de_DE") AS rem_rem');
+        $this->datatables->from('budged_req_remaining a');
+        $this->datatables->join('v_reqrem_sum b', 'a.id_reqrem=b.id_reqrem', 'left');
+        $this->datatables->join('v_tot_exprem c', 'a.po_number=c.po_number', 'left');
         // $this->datatables->where('b.id_country', $this->session->userdata('lab'));
-        $this->datatables->where('b.flag', '0');
+        $this->datatables->where('a.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){
-            $this->datatables->add_column('action', '', 'id_req');
+            $this->datatables->add_column('action', '', 'id_reqrem');
         }
         else if (($lvl == 2) | ($lvl == 3)){
-            $this->datatables->add_column('action', anchor(site_url('Budged_expenses/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
+            $this->datatables->add_column('action', anchor(site_url('Budged_exp_rem/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_reqrem');
         }
         else {
-            $this->datatables->add_column('action', anchor(site_url('Budged_expenses/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
+            $this->datatables->add_column('action', anchor(site_url('Budged_exp_rem/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_reqrem');
         }
         return $this->datatables->generate();
     }
 
     function subjson($id) {
-      $this->datatables->select('budged_expenses_detail.id_exp, budged_expenses_detail.date_expenses, budged_expenses_detail.items, budged_expenses_detail.qty, 
-      ref_unit.unit, FORMAT(budged_expenses_detail.expenses, 0, "de_DE") AS expenses, 
-      FORMAT(budged_expenses_detail.expenses * budged_expenses_detail.qty, 0, "de_DE") AS tot_expenses, 
-      budged_expenses_detail.remarks, budged_expenses_detail.id_exp, budged_expenses_detail.id_unit, budged_expenses_detail.flag, budged_expenses_detail.po_number');
-      $this->datatables->from('budged_expenses_detail');
-    //   $this->datatables->join('budged_expenses', 'budged_expenses_detail.id_exp = budged_expenses.id_exp', 'left');
-      $this->datatables->join('ref_unit', 'budged_expenses_detail.id_unit = ref_unit.id_unit', 'left');
+      $this->datatables->select('budged_exp_rem_detail.id_exprem, budged_exp_rem_detail.date_expenses, Budged_exp_rem_detail.items, Budged_exp_rem_detail.qty, 
+      ref_unit.unit, FORMAT(Budged_exp_rem_detail.expenses, 0, "de_DE") AS expenses, 
+      FORMAT(Budged_exp_rem_detail.expenses * Budged_exp_rem_detail.qty, 0, "de_DE") AS tot_expenses, 
+      Budged_exp_rem_detail.remarks, Budged_exp_rem_detail.id_unit, Budged_exp_rem_detail.flag, Budged_exp_rem_detail.po_number');
+      $this->datatables->from('Budged_exp_rem_detail');
+    //   $this->datatables->join('Budged_exp_rem', 'Budged_exp_rem_detail.id_exp = Budged_exp_rem.id_exp', 'left');
+      $this->datatables->join('ref_unit', 'Budged_exp_rem_detail.id_unit = ref_unit.id_unit', 'left');
       //   $this->datatables->where('lab', $this->session->userdata('lab'));
-      $this->datatables->where('budged_expenses_detail.flag', '0');
-      $this->datatables->where('budged_expenses_detail.po_number', $id);
+      $this->datatables->where('Budged_exp_rem_detail.flag', '0');
+      $this->datatables->where('Budged_exp_rem_detail.po_number', $id);
 
       $lvl = $this->session->userdata('id_user_level');
       if ($lvl == 7){
@@ -62,7 +60,7 @@ class Budged_expenses_model extends CI_Model
       }
       else {
             $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('Budged_expenses/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_exp');
+                ".anchor(site_url('Budged_exp_rem/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_exp');
         }
       return $this->datatables->generate();
   }
@@ -74,7 +72,7 @@ class Budged_expenses_model extends CI_Model
     //     a.tot_bias, a.avg_result, a.avg_trueness, a.avg_bias, a.sd, a.rsd, a.cv_horwits, a.cv,
     //     a.prec, a.accuracy, a.bias, b.id_reqdetail, b.duplication, b.result, b.trueness, b.bias_method, b.result2 
     //     FROM obj2b_spectro_crm a
-    //     LEFT JOIN Budged_expenses_detail b ON a.id_spec=b.id_spec
+    //     LEFT JOIN Budged_exp_rem_detail b ON a.id_spec=b.id_spec
     //     LEFT JOIN ref_person c ON a.id_person = c.id_person    
     //     WHERE a.lab="'.$this->session->userdata('lab').'"
     //     AND a.flag = 0 
@@ -85,7 +83,7 @@ class Budged_expenses_model extends CI_Model
     //     // $this->db->order_by($this->id, $this->order);
     //     // $this->db->where('lab', $this->session->userdata('lab'));
     //     // $this->db->where('flag', '0');
-    //     // return $this->db->get('Budged_expenses_detail')->result();
+    //     // return $this->db->get('Budged_exp_rem_detail')->result();
     // }
 
     // function get_all_with_detail_excel()
@@ -94,8 +92,8 @@ class Budged_expenses_model extends CI_Model
     //     b.id_reqdetail, b.items, b.qty, e.unit, 
     //     FORMAT(b.estimate_price, 0, "de_DE") AS estimate_price,
     //     (b.estimate_price * b.qty) AS total, b.remarks')
-    //         ->from("Budged_expenses a")
-    //         ->join('Budged_expenses_detail b', 'a.id_req = b.id_req', 'left')
+    //         ->from("Budged_exp_rem a")
+    //         ->join('Budged_exp_rem_detail b', 'a.id_req = b.id_req', 'left')
     //         ->join('ref_person c', 'a.id_person = c.id_person', 'left')
     //         ->join('ref_objective d', 'a.id_objective = d.id_objective ', 'left')
     //         ->join('ref_unit e', 'b.id_unit = e.id_unit ', 'left')
@@ -107,18 +105,16 @@ class Budged_expenses_model extends CI_Model
 
     function get_all_with_detail_excel()
     {
-        $data = $this->db->select('g.po_number, b.date_expenses, a.title, c.realname , d.objective, 
-        a.budged_req, a.comments, b.id_exp, b.items, b.qty, e.unit, b.expenses,
+        $data = $this->db->select('a.po_number, b.date_expenses, a.new_title, c.realname , a.objective, 
+        a.sum_tot AS budged_req, b.id_exprem, b.items, b.qty, e.unit, b.expenses,
         (b.expenses * b.qty) AS total, h.sum_exp, b.remarks, f.reviewed, f.approved')
-            ->from("budged_request a")
-            ->join('approved_po g', 'a.id_req=g.id_req', 'left')
-            ->join('budged_expenses_detail b', 'g.po_number = b.po_number', 'left')
+            ->from("v_reqrem_sum a")
+            ->join('budged_exp_rem_detail b', 'a.po_number = b.po_number', 'left')
             ->join('ref_person c', 'a.id_person = c.id_person', 'left')
-            ->join('ref_objective d', 'a.id_objective = d.id_objective ', 'left')
             ->join('ref_unit e', 'b.id_unit = e.id_unit ', 'left')
             ->join('ref_approves f', 'a.id_objective = f.id_objective ', 'left')
-            ->join('v_budexp_sum h', 'g.po_number = h.po_number ', 'left')
-            ->where('a.flag', 0)
+            ->join('v_budexprem_sum h', 'a.po_number = h.po_number', 'left')
+            // ->where('a.flag', 0)
             ->where('b.flag', 0)
             // ->where('l.id', $this->session->userdata('location_id'))
             ->get()->result();
@@ -143,10 +139,10 @@ class Budged_expenses_model extends CI_Model
     {
       $response = array();
       $this->db->select('*');
-      $this->db->where('id_req', $id);
+      $this->db->where('id_reqrem', $id);
       // $this->db->where('lab', $this->session->userdata('lab'));
-      $this->db->where('flag', '0');
-      $q = $this->db->get('v_budged_exp');
+    //   $this->db->where('flag', '0');
+      $q = $this->db->get('v_budged_exp_rem');
       $response = $q->row();
       return $response;
         // $this->db->where('id_spec', $id_spec);
@@ -158,7 +154,7 @@ class Budged_expenses_model extends CI_Model
     function getSumEstimatePrice($id_req) {
         $this->db->select_sum('estimate_price');
         $this->db->where('id_req', $id_req);
-        $query = $this->db->get('Budged_expenses_detail');
+        $query = $this->db->get('Budged_exp_rem_detail');
         return $query->row()->estimate_price;
     }
 
@@ -167,7 +163,7 @@ class Budged_expenses_model extends CI_Model
         $q = $this->db->query('SELECT a.id_req, a.date_req, b.realname, c.objective, a.title, 
         DATE_FORMAT(a.date_req, "%M %Y") AS periode, FORMAT(a.budged_req, 0, "de_DE") AS budged_req,
         a.comments, a.flag, d.reviewed, d.approved
-        FROM Budged_expenses a
+        FROM Budged_exp_rem a
         LEFT JOIN ref_person b ON a.id_person=b.id_person 
         LEFT JOIN ref_objective c ON a.id_objective=c.id_objective
         LEFT JOIN ref_approves d ON a.id_objective=d.id_objective
@@ -181,7 +177,7 @@ class Budged_expenses_model extends CI_Model
 
     //   function get_repdet($id)
     //   {
-    //       $q = $this->db->query('SELECT * FROM Budged_expenses_detail
+    //       $q = $this->db->query('SELECT * FROM Budged_exp_rem_detail
     //       WHERE flag = 0
     //       AND id_spec="'.$id.'"');        
     //       $response = $q->row();
@@ -196,7 +192,7 @@ class Budged_expenses_model extends CI_Model
 
     function insert_det($data)
     {
-        $this->db->insert('budged_expenses_detail', $data);
+        $this->db->insert('Budged_exp_rem_detail', $data);
     }
     
     // update data
@@ -208,8 +204,8 @@ class Budged_expenses_model extends CI_Model
 
     function update_det($id, $data)
     {
-        $this->db->where('id_exp', $id);
-        $this->db->update('budged_expenses_detail', $data);
+        $this->db->where('id_exprem', $id);
+        $this->db->update('budged_exp_rem_detail', $data);
     }
 
     // delete data

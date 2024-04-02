@@ -14,13 +14,13 @@ if (!defined('BASEPATH'))
 // use PhpOffice\PhpSpreadsheet\Spreadsheet;
 // use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     
-class Budged_expenses extends CI_Controller
+class Budged_request_rem extends CI_Controller
 {
     function __construct()
     {
         parent::__construct();
         is_login();
-        $this->load->model('Budged_expenses_model');
+        $this->load->model('Budged_request_rem_model');
         $this->load->library('form_validation');        
 	    $this->load->library('datatables');
 	    $this->load->library('uuid');
@@ -28,209 +28,208 @@ class Budged_expenses extends CI_Controller
 
     public function index()
     {
-        // $this->load->model('Budged_expenses_model');
-        // $data['person'] = $this->Budged_expenses_model->getLabtech();
-        // $data['objective'] = $this->Budged_expenses_model->getObjective();
-        // $data['freezer'] = $this->Budged_expenses_model->getFreezer();
-        // $data['shelf'] = $this->Budged_expenses_model->getShelf();
-        // $data['rack'] = $this->Budged_expenses_model->getRack();
-        // $data['rack_level'] = $this->Budged_expenses_model->getDrawer();
-        $this->template->load('template','Budged_expenses/index');
+        // $this->load->model('Budged_request_rem_model');
+        $data['person'] = $this->Budged_request_rem_model->getLabtech();
+        $data['objective'] = $this->Budged_request_rem_model->getObjective();
+        // $data['freezer'] = $this->Budged_request_rem_model->getFreezer();
+        // $data['shelf'] = $this->Budged_request_rem_model->getShelf();
+        // $data['rack'] = $this->Budged_request_rem_model->getRack();
+        // $data['rack_level'] = $this->Budged_request_rem_model->getDrawer();
+        $this->template->load('template','Budged_request_rem/index', $data);
     } 
     
     public function json() {
         header('Content-Type: application/json');
-        echo $this->Budged_expenses_model->json();
+        echo $this->Budged_request_rem_model->json();
     }
 
     public function subjson() {
         $id = $this->input->get('id',TRUE);
         header('Content-Type: application/json');
-        echo $this->Budged_expenses_model->subjson($id);
+        echo $this->Budged_request_rem_model->subjson($id);
     }
 
     public function getSumEstimatePrice($id_req) {
         // Load the model
-        // $this->load->model('Budged_expenses_model');
+        // $this->load->model('Budged_request_rem_model');
         // Call the method to get the sum of Estimate Price
-        $sumEstimatePrice = $this->Budged_expenses_model->getSumEstimatePrice($id_req);
+        $sumEstimatePrice = $this->Budged_request_rem_model->getSumEstimatePrice($id_req);
     
         // Return the sum of Estimate Price
         echo $sumEstimatePrice;
     }
-    
     public function read($id)
     {
-        // $this->template->load('template','Budged_expenses/index_det', $data);
+        // $this->template->load('template','Budged_request_rem/index_det', $data);
         // $id_spec = $this->input->post('id_spec',TRUE);
-        // $data['unit'] = $this->Budged_expenses_model->getUnits();
-        $row = $this->Budged_expenses_model->get_detail($id);
+        // $data['unit'] = $this->Budged_request_rem_model->getUnits();
+        $row = $this->Budged_request_rem_model->get_detail($id);
         if ($row) {
-            // $inv = $this->Budged_expenses_model->getInv();            
+            // $inv = $this->Budged_request_rem_model->getInv();            
             $data = array(
-                'po_number' => $row->po_number,
-                'date_po' => $row->date_po,
-                'objective' => $row->objective,
-                'title' => $row->title,
-                'budged_req' => $row->budged_req,
-                'budged_tot' => $row->budged_tot,
-                'budged_rem' => $row->budged_rem,
                 'id_req' => $row->id_req,
-                'unit' => $this->Budged_expenses_model->getUnits(),
+                'id_reqrem' => $row->id_reqrem,
+                'date_req' => $row->date_req,
+                'po_number' => $row->po_number,
+                'new_title' => $row->new_title,
+                'realname' => $row->realname,
+                'budged_rem' => $row->budged_rem,
+                'budged_rem_rem' => $row->budged_rem_rem,
+                'comments' => $row->comments,
+                'unit' => $this->Budged_request_rem_model->getUnits(),
                 );
-                $this->template->load('template','Budged_expenses/index_det', $data);
+                $this->template->load('template','Budged_request_rem/index_det', $data);
         }
         else {
-            // $this->template->load('template','Budged_expenses/index_det');
+            // $this->template->load('template','Budged_request_rem/index_det');
         }
     } 
 
-    // public function save() 
-    // {
-    //     $mode = $this->input->post('mode',TRUE);
-    //     $id = $this->input->post('id_req',TRUE);
-    //     // $f = $this->input->post('freezer',TRUE);
-    //     // $s = $this->input->post('shelf',TRUE);
-    //     // $r = $this->input->post('rack',TRUE);
-    //     // $rl = $this->input->post('rack_level',TRUE);
-
-    //     // $freezerloc = $this->Budged_expenses_model->getFreezLoc($f,$s,$r,$rl);
-    //     $dt = new DateTime();
-
-    //     if ($mode=="insert"){
-    //         $data = array(
-    //             'date_req' => $this->input->post('date_req',TRUE),
-    //             'id_person' => $this->input->post('id_person',TRUE),
-    //             'id_objective' => $this->input->post('id_objective',TRUE),
-    //             'title' => $this->input->post('title',TRUE),
-    //             'budged_req' => str_replace('.', '', $this->input->post('budged_req')),
-    //             'comments' => trim($this->input->post('comments',TRUE)),
-    //             'uuid' => $this->uuid->v4(),
-    //             'id_country' => $this->session->userdata('lab'),
-    //             'user_created' => $this->session->userdata('id_users'),
-    //             'date_created' => $dt->format('Y-m-d H:i:s'),
-    //             );
-
-    //         $this->Budged_expenses_model->insert($data);
-    //         $this->session->set_flashdata('message', 'Create Record Success');    
-      
-    //     }
-    //     else if ($mode=="edit"){
-    //         $data = array(
-    //             'date_req' => $this->input->post('date_req',TRUE),
-    //             'id_person' => $this->input->post('id_person',TRUE),
-    //             'id_objective' => $this->input->post('id_objective',TRUE),
-    //             'title' => $this->input->post('title',TRUE),
-    //             'budged_req' => str_replace('.', '', $this->input->post('budged_req')),
-    //             'comments' => trim($this->input->post('comments',TRUE)),
-    //             // 'uuid' => $this->uuid->v4(),
-    //             'id_country' => $this->session->userdata('lab'),
-    //             'user_updated' => $this->session->userdata('id_users'),
-    //             'date_updated' => $dt->format('Y-m-d H:i:s'),
-    //             );
-    
-    //         $this->Budged_expenses_model->update($id, $data);
-    //         $this->session->set_flashdata('message', 'Create Record Success');    
-    //     }
-
-    //     redirect(site_url("Budged_expenses"));
-    // }
-
-
-    public function savedetail() 
+    public function save() 
     {
-        $mode = $this->input->post('mode_det',TRUE);
-        $po_number = $this->input->post('po_number',TRUE);
-        $id_req = $this->input->post('id_req',TRUE);
-        $id_exp = $this->input->post('id_exp',TRUE);
+        $mode = $this->input->post('mode',TRUE);
+        $id = $this->input->post('id_reqrem',TRUE);
+        // $f = $this->input->post('freezer',TRUE);
+        // $s = $this->input->post('shelf',TRUE);
+        // $r = $this->input->post('rack',TRUE);
+        // $rl = $this->input->post('rack_level',TRUE);
+
+        // $freezerloc = $this->Budged_request_rem_model->getFreezLoc($f,$s,$r,$rl);
         $dt = new DateTime();
 
         if ($mode=="insert"){
             $data = array(
                 'po_number' => $this->input->post('po_number',TRUE),
-                'date_expenses' => $this->input->post('date_expenses',TRUE),
+                'date_req' => $this->input->post('date_req',TRUE),
+                'new_title' => $this->input->post('new_title',TRUE),
+                'id_person' => $this->input->post('id_person',TRUE),
+                'comments' => trim($this->input->post('comments',TRUE)),
+                'uuid' => $this->uuid->v4(),
+                'id_country' => $this->session->userdata('lab'),
+                'user_created' => $this->session->userdata('id_users'),
+                'date_created' => $dt->format('Y-m-d H:i:s'),
+                );
+
+            $this->Budged_request_rem_model->insert($data);
+            $this->session->set_flashdata('message', 'Create Record Success');    
+      
+        }
+        else if ($mode=="edit"){
+            $data = array(
+                // 'po_number' => $this->input->post('po_number',TRUE),
+                // 'date_req' => $this->input->post('date_req',TRUE),
+                'new_title' => $this->input->post('new_title',TRUE),
+                'id_person' => $this->input->post('id_person',TRUE),
+                'comments' => trim($this->input->post('comments',TRUE)),
+                // 'uuid' => $this->uuid->v4(),
+                'id_country' => $this->session->userdata('lab'),
+                'user_updated' => $this->session->userdata('id_users'),
+                'date_updated' => $dt->format('Y-m-d H:i:s'),
+                );
+    
+            $this->Budged_request_rem_model->update($id, $data);
+            $this->session->set_flashdata('message', 'Create Record Success');    
+        }
+
+        redirect(site_url("Budged_request_rem"));
+    }
+
+
+    public function savedetail() 
+    {
+        $mode = $this->input->post('mode_det',TRUE);
+        $id_reqrem_det = $this->input->post('id_reqrem_det',TRUE);
+        $id_reqrem = $this->input->post('id_reqrem2',TRUE);
+        $id_req = $this->input->post('id_req2',TRUE);
+        $dt = new DateTime();
+
+        if ($mode=="insert"){
+            $data = array(
+                'id_reqrem_det' => $this->input->post('id_reqrem_det',TRUE),
+                'id_reqrem' => $this->input->post('id_reqrem2',TRUE),
                 'items' => $this->input->post('items',TRUE),
                 'qty' => $this->input->post('qty',TRUE),
                 'id_unit' => $this->input->post('id_unit',TRUE),
-                'expenses' => str_replace('.', '', $this->input->post('expenses')),
-                'remarks' => $this->input->post('remarks',TRUE),
+                'estimate_price' => str_replace('.', '', $this->input->post('estimate_price')),
+                'comments' => $this->input->post('comments',TRUE),
                 'uuid' => $this->uuid->v4(),
                 // 'lab' => $this->session->userdata('lab'),
                 'user_created' => $this->session->userdata('id_users'),
                 'date_created' => $dt->format('Y-m-d H:i:s'),
                 );
 
-            $this->Budged_expenses_model->insert_det($data);
+            $this->Budged_request_rem_model->insert_det($data);
             $this->session->set_flashdata('message', 'Create Record Success');    
       
         }
         else if ($mode=="edit"){
             $data = array(
-                'po_number' => $this->input->post('po_number',TRUE),
-                'date_expenses' => $this->input->post('date_expenses',TRUE),
+                'id_reqrem_det' => $this->input->post('id_reqrem_det',TRUE),
+                'id_reqrem' => $this->input->post('id_reqrem2',TRUE),
                 'items' => $this->input->post('items',TRUE),
                 'qty' => $this->input->post('qty',TRUE),
                 'id_unit' => $this->input->post('id_unit',TRUE),
-                'expenses' => str_replace('.', '', $this->input->post('expenses')),
-                'remarks' => $this->input->post('remarks',TRUE),
+                'estimate_price' => str_replace('.', '', $this->input->post('estimate_price')),
+                'comments' => $this->input->post('comments',TRUE),
                 // 'uuid' => $this->uuid->v4(),
                 // 'lab' => $this->session->userdata('lab'),
                 'user_updated' => $this->session->userdata('id_users'),
                 'date_updated' => $dt->format('Y-m-d H:i:s'),
                 );
     
-            $this->Budged_expenses_model->update_det($id_exp, $data);
+            $this->Budged_request_rem_model->update_det($id_reqrem_det, $data);
             $this->session->set_flashdata('message', 'Create Record Success');    
         }
 
-        redirect(site_url("Budged_expenses/read/".$id_req));
+        redirect(site_url("Budged_request_rem/read/".$id_req));
     }
 
     public function budreq_print($id) 
     {
-        $row = $this->Budged_expenses_model->get_rep($id);
+        $row = $this->Budged_request_rem_model->get_rep($id);
         if ($row) {
             $data = array(
-            'id_req' => $row->id_req,
+            'id_reqrem' => $row->id_reqrem,
             'date_req' => $row->date_req,
             'realname' => $row->realname,
             'objective' => $row->objective,
-            'title' => $row->title,
+            'title' => $row->new_title,
             'periode' => $row->periode,
-            'budged_req' => $row->budged_req,
+            'budged_req' => $row->budged_rem,
+            'sum_tot' => $row->sum_tot,
             'reviewed' => $row->reviewed,
             'approved' => $row->approved,
             'comments' => $row->comments,
             );
         // $data['items'] = $this->Tbl_receive_old_model->getItems();
-            $this->template->load('template','Budged_expenses/index_rep', $data);
+            $this->template->load('template','Budged_request_rem/index_rep', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url("Budged_expenses/read/".$id));
+            redirect(site_url("Budged_request_rem/read/".$id));
         }
     }
 
-    // public function spec_printdet() 
-    // {
-    //     $id = $this->input->post('id',TRUE);
-    //     header('Content-Type: application/json');
-    //     echo $this->Budged_expenses_model->get_repdet($id);
-    // }    
+    public function spec_printdet() 
+    {
+        $id = $this->input->post('id',TRUE);
+        header('Content-Type: application/json');
+        echo $this->Budged_request_rem_model->get_repdet($id);
+    }    
 
     public function delete($id) 
     {
-        $row = $this->Budged_expenses_model->get_by_id($id);
+        $row = $this->Budged_request_rem_model->get_by_id($id);
         $data = array(
             'flag' => 1,
             );
 
         if ($row) {
-            $this->Budged_expenses_model->update($id, $data);
+            $this->Budged_request_rem_model->update($id, $data);
             $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('Budged_expenses'));
+            redirect(site_url('Budged_request_rem'));
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('Budged_expenses'));
+            redirect(site_url('Budged_request_rem'));
         }
     }
 
@@ -238,7 +237,7 @@ class Budged_expenses extends CI_Controller
     {
         $id = $this->input->get('id1');
         $type = $this->input->get('id2');
-        $data = $this->Budged_expenses_model->validate1($id, $type);
+        $data = $this->Budged_request_rem_model->validate1($id, $type);
         header('Content-Type: application/json');
         echo json_encode($data);
     }
@@ -361,10 +360,10 @@ class Budged_expenses extends CI_Controller
         $writer->save('php://output');
     }
 
-    public function excel_print()
+    public function excel_print($id)
 	{
         /* Data */
-        $data = $this->Budged_expenses_model->get_all_with_detail_excel();
+        $data = $this->Budged_request_rem_model->get_all_with_detail_excel($id);
 
         /* Spreadsheet Init */
         $spreadsheet = new Spreadsheet();
@@ -373,13 +372,12 @@ class Budged_expenses extends CI_Controller
         $hrow = 1;
 
         $sheet->getColumnDimension('A')->setWidth(5); // Set width for column A
-        $sheet->getColumnDimension('B')->setWidth(15); // Set width for column B
-        $sheet->getColumnDimension('C')->setWidth(30); // Set width for column B
-        $sheet->getColumnDimension('D')->setWidth(5); // Set width for column B
-        $sheet->getColumnDimension('E')->setWidth(7); // Set width for column B
-        $sheet->getColumnDimension('F')->setWidth(15); // Set width for column B
-        $sheet->getColumnDimension('G')->setWidth(17); // Set width for column B
-        $sheet->getColumnDimension('H')->setWidth(30); // Set width for column B
+        $sheet->getColumnDimension('B')->setWidth(30); // Set width for column B
+        $sheet->getColumnDimension('C')->setWidth(5); // Set width for column B
+        $sheet->getColumnDimension('D')->setWidth(7); // Set width for column B
+        $sheet->getColumnDimension('E')->setWidth(15); // Set width for column B
+        $sheet->getColumnDimension('F')->setWidth(17); // Set width for column B
+        $sheet->getColumnDimension('G')->setWidth(30); // Set width for column B
 
         //logo
         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -415,10 +413,7 @@ class Budged_expenses extends CI_Controller
         $start = 8;
         $sheet->getStyle($hcolumn.$start)->getFont()->setBold(true);        
         $sheet->getStyle($hcolumn.$start)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);        
-        $sheet->setCellValue($hcolumn++ . $start, "No.");
-        $sheet->getStyle($hcolumn.$start)->getFont()->setBold(true);        
-        $sheet->getStyle($hcolumn.$start)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);        
-        $sheet->setCellValue($hcolumn++ . $start, "Date Expenses");
+        $sheet->setCellValue($hcolumn++ . $start, "No");
         $sheet->getStyle($hcolumn.$start)->getFont()->setBold(true);        
         $sheet->getStyle($hcolumn.$start)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);        
         $sheet->setCellValue($hcolumn++ . $start, "Description");
@@ -444,34 +439,28 @@ class Budged_expenses extends CI_Controller
         foreach($data as $key => $row)
         {
             $sheet->getStyle('C2')->getFont()->setBold(true);        
-            $sheet->setCellValue('C2', "RISE Makassar | Budget Expenses");
+            $sheet->setCellValue('C2', "RISE Makassar | Budget Request Remaining");
             $sheet->getStyle('C3')->getFont()->setBold(true);        
-            $sheet->setCellValue('C3', "PO Number : " . $row->po_number);
+            $sheet->setCellValue('C3', $row->objective);
             $sheet->getStyle('C4')->getFont()->setBold(true);        
-            $sheet->setCellValue('C4', $row->objective);
-            $sheet->getStyle('C5')->getFont()->setBold(true);        
-            $sheet->setCellValue('C5', $row->title);
-            $sheet->getStyle('C6')->getFont()->setBold(true);        
-            $sheet->setCellValue('C6', "Budged Request : " . $row->budged_req);
-            $sheet->setCellValue('G6', "Date : " . date('Y-m-d'));
+            $sheet->setCellValue('C4', $row->new_title);
+            $sheet->setCellValue('G6', "Date : " . $row->date_req);
 
             $column = 'A';
             $sheet->setCellValue($column++ .$row_number, $key+1);
-            $sheet->setCellValue($column++ .$row_number, $row->date_expenses);
             $sheet->setCellValue($column++ .$row_number, $row->items);
             $sheet->setCellValue($column++ .$row_number, $row->qty);
             $sheet->setCellValue($column++ .$row_number, $row->unit);
             $sheet->getStyle($column.$row_number)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-            $sheet->setCellValue($column++ .$row_number, $row->expenses);
+            $sheet->setCellValue($column++ .$row_number, $row->estimate_price);
             $sheet->getStyle($column.$row_number)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue($column++ .$row_number, $row->total);
             $sheet->setCellValue($column++ .$row_number, $row->remarks);
             $row_number++;
-
         }
 
-        $sheet->getStyle('G' .$row_number)->getFont()->setBold(true);        
-        $sheet->setCellValue('G' .$row_number, $row->sum_exp);
+        $sheet->getStyle('F' .$row_number)->getFont()->setBold(true);        
+        $sheet->setCellValue('F' .$row_number, $row->sum_tot);
         $row_number++;
 
         $row_ex = $row_number+1;
@@ -479,16 +468,16 @@ class Budged_expenses extends CI_Controller
         $sheet->setCellValue('A' .$row_ex, "Prepared,");
         $sheet->getStyle('D' .$row_ex)->getFont()->setBold(true);        
         $sheet->setCellValue('D' .$row_ex, "Reviewed,");
-        $sheet->getStyle('H' .$row_ex)->getFont()->setBold(true);        
-        $sheet->setCellValue('H' .$row_ex, "Approved,");
+        $sheet->getStyle('G' .$row_ex)->getFont()->setBold(true);        
+        $sheet->setCellValue('G' .$row_ex, "Approved,");
 
         $row_ex2 = $row_ex+4;
         $sheet->setCellValue('A' .$row_ex2, $row->realname);
         $sheet->setCellValue('D' .$row_ex2, $row->reviewed);
-        $sheet->setCellValue('H' .$row_ex2, $row->approved);
+        $sheet->setCellValue('G' .$row_ex2, $row->approved);
 
         $row_number--;
-        $sheet->getStyle("A8:H".$row_number)->applyFromArray(
+        $sheet->getStyle("A8:G".$row_number)->applyFromArray(
             array(
                 'borders' => [
                     'allBorders' => [
@@ -502,7 +491,7 @@ class Budged_expenses extends CI_Controller
         /* Excel File Format */
         $writer = new Xlsx($spreadsheet);
         ob_clean();
-        $filename = 'Budged_expenses_' . date('Ymd');
+        $filename = 'Budged_request_rem_' . date('Ymd');
         
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
@@ -532,7 +521,7 @@ class Budged_expenses extends CI_Controller
     //     // $sheet->getStyle('A1:H1')->getFont()->setBold(true); // Set bold kolom A1
 
     //     // Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
-    //     $rdeliver = $this->Budged_expenses_model->get_all();
+    //     $rdeliver = $this->Budged_request_rem_model->get_all();
     
     //     // $no = 1; // Untuk penomoran tabel, di awal set dengan 1
     //     $numrow = 2; // Set baris pertama untuk isi tabel adalah baris ke 4
@@ -548,7 +537,7 @@ class Budged_expenses extends CI_Controller
     //     }
     // $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
     // $datenow=date("Ymd");
-    // $fileName = 'Budged_expenses_'.$datenow.'.csv';
+    // $fileName = 'Budged_request_rem_'.$datenow.'.csv';
 
     // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     // header("Content-Disposition: attachment; filename=$fileName"); // Set nama file excel nya
@@ -558,8 +547,8 @@ class Budged_expenses extends CI_Controller
     // }
 }
 
-/* End of file Budged_expenses.php */
-/* Location: ./application/controllers/Budged_expenses.php */
+/* End of file Budged_request_rem.php */
+/* Location: ./application/controllers/Budged_request_rem.php */
 /* Please DO NOT modify this information : */
 /* Generated by Harviacode Codeigniter CRUD Generator 2022-12-14 03:38:42 */
 /* http://harviacode.com */

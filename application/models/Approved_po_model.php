@@ -243,7 +243,10 @@ class Approved_po_model extends CI_Model
     {
         $this->db->insert($this->table, $data);
     }
-
+    
+    function insertImage($data){
+        $this->db->insert_batch('item_image',$data);
+    }
     // update data
     function update($id, $data)
     {

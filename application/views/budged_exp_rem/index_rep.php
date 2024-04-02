@@ -110,7 +110,6 @@ $response = $q->result();
     <!-- </br> -->
     <table id="mytable3" width=95%; style="border:0px solid black; margin-left:auto;margin-right:auto;">
         <thead>
-            </br>
             <tr>
                 <td width=100px; style="border:0px solid black; padding: 5px; " align="left"><b>Makassar, <?php echo $date_req; ?></b></td>
                 <td style="border:0px" align="center"></td>

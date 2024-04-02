@@ -359,10 +359,10 @@ class Budged_request extends CI_Controller
         $writer->save('php://output');
     }
 
-    public function excel_print()
+    public function excel_print($id)
 	{
         /* Data */
-        $data = $this->Budged_request_model->get_all_with_detail_excel();
+        $data = $this->Budged_request_model->get_all_with_detail_excel($id);
 
         /* Spreadsheet Init */
         $spreadsheet = new Spreadsheet();
@@ -443,7 +443,7 @@ class Budged_request extends CI_Controller
             $sheet->setCellValue('C3', $row->objective);
             $sheet->getStyle('C4')->getFont()->setBold(true);        
             $sheet->setCellValue('C4', $row->title);
-            $sheet->setCellValue('G6', "Date : " . date('Y-m-d'));
+            $sheet->setCellValue('G6', "Date : " . $row->date_req);
 
             $column = 'A';
             $sheet->setCellValue($column++ .$row_number, $key+1);
@@ -456,9 +456,11 @@ class Budged_request extends CI_Controller
             $sheet->setCellValue($column++ .$row_number, $row->total);
             $sheet->setCellValue($column++ .$row_number, $row->remarks);
             $row_number++;
-
-
         }
+        $sheet->getStyle('F' .$row_number)->getFont()->setBold(true);        
+        $sheet->setCellValue('F' .$row_number, $row->sum_tot);
+        $row_number++;
+
         $row_ex = $row_number+1;
         $sheet->getStyle('A' .$row_ex)->getFont()->setBold(true);        
         $sheet->setCellValue('A' .$row_ex, "Prepared,");

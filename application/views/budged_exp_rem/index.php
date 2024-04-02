@@ -5,7 +5,7 @@
                 <div class="box box-black box-solid">
     
                     <div class="box-header">
-                        <h3 class="box-title">Purchase Order | Budget Expenses</h3>
+                        <h3 class="box-title">Purchase Order | Budget Expenses Remaining</h3>
                     </div>
         
         <div class="box-body">
@@ -16,14 +16,13 @@
             // echo "<button class='btn btn-primary' id='addtombol'><i class='fa fa-wpforms' aria-hidden='true'></i> New Budged Request</button>";
         // }
 ?>        
-		<?php echo anchor(site_url('Budged_expenses/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
+		<?php echo anchor(site_url('Budged_exp_rem/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
         <table class="table table-bordered table-striped tbody" id="mytable" style="width:100%">
             <thead>
                 <tr>
 		    <th>PO number</th>
-		    <th>Date PO</th>
-		    <th>Objectives</th>
-		    <th>Title</th>
+		    <th>Date Request</th>
+		    <th>New Title</th>
 		    <th>Budget request</th>
 		    <th>Total expenses</th>
 		    <th>Budget remaining</th>
@@ -81,19 +80,18 @@
             // select: true;
             processing: true,
             serverSide: true,
-            ajax: {"url": "Budged_expenses/json", "type": "POST"},
+            ajax: {"url": "Budged_exp_rem/json", "type": "POST"},
             columns: [
                 // {
                 //     "data": "barcode_sample",
                 //     "orderable": false
                 // },
                 {"data": "po_number"},
-                {"data": "date_po"},
-                {"data": "objective"},
-                {"data": "title"},
-                {"data": "budged_req"},
+                {"data": "date_req"},
+                {"data": "new_title"},
+                {"data": "sum_tot"},
                 {"data": "expenses"},
-                {"data": "budged_rem"},
+                {"data": "rem_rem"},
                 {
                     "data" : "action",
                     "orderable": false,
@@ -102,7 +100,7 @@
             ],
 			columnDefs: [
 				{
-					targets: [4,5,6], // Index of the 'estimate_price' column
+					targets: [3,4,5], // Index of the 'estimate_price' column
 					className: 'text-right' // Apply right alignment to this column
 				}
 			],

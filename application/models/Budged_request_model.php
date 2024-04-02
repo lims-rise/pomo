@@ -104,10 +104,10 @@ class Budged_request_model extends CI_Model
     //         ->get()->result();
     // }
 
-    function get_all_with_detail_excel()
+    function get_all_with_detail_excel($id)
     {
         $data = $this->db->select('a.date_req, a.title, c.realname , d.objective, a.budged_req, a.comments, 
-        b.id_reqdetail, b.items, b.qty, e.unit, b.estimate_price,
+        b.id_reqdetail, b.items, b.qty, e.unit, b.estimate_price, g.sum_tot,
         (b.estimate_price * b.qty) AS total, b.remarks, f.reviewed, f.approved')
             ->from("budged_request a")
             ->join('budged_request_detail b', 'a.id_req = b.id_req', 'left')
@@ -115,16 +115,18 @@ class Budged_request_model extends CI_Model
             ->join('ref_objective d', 'a.id_objective = d.id_objective ', 'left')
             ->join('ref_unit e', 'b.id_unit = e.id_unit ', 'left')
             ->join('ref_approves f', 'a.id_objective = f.id_objective ', 'left')
+            ->join('v_req_sum g', 'a.id_req=g.id_req', 'left')
+            ->where('a.id_req', $id)
             ->where('a.flag', 0)
             ->where('b.flag', 0)
             // ->where('l.id', $this->session->userdata('location_id'))
             ->get()->result();
-            foreach ($data as $row) {
-                // Format estimate_price to show as money value
-                $row->estimate_price = number_format($row->estimate_price, 0, '.', ',');
-                // Format total_price to show as money value
-                $row->total = number_format($row->total, 0, '.', ',');
-            }            
+            // foreach ($data as $row) {
+            //     // Format estimate_price to show as money value
+            //     $row->estimate_price = number_format($row->estimate_price, 0, '.', ',');
+            //     // Format total_price to show as money value
+            //     $row->total = number_format($row->total, 0, '.', ',');
+            // }            
             return $data;
     }
 

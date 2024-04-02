@@ -2,7 +2,7 @@
 	<section class="content">
 		<div class="box box-black box-solid">
 			<div class="box-header with-border">
-				<h3 class="box-title">Purchase Order | Budged Expenses Detail</h3>
+				<h3 class="box-title">Purchase Order | Budget Expenses Detail</h3>
 			</div>
 			<form role="form"  id="formKeg" method="post" class="form-horizontal">
 				<div class="box-body">
@@ -22,7 +22,7 @@
 					</div>
 
 					<div class="form-group">
-						<label for="budged_req" class="col-sm-2 control-label">Budged Request</label>
+						<label for="budged_req" class="col-sm-2 control-label">Budget Request</label>
 						<div class="col-sm-4">
 							<input class="form-control " id="budged_req" name="budged_req" value="<?php echo $budged_req ?>"  disabled>
 						</div>
@@ -33,12 +33,12 @@
 					</div>
 
 					<div class="form-group">
-						<label for="budged_tot" class="col-sm-2 control-label">Total Budged Expenses</label>
+						<label for="budged_tot" class="col-sm-2 control-label">Total Budget Expenses</label>
 						<div class="col-sm-4">
 							<input class="form-control " id="budged_tot" name="budged_tot" value="<?php echo $budged_tot ?>" disabled>
 						</div>
 
-						<label for="budged_rem" class="col-sm-2 control-label">Budged Expenses Remaining</label>
+						<label for="budged_rem" class="col-sm-2 control-label">Budget Expenses Remaining</label>
 						<div class="col-sm-4">
 							<input class="form-control " id="budged_rem" name="budged_rem" value="<?php echo $budged_rem ?>" disabled>
 						</div>
@@ -72,7 +72,7 @@
 										<th>Items</th>
 										<th>Qty</th>
 										<th>Unit</th>
-										<th>Price per-Unit</th>
+										<th>Unit Price</th>
 										<th>Total Price</th>
 										<th>Remarks</th>
 										<th>Action</th>
@@ -86,9 +86,8 @@
                 <!--</div> row -->    
 					<div class="form-group">
 						<div class="modal-footer clearfix">
-	<!--                                            <button type="submit" name="Save" value="simpan" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> -->
-							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_expenses/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
-							<button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button> -->
+							<button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_expenses/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
+							<!-- <button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button> -->
 							<button type="button" name="batal" value="batal" class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button>
 						</div>
 					</div>
@@ -106,7 +105,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="modal-title-detail">Add Budged Items<span id="my-another-cool-loader"></span></h4>
+                        <h4 class="modal-title" id="modal-title-detail">Add Budget Items<span id="my-another-cool-loader"></span></h4>
                     </div>
                     <form id="formDetail" action=<?php echo site_url('Budged_expenses/savedetail') ?> method="post" class="form-horizontal">
                         <div class="modal-body">
@@ -199,26 +198,10 @@
 		});
 						
         $('#compose-modal').on('shown.bs.modal', function () {
-			$('#items').focus();
-			// $.ajax({
-			// 	type: "POST",
-			// 	url: "<?php //echo site_url('Budged_expenses/getSumEstimatePrice/') ?>" + id_req,
-			// 	success: function(data) {
-			// 		var sumEstimatePrice = parseFloat(data);
-			// 		var budgedReq = parseFloat($('#budged_req').val().replace(/,/g, ''));
-			// 		var budgedRem = budgedReq - sumEstimatePrice;
-			// 		$('#budged_rem').val(budgedRem.toLocaleString('en-US', { maximumFractionDigits: 2 }));
-			// 		// $('#budged_rem').val(budgedRem);
-			// 	}
-			// });
-
+			$('#date_expenses').focus();
 			$('#expenses').on('input', function() {
                 formatNumber(this);
                 });
-
-			// let table = $('#example2').DataTable(); 
-			// let sumCount = table.rows().sum();
-			// $('#budged_rem').val(sumCount);				
             });
 
         function formatNumber(input) {
@@ -293,6 +276,14 @@
 			}
 		});
 
+        $('#example2 tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            } else {
+                table.$('tr.active').removeClass('active');
+                $(this).addClass('active');
+            }
+        })   		
 		// $('#compose-modal').on('shown.bs.modal', function () {
 		// 	if ($('#mode_det').val() == 'insert') {
 		// 		let table = $('#example2').DataTable(); 

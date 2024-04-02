@@ -127,9 +127,28 @@ class Approved_po extends CI_Controller
             $this->session->set_flashdata('message', 'Create Record Success');    
         }
 
+        // $this->Approved_po_model->insert($data);
+        $image = $this->input->post('image_upload');
+        if(is_array($image)){
+            $image_data = [];
+            for($x=0; $x < sizeof($image); $x++){
+                $image_data[] = ['po_number' => $this->input->post('po_number',true),
+                                'image' => $image[$x]];
+            }
+            $this->Approved_po_model->insertImage($image_data);
+
+        }
+
         redirect(site_url("approved_po"));
     }
 
+    public function remove_image()
+    {
+        $id = $this->input->post('id', true);
+        $image = $this->input->post('image', true);
+        $result = $this->Item_master_model->removeImage($id, $image);
+        echo json_encode($result);
+    }
 
     // public function savedetail() 
     // {
@@ -178,6 +197,26 @@ class Approved_po extends CI_Controller
 
     //     redirect(site_url("approved_po/read/".$id_req));
     // }
+    public function upload()
+    {
+        $config['upload_path']          = './assets/receipt/';
+            $config['allowed_types']='gif|jpg|png|jpeg';
+            $config['encrypt_name'] = TRUE;
+            $this->load->library('upload',$config);
+            $data = array('error' => false);
+            if(!$this->upload->do_upload("image"))
+                $data['error'] = $this->upload->display_errors();
+            else {
+                $upload = $this->upload->data();
+                $image = $upload['file_name'];
+                $data['data'] =  '<div class="image-area" style="margin-right:25px;">
+                <a href="../assets/receipt/'.$image.'" target="_blank"><img src="../assets/receipt/'.$image.'"  alt="Preview"></a>
+                                    <a class="remove-image" href="javascript:void(0)" style="display: inline;">&#215;</a>
+                                    <input type="hidden" name="image_upload[]" value="'.$image.'">
+                                </div>';
+            }
+            echo json_encode($data);
+    }
 
     public function delete($id) 
     {

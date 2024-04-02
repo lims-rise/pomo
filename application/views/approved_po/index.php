@@ -5,7 +5,7 @@
                 <div class="box box-black box-solid">
     
                     <div class="box-header">
-                        <h3 class="box-title">Purchase Order | Approved PO</h3>
+                        <h3 class="box-title">Purchase Order | Budget Approved</h3>
                     </div>
         
         <div class="box-body">
@@ -17,7 +17,7 @@
 		    <th>Date request</th>
 		    <th>Objectives</th>
 		    <th>Title</th>
-		    <th>Budged request</th>
+		    <th>Budget request</th>
 		    <th>PO number</th>
 		    <th>Date PO</th>
 		    <th>Comments</th>
@@ -46,7 +46,7 @@
             <div class="modal-content">
                 <div class="modal-header box">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="modal-title">Budged Request | New</h4>
+                    <h4 class="modal-title" id="modal-title">Budget Request | New</h4>
                 </div>
                 <form id="formSample"  action= <?php echo site_url('Approved_po/save') ?> method="post" class="form-horizontal">
                     <div class="modal-body">
@@ -67,9 +67,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="budged_req" class="col-sm-4 control-label">Budged Request</label>
+                            <label for="budged_req" class="col-sm-4 control-label">Budget Request</label>
                             <div class="col-sm-8">
-                                <input id="budged_req" name="budged_req" type="text" class="form-control" placeholder="Budged Request">
+                                <input id="Budget_req" name="Budget_req" type="text" class="form-control" placeholder="Budget Request">
                             </div>
                         </div>
                         <hr>
@@ -89,11 +89,34 @@
                         </div>
 
                         <div class="form-group">
-                                <label for="comments" class="col-sm-4 control-label">Comments</label>
-                                <div class="col-sm-8">
-                                    <textarea id="comments" name="comments" class="form-control" placeholder="Comments"> </textarea>
-                                </div>
+                            <label for="comments" class="col-sm-4 control-label">Comments</label>
+                            <div class="col-sm-8">
+                                <textarea id="comments" name="comments" class="form-control" placeholder="Comments"> </textarea>
+                            </div>
                         </div>
+
+                        <div class='form-group'>
+						<label for='image' class='col-sm-4 control-label'>Approval email (SS)</label>
+						<div class='col-sm-8' style="margin-bottom:10px;">
+							<input type="file" name="image" id="image" class="form-control">
+						</div>
+					</div>
+                        <div class="form-group" id="imageView">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-8" >
+                                <div class="form-group" style="display: flex;"id="imageData">
+                                    <?php if(isset($images)) {
+                                        foreach ($images as $row ) {
+                                            echo '<div class="image-area" style="margin-right:25px;" data-id="'.$row->image.'">
+                                                    <a href="../assets/receipt/'.$row->image.'" target="_blank"><img src="../assets/receipt/'.$row->image.'"  alt="Preview"></a>
+                                                    <a class="remove-image" href="javascript:void(0)" style="display: inline;">&#215;</a>
+                                                    
+                                                </div>';
+                                        } 
+                                    }?>
+                                </div>
+                            </div>
+                        </div>                        
 
                     </div>
                     <div class="modal-footer clearfix">
@@ -239,11 +262,12 @@
             if (data.po_number !== undefined && data.po_number !== null) {
                 $('#mode').val('edit');
                 $('#date_po').val(data.date_po);
+                $('#modal-title').html('<i class="fa fa-pencil-square"></i> Budget Approved | Update<span id="my-another-cool-loader"></span>');
             }
             else {            
+                $('#modal-title').html('<i class="fa fa-pencil-square"></i> Budget Approved | New<span id="my-another-cool-loader"></span>');
                 $('#mode').val('insert');
             }
-            $('#modal-title').html('<i class="fa fa-pencil-square"></i> Approved PO | New PO<span id="my-another-cool-loader"></span>');
             $('#objective').attr('readonly', true);
             $('#title').attr('readonly', true);
             $('#budged_req').attr('readonly', true);
@@ -264,6 +288,43 @@
                 $(this).addClass('active');
             }
         })   
-                            
+
+		$('#image').change(function(){
+                    var fd = new FormData();
+                    var files = $('#image')[0].files[0];
+                    fd.append('image', files);
+                    $.ajax({
+                        url: '../Approved_po/upload',
+                        type: 'post',
+                        data: fd,
+                        contentType: false,
+                        processData: false,
+                        dataType : 'json',
+                        success: function(response){
+                            if(response.error == false){
+								$('#imageData').append(response.data)
+                            }
+                            else
+                                alert(response.error)
+								$('#image').val('')
+                        },
+                    });
+                })
+			$('#imageData').on('click','.remove-image',function(){
+				let parent = $(this).parent()
+				let id = $('#po_number').val()
+				if($(parent).data('id') != ''){
+					$.ajax({
+						type: "POST",
+						url: "../Approved_po/remove_image",
+						data: {id,image:$(parent).data('id')},
+						dataType: "json",
+						success: function (response) {
+								
+						}
+					});
+				}
+				$(parent).remove()
+			})        
     });
 </script>

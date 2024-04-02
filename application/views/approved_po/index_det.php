@@ -2,7 +2,7 @@
 	<section class="content">
 		<div class="box box-black box-solid">
 			<div class="box-header with-border">
-				<h3 class="box-title">Purchase Order | Budged Detail</h3>
+				<h3 class="box-title">Purchase Order | Budget Detail</h3>
 			</div>
 			<form role="form"  id="formKeg" method="post" class="form-horizontal">
 				<div class="box-body">
@@ -34,7 +34,7 @@
 					</div>
 
 					<div class="form-group">
-						<label for="budged_req" class="col-sm-2 control-label">Budged Request</label>
+						<label for="budged_req" class="col-sm-2 control-label">Budget Request</label>
 						<div class="col-sm-4">
 							<input class="form-control " id="budged_req" name="budged_req" value="<?php echo $budged_req ?>"  disabled>
 						</div>
@@ -170,51 +170,13 @@
 			}
 		});
 
-		// $('#compose-modal').on('shown.bs.modal', function () {
-		// 	if ($('#mode_det').val() == 'insert') {
-		// 		let table = $('#example2').DataTable(); 
-		// 		let rowCount = table.rows().count();
-		// 		$('#id_reqdetail').val(rowCount+1);
-		// 	}
-        //     $('#result').focus();
-		// });        
-
-		// $('#print').click(function() {
-		// 	location.href = '../../Budged_request/budreq_print/'+id_req;
-		// });
-
-
-		// $('#addtombol_det').click(function() {
-		// 	$('#mode_det').val('insert');
-        //     $('#modal-title').html('<i class="fa fa-wpforms"></i> New spectro detail<span id="my-another-cool-loader"></span>');
-		// 	$('#id_reqdetail').attr('readonly', false);
-		//     $('#id_reqdetail').val('');
-		//     $('#items').val('');
-		//     $('#id_req2').val(id_req);
-		//     $('#qty').val('');
-		//     $('#id_unit').val('');
-		//     $('#estimate_price').val('');
-		//     $('#remarks').val('');
-		// 	$('#compose-modal').modal('show');
-		// });
-
-
-		// $('#example2').on('click', '.btn_edit_det', function(){
-		// 	let tr = $(this).parent().parent();
-		// 	let data = table.row(tr).data();
-		// 	console.log(data);
-		// 	$('#mode_det').val('edit');
-		// 	$('#modal-title').html('<i class="fa fa-pencil-square"></i> Update spectro detail <span id="my-another-cool-loader"></span>');
-		// 	$('#id_reqdetail').attr('readonly', true);
-		//     $('#id_reqdetail').val(data.id_reqdetail);
-		//     $('#items').val(data.items);
-		//     $('#id_req2').val(data.id_req);
-		//     $('#qty').val(data.qty);
-		//     $('#id_unit').val(data.id_unit).trigger('change');
-		//     $('#estimate_price').val(data.estimate_price);
-		//     $('#remarks').val(data.remarks);
-		// 	$('#compose-modal').modal('show');
-		// });  
-
+        $('#example2 tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            } else {
+                table.$('tr.active').removeClass('active');
+                $(this).addClass('active');
+            }
+        })   				
 	});
 </script>
