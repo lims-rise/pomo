@@ -48,7 +48,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="modal-title">Budget Request | New</h4>
                 </div>
-                <form id="formSample"  action= <?php echo site_url('Approved_po/save') ?> method="post" class="form-horizontal">
+                <form id="formSample"  action= <?php echo site_url('Approved_po/save') ?> method="post" class="form-horizontal" enctype="multipart/form-data">>
                     <div class="modal-body">
                         <input id="mode" name="mode" type="hidden" class="form-control input-sm">
                         <input id="id_req" name="id_req" type="hidden" class="form-control input-sm">
@@ -97,26 +97,25 @@
 
                         <div class='form-group'>
 						<label for='image' class='col-sm-4 control-label'>Approval email (SS)</label>
-						<div class='col-sm-8' style="margin-bottom:10px;">
-							<input type="file" name="image" id="image" class="form-control">
-						</div>
-					</div>
-                        <div class="form-group" id="imageView">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-8" >
-                                <div class="form-group" style="display: flex;"id="imageData">
-                                    <?php if(isset($images)) {
-                                        foreach ($images as $row ) {
-                                            echo '<div class="image-area" style="margin-right:25px;" data-id="'.$row->image.'">
-                                                    <a href="../assets/receipt/'.$row->image.'" target="_blank"><img src="../assets/receipt/'.$row->image.'"  alt="Preview"></a>
-                                                    <a class="remove-image" href="javascript:void(0)" style="display: inline;">&#215;</a>
-                                                    
-                                                </div>';
-                                        } 
-                                    }?>
-                                </div>
+                            <div class='col-sm-8' style="margin-bottom:10px;">
+                                <input id="iima" name="iima" type="text" class="form-control">
+                                <input type="file" name="images" class="images" id="filex" accept="image/*">
+                                        <div class="input-group my-3"> 
+                                        <!-- <input type="hidden" class="form-control" disabled placeholder="Upload File" id="receipt"> -->
+                                        </div>
+                                        <!-- <img src="../img/white.jpg" id="preview" class="img-thumbnail"> -->
+                                        <?php
+                                            if (empty($images)) {
+                                                $photo = base_url("assets/receipt/no_image.jpg");
+                                            }
+                                            else {
+                                                $photo = base_url("assets/receipt/". $images);
+                                            }
+                                            echo "<img id='preview' src='$photo' class='img-thumbnail' alt='Image Receipt'>";
+                                        ?>
+                                    <p class="help-block">*File types allowed only JPG | PNG | GIF files <?php //echo $images ?></p>
                             </div>
-                        </div>                        
+					    </div>
 
                     </div>
                     <div class="modal-footer clearfix">
@@ -254,9 +253,12 @@
             }
         });
 
+        // $base = base_url("assets/receipt/");
+
         $('#mytable').on('click', '.btn_edit', function(){
             let tr = $(this).parent().parent();
             let data = table.row(tr).data();
+            // let base = "assets/receipt/";
             console.log(data);
             // var data = this.parents('tr').data();
             if (data.po_number !== undefined && data.po_number !== null) {
@@ -277,6 +279,7 @@
             $('#budged_req').val(data.budged_req);
             $('#po_number').val(data.po_number);
             $('#comments').val(data.comments);
+            $images = data.photo;
             $('#compose-modal').modal('show');
         });  
 
@@ -289,42 +292,16 @@
             }
         })   
 
-		$('#image').change(function(){
-                    var fd = new FormData();
-                    var files = $('#image')[0].files[0];
-                    fd.append('image', files);
-                    $.ajax({
-                        url: '../Approved_po/upload',
-                        type: 'post',
-                        data: fd,
-                        contentType: false,
-                        processData: false,
-                        dataType : 'json',
-                        success: function(response){
-                            if(response.error == false){
-								$('#imageData').append(response.data)
-                            }
-                            else
-                                alert(response.error)
-								$('#image').val('')
-                        },
-                    });
-                })
-			$('#imageData').on('click','.remove-image',function(){
-				let parent = $(this).parent()
-				let id = $('#po_number').val()
-				if($(parent).data('id') != ''){
-					$.ajax({
-						type: "POST",
-						url: "../Approved_po/remove_image",
-						data: {id,image:$(parent).data('id')},
-						dataType: "json",
-						success: function (response) {
-								
-						}
-					});
-				}
-				$(parent).remove()
-			})        
+        $('input[type="file"]').change(function(e) {
+            var fileName = e.target.files[0].name;
+            $("#images").val(fileName);
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                // get loaded data and render thumbnail.
+                document.getElementById("preview").src = e.target.result;
+            };
+            // read the image file as a data URL.
+            reader.readAsDataURL(this.files[0]);
+        });
     });
 </script>

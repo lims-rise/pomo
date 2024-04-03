@@ -75,6 +75,7 @@ class Approved_po extends CI_Controller
                 'budged_req' => $row->budged_req,
                 'budged_rem' => $row->budged_rem,
                 'comments' => $row->comments,
+                'photo' => $row->photo,
                 'unit' => $this->Approved_po_model->getUnits(),
                 );
                 $this->template->load('template','approved_po/index_det', $data);
@@ -88,6 +89,7 @@ class Approved_po extends CI_Controller
     {
         $mode = $this->input->post('mode',TRUE);
         $id = $this->input->post('id_req',TRUE);
+        $foto = $this->upload_foto();
         // $f = $this->input->post('freezer',TRUE);
         // $s = $this->input->post('shelf',TRUE);
         // $r = $this->input->post('rack',TRUE);
@@ -102,6 +104,7 @@ class Approved_po extends CI_Controller
                 'date_po' => $this->input->post('date_po',TRUE),
                 'id_req' => $this->input->post('id_req',TRUE),
                 'comments' => trim($this->input->post('comments',TRUE)),
+                'photo' => $foto['file_name'],
                 'uuid' => $this->uuid->v4(),
                 'user_created' => $this->session->userdata('id_users'),
                 'date_created' => $dt->format('Y-m-d H:i:s'),
@@ -117,6 +120,7 @@ class Approved_po extends CI_Controller
                 'date_po' => $this->input->post('date_po',TRUE),
                 'id_req' => $this->input->post('id_req',TRUE),
                 'comments' => trim($this->input->post('comments',TRUE)),
+                'photo' =>$foto['file_name'],
                 // 'uuid' => $this->uuid->v4(),
                 // 'id_country' => $this->session->userdata('lab'),
                 'user_updated' => $this->session->userdata('id_users'),
@@ -127,27 +131,20 @@ class Approved_po extends CI_Controller
             $this->session->set_flashdata('message', 'Create Record Success');    
         }
 
-        // $this->Approved_po_model->insert($data);
-        $image = $this->input->post('image_upload');
-        if(is_array($image)){
-            $image_data = [];
-            for($x=0; $x < sizeof($image); $x++){
-                $image_data[] = ['po_number' => $this->input->post('po_number',true),
-                                'image' => $image[$x]];
-            }
-            $this->Approved_po_model->insertImage($image_data);
-
-        }
-
+        $this->session->set_userdata('images',$foto['file_name']);
         redirect(site_url("approved_po"));
     }
 
-    public function remove_image()
-    {
-        $id = $this->input->post('id', true);
-        $image = $this->input->post('image', true);
-        $result = $this->Item_master_model->removeImage($id, $image);
-        echo json_encode($result);
+
+    function upload_foto(){
+        $config['upload_path']          = './assets/receipt';
+        $config['allowed_types']        = 'gif|jpg|png';
+        //$config['max_size']             = 100;
+        //$config['max_width']            = 1024;
+        //$config['max_height']           = 768;
+        $this->load->library('upload', $config);
+        $this->upload->do_upload('images');
+        return $this->upload->data();
     }
 
     // public function savedetail() 

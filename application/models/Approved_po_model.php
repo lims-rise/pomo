@@ -17,7 +17,7 @@ class Approved_po_model extends CI_Model
 
     // datatables
     function json() {
-        $this->datatables->select('approved_po.po_number, approved_po.date_po, approved_po.comments, budged_request.date_req, 
+        $this->datatables->select('approved_po.po_number, approved_po.date_po, approved_po.comments, approved_po.photo, budged_request.date_req, 
         ref_person.realname, ref_objective.objective, budged_request.title, 
         FORMAT(budged_request.budged_req, 0, "de_DE") AS budged_req, budged_request.id_country, 
         budged_request.id_person, budged_request.id_objective, budged_request.id_req, budged_request.flag');
