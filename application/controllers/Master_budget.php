@@ -7,34 +7,38 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 // require_once '../../extlib/PHPExcel/PHPExcel.php';
 
-class REP_o2a extends CI_Controller
+class Master_budget extends CI_Controller
 {
     function __construct()
     {
         parent::__construct();
         is_login();
-        $this->load->model('REP_o2a_model');
+        $this->load->model('Master_budget_model');
+        $this->load->model('Budged_request_model');
         // $this->load->library('form_validation');        
 	    $this->load->library('datatables');
     }
 
     public function index()
     {
-        $this->template->load('template','REP_o2a/index');
+        $data['objective'] = $this->Budged_request_model->getObjective();
+
+        $this->template->load('template','Master_budget/index', $data);
     } 
 
     // public function index2()
     // {
-    //     $this->template->load('template','REP_o2a/index2');
+    //     $this->template->load('template','Master_budget/index2');
     // } 
 
     
     public function json() {
         $date1=$this->input->get('date1');
         $date2=$this->input->get('date2');
+        $obj=$this->input->get('obj');
         // var_dump($date2);
         header('Content-Type: application/json');
-        echo $this->REP_o2a_model->json($date1,$date2);
+        echo $this->Master_budget_model->json($date1,$date2,$obj);
     }
 
 
@@ -42,6 +46,7 @@ class REP_o2a extends CI_Controller
     {
         $date1=$this->input->get('date1');
         $date2=$this->input->get('date2');
+        $obj=$this->input->get('obj');
 
         $this->load->database();
 
@@ -59,94 +64,41 @@ class REP_o2a extends CI_Controller
         // }        
         $spreadsheet = new Spreadsheet();
 
+        $qr = 'SELECT a.id_req AS ID_Request, a.date_req AS Date_Request, c.objective AS Objective, 
+        a.title AS Title, a.budged_req AS Budget_request, b.po_number AS PO_number, b.date_po AS Date_PO, 
+        d.expenses AS Expenses, a.budged_req-d.expenses AS Budget_remaining, e.req_rem AS Request_budget_remaining, 
+        e.date_req AS Date_request_remaining, f.exp_rem AS Expenses_remaining,
+        a.budged_req-(d.expenses+f.exp_rem) AS Total_budget_remaining, a.id_objective
+        FROM budged_request a
+        LEFT JOIN approved_po b ON a.id_req=b.id_req
+        LEFT JOIN ref_objective c ON a.id_objective=c.id_objective
+        LEFT JOIN (SELECT po_number, SUM(qty*expenses) AS expenses
+        FROM budged_expenses_detail
+        GROUP BY po_number) d ON b.po_number=d.po_number
+        LEFT JOIN (SELECT a.po_number, a.date_req, SUM(b.qty*b.estimate_price) AS req_rem
+        FROM budged_req_remaining a
+        LEFT JOIN budged_req_rem_det b ON a.id_reqrem=b.id_reqrem
+        GROUP BY a.id_reqrem) e ON b.po_number=e.po_number
+        LEFT JOIN (SELECT po_number, SUM(qty*expenses) AS exp_rem
+        FROM budged_exp_rem_detail
+        GROUP BY po_number) f ON b.po_number=f.po_number
+        WHERE a.id_country = "'.$this->session->userdata('lab').'" 
+        AND a.flag = 0 ';
+
+        if (strlen($date1) > 0) {
+            $date = 'AND (a.date_req >= "'.$date1.'" AND a.date_req <= "'.$date2.'")';
+        }
+        if (strlen($obj) > 0) {
+            $obj = 'AND (a.id_objective = "'.$obj.'")';
+        }
+
         $sheets = array(
             array(
-                'Sample_reception',
-                'SELECT b.barcode_sample AS Barcode_storagebag, a.date_receipt AS Date_receipt, 
-                c.initial AS Delivered_by, d.initial AS Received_by, a.sample_type AS Sample_type
-                from obj2a_receipt a 
-                LEFT JOIN obj2a_receipt_det b ON a.id_receipt = b.id_receipt
-                LEFT JOIN ref_person c ON a.id_delivered = c.id_person
-                LEFT JOIN ref_person d ON a.id_received = d.id_person
-                WHERE  (a.date_receipt >= "'.$date1.'"
-                AND a.date_receipt <= "'.$date2.'")
-                AND a.lab = "'.$this->session->userdata('lab').'" 
-                AND a.flag = 0 
-                ORDER BY a.date_receipt, A.id_receipt
-                ',
-                array('Barcode_storagebag', 'Date_receipt', 'Delivered_by', 'Received_by', 'Sample_type'), // Columns for Sheet1
-            ),
-            array(
-                'Sample_logging',
-                'SELECT a.id_samplelog AS ID, a.date_collection AS Date_collection, 
-                b.initial AS Lab_tech, a.bar_samplebag AS Barcode_samplebag, 
-                a.bar_eclosion AS Barcode_eclosion, a.id_person,
-                a.lab, a.flag
-                from obj2a_samplelog a
-                left join ref_person b on a.id_person = b.id_person 
-                WHERE (a.date_collection >= "'.$date1.'"
-                AND a.date_collection <= "'.$date2.'")
-                AND a.lab = "'.$this->session->userdata('lab').'" 
-                AND a.flag = 0 
-                ORDER BY a.date_collection, a.id_samplelog ASC
-                ', // Different columns for Sheet2
-                array('ID', 'Date_collection', 'Lab_tech', 'Barcode_samplebag', 'Barcode_eclosion'), // Columns for Sheet2
-            ),
-            array(
-                'Mosquito_Identification',
-                'SELECT a.bar_storagebag AS Barcode_storagebag,
-                b.initial AS Initial_Person,
-                a.date_ident AS Date_identification,
-                a.catch_met AS Catch_methode,
-                a.no_mosquito AS SumMosquito,
-                a.aedes_aegypt_male AS Aedes_aegypt_male,
-                a.aedes_aegypt_female AS Aedes_aegypt_female,
-                a.aedes_albopictus_male AS Aedes_albopictus_male,
-                a.aedes_albopictus_female AS Aedes_albopictus_female,
-                a.aedes_polynesiensis_male AS Aedes_polynesiensis_male,
-                a.aedes_polynesiensis_female AS Aedes_polynesiensis_female,
-                a.aedes_other_male AS Aedes_other_male,
-                a.aedes_other_female AS Aedes_other_female,
-                a.culex_male AS Culex_male,
-                a.culex_female AS Culex_female,
-                a.culex_sitiens_male AS Culex_sitiens_male,
-                a.culex_sitiens_female AS Culex_sitiens_female,
-                a.culexann_male AS Culexann_male,
-                a.culexann_female AS Culexann_female,
-                a.culex_other_male AS Culex_other_male,
-                a.culex_other_female AS Culex_other_female,
-                a.anopheles_male AS Anopheles_male,
-                a.anopheles_female AS Anopheles_female,
-                a.uranotaenia_male AS Uranotaenia_male,
-                a.uranotaenia_female AS Uranotaenia_female,
-                a.mansonia_male AS Mansonia_male,
-                a.mansonia_female AS Mansonia_female,
-                a.other_male AS Other_male,
-                a.other_female AS Other_female,
-                IFNULL(a.culex_larvae,0) AS Culex_larvae,
-                IFNULL(a.aedes_larvae,0) AS Aedes_larvae,
-                IFNULL(a.unidentify,0) AS Unidentify,
-                TRIM(a.notes) AS Notes,
-                a.id_person AS id_person,
-                a.lab AS lab,
-                a.flag AS flag
-            FROM
-                obj2a_identification a 
-                LEFT JOIN ref_person b ON a.id_person = b.id_person  
-                WHERE (a.date_ident >= "'.$date1.'"
-                AND a.date_ident <= "'.$date2.'")
-                AND a.lab = "'.$this->session->userdata('lab').'" 
-                AND a.flag = 0 
-                ORDER BY a.date_ident ASC
-                ',
-                array('Barcode_storagebag', 'Initial_Person', 'Date_identification', 'Catch_methode',
-                'SumMosquito', 'Aedes_aegypt_male', 'Aedes_aegypt_female', 'Aedes_albopictus_male', 
-                'Aedes_albopictus_female', 'Aedes_polynesiensis_male', 'Aedes_polynesiensis_female',
-                'Aedes_other_male', 'Aedes_other_female', 'Culex_male', 'Culex_female', 'Culex_sitiens_male',
-                'Culex_sitiens_female', 'Culexann_male', 'Culexann_female', 'Culex_other_male',
-                'Culex_other_female','Anopheles_male','Anopheles_female','Uranotaenia_male',
-                'Uranotaenia_female','Mansonia_male','Mansonia_female','Other_male','Other_female',
-                'Culex_larvae', 'Aedes_larvae', 'Unidentify', 'Notes'),
+                'Master_budget',
+                $qr . $date . $obj .' ORDER BY a.date_req',
+                array('ID_Request', 'Date_Request', 'Objective', 'Title', 'Budget_request', 'PO_number',
+                        'Date_PO', 'Expenses', 'Budget_remaining', 'Request_budget_remaining', 
+                        'Date_request_remaining', 'Expenses_remaining', 'Total_budget_remaining'), // Columns for Sheet1
             ),
             // Add more sheets as needed
         );
@@ -223,7 +175,7 @@ class REP_o2a extends CI_Controller
         
         // Set the HTTP headers to download the Excel file
         $datenow=date("Ymd");
-        $filename = 'ALL_O2A_reports_'.$datenow.'.xlsx';
+        $filename = 'Master_Budget_reports_'.$datenow.'.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
@@ -254,7 +206,7 @@ class REP_o2a extends CI_Controller
         // $sheet->getStyle('A1:H1')->getFont()->setBold(true); // Set bold kolom A1
     
         // // Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
-        // $rdeliver = $this->REP_o2a_model->get_all($date1, $date2);
+        // $rdeliver = $this->Master_budget_model->get_all($date1, $date2);
     
         // $no = 1; // Untuk penomoran tabel, di awal set dengan 1
         // $numrow = 2; // Set baris pertama untuk isi tabel adalah baris ke 4
@@ -283,7 +235,7 @@ class REP_o2a extends CI_Controller
     
         // // Proses file excel
         // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        // header('Content-Disposition: attachment; filename="REP_o2as.xlsx"'); // Set nama file excel nya
+        // header('Content-Disposition: attachment; filename="Master_budgets.xlsx"'); // Set nama file excel nya
         // header('Cache-Control: max-age=0');
     
         // $writer = new Xlsx($spreadsheet);

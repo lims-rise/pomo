@@ -75,7 +75,7 @@ class Approved_po extends CI_Controller
                 'budged_req' => $row->budged_req,
                 'budged_rem' => $row->budged_rem,
                 'comments' => $row->comments,
-                'photo' => $row->photo,
+                // 'photo' => $row->photo,
                 'unit' => $this->Approved_po_model->getUnits(),
                 );
                 $this->template->load('template','approved_po/index_det', $data);
@@ -120,13 +120,15 @@ class Approved_po extends CI_Controller
                 'date_po' => $this->input->post('date_po',TRUE),
                 'id_req' => $this->input->post('id_req',TRUE),
                 'comments' => trim($this->input->post('comments',TRUE)),
-                'photo' =>$foto['file_name'],
                 // 'uuid' => $this->uuid->v4(),
                 // 'id_country' => $this->session->userdata('lab'),
                 'user_updated' => $this->session->userdata('id_users'),
                 'date_updated' => $dt->format('Y-m-d H:i:s'),
                 );
-    
+                if (!empty($foto['file_name'])) {
+                    $data['photo'] = $foto['file_name'];
+                }
+                
             $this->Approved_po_model->update($id, $data);
             $this->session->set_flashdata('message', 'Create Record Success');    
         }

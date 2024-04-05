@@ -25,7 +25,7 @@
             $labname = "Fiji";
         }
         echo alert('alert-error', 'Welcome '.$this->session->userdata('full_name') . ' to the '. $labname .' Accounting data', 
-        "<i class='fa fa-hand-o-left' aria-hidden='true'></i>" . ' To switch accounting data between country labs, please select countries on the left side panel.');
+        "<i class='fa fa-hand-o-left' aria-hidden='true'></i>" . ' To switch accounting data between country, please select countries on the left side panel.');
         
         $data = $this->Welcome_model->get_budged_req(); 
 

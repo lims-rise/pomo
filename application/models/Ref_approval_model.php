@@ -3,11 +3,11 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Ref_vessel_model extends CI_Model
+class Ref_approval_model extends CI_Model
 {
 
-    public $table = 'ref_vessel';
-    public $id = 'id_vessel';
+    public $table = 'ref_approves';
+    public $id = 'id_objective';
     public $order = 'DESC';
 
     function __construct()
@@ -17,20 +17,20 @@ class Ref_vessel_model extends CI_Model
 
     // datatables
     function json() {
-        $this->datatables->select('id_vessel, vessel');
-        $this->datatables->from('ref_vessel');
+        $this->datatables->select('id_objective, reviewed, approved');
+        $this->datatables->from('ref_approves');
         // $this->datatables->where('lab', $this->session->userdata('lab'));
         $this->datatables->where('flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){
-            $this->datatables->add_column('action', '', 'id_vessel');
+            $this->datatables->add_column('action', '', 'id_objective');
         }
         else if (($lvl == 2) | ($lvl == 3)){
-            $this->datatables->add_column('action', '<button type="button" class="btn_edit btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>', 'id_vessel');
+            $this->datatables->add_column('action', '<button type="button" class="btn_edit btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>', 'id_objective');
         }
         else {
             $this->datatables->add_column('action', '<button type="button" class="btn_edit btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>'." 
-                ".anchor(site_url('Ref_vessel/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_vessel');
+                ".anchor(site_url('Ref_approval/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_objective');
         }
         return $this->datatables->generate();
     }
@@ -40,7 +40,7 @@ class Ref_vessel_model extends CI_Model
         $this->db->order_by($this->id, 'ASC');
         // $this->db->where('lab', $this->session->userdata('lab'));
         $this->db->where('flag', '0');
-        return $this->db->get('ref_vessel')->result();
+        return $this->db->get('ref_approves')->result();
     }
 
     function get_by_id($id)
@@ -114,7 +114,7 @@ class Ref_vessel_model extends CI_Model
     //     $response = array();
     //     $this->db->select('*');
     //     $this->db->where('position', 'Lab Tech');
-    //     $q = $this->db->get('Ref_vessel');
+    //     $q = $this->db->get('Ref_approval');
     //     $response = $q->result_array();
     
     //     return $response;
@@ -126,21 +126,21 @@ class Ref_vessel_model extends CI_Model
     //     // Select record
     //     $this->db->select('*');
     //     $this->db->where('obj', 'O3');
-    //     $q = $this->db->get('Ref_vessel');
+    //     $q = $this->db->get('Ref_approval');
     //     $response = $q->result_array();
     
     //     return $response;
     //   }
 
-      function validate1($id){
-        $this->db->where('barcode_sample', $id);
-        $this->db->where('flag', '0');
-        // $this->db->where('lab', $this->session->userdata('lab'));
-        $q = $this->db->get($this->table);
-        $response = $q->result_array();
-        return $response;
-        // return $this->db->get('ref_location_80')->row();
-      }
+    //   function validate1($id){
+    //     $this->db->where('barcode_sample', $id);
+    //     $this->db->where('flag', '0');
+    //     // $this->db->where('lab', $this->session->userdata('lab'));
+    //     $q = $this->db->get($this->table);
+    //     $response = $q->result_array();
+    //     return $response;
+    //     // return $this->db->get('ref_location_80')->row();
+    //   }
 
 }
 

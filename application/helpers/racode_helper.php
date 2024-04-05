@@ -27,6 +27,37 @@ function select2_dinamis($name,$table,$field,$placeholder){
     return $select2;
 }
 
+function select2_dinamis_pc($name, $table, $field, $placeholder, $id, $value = null, $where = null)
+{
+    $ci = get_instance();
+    // Modify the $select2 variable to include the empty option as a placeholder
+    $select2 = '<div class="select2-container">';
+    $select2 .= '<select id="'.$name.'" name="'.$name.'" class="form-control select2 select2-hidden-accessible"  
+               data-placeholder="'.$placeholder.'" style="width: 100%;" tabindex="-1" aria-hidden="true">
+               <option value=""></option>'; // Empty option added here
+
+    if ($where)
+        $ci->db->where($where);
+
+    $data = $ci->db->where('flag', 0)->get($table)->result();
+    
+    foreach ($data as $row) {
+        if ($value == $row->$id) {
+            $select2 .= '<option value="'. $row->$id .'" selected="selected">'.$row->$field.'</option>';
+        } else {
+            $select2 .= '<option value="'.$row->$id.'">'.$row->$field.'</option>';
+        }
+    }
+
+    $select2 .= '</select>';
+    $select2 .= '</div>'; // Closing div for select2-container
+
+    // Add a clear button to reset the Select2 value
+    $select2 .= '<button type="button" class="btn btn-default btn-clear" onclick="clearSelect2(\''.$name.'\')">Clear</button>';
+
+    return $select2;
+}
+
 function datalist_dinamis($name,$table,$field,$value=null){
     $ci = get_instance();
     $string = '<input value="'.$value.'" name="'.$name.'" list="'.$name.'" class="form-control">

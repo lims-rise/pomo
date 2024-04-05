@@ -54,7 +54,7 @@
                 <form id="formSample"  action= <?php echo site_url('Ref_objective/save') ?> method="post" class="form-horizontal">
                     <div class="modal-body">
                         <input id="mode" name="mode" type="hidden" class="form-control input-sm">
-                        <input id="id_sample" name="id_sample" type="hidden" class="form-control input-sm">
+                        <input id="id_objective" name="id_objective" type="hidden" class="form-control input-sm">
                         <!-- <div class="form-group">
                             <label for="barcode_sample" class="col-sm-4 control-label">ID</label>
                             <div class="col-sm-8">
@@ -64,9 +64,9 @@
                         </div> -->
 
                         <div class="form-group">
-                            <label for="sample" class="col-sm-4 control-label">Sample</label>
+                            <label for="objective" class="col-sm-4 control-label">Objective</label>
                             <div class="col-sm-8">
-                                <input id="sample" name="sample" type="text" class="form-control" placeholder="Sample" value="<?php echo date("Y-m-d"); ?>">
+                                <input id="objective" name="objective" type="text" class="form-control" placeholder="Objective">
                             </div>
                             </div>
                     </div>
@@ -239,8 +239,8 @@
                 //     "data": "barcode_sample",
                 //     "orderable": false
                 // },
-                {"data": "id_sample"},
-                {"data": "sample"},
+                {"data": "id_objective"},
+                {"data": "objective"},
                 {
                     "data" : "action",
                     "orderable": false,
@@ -261,10 +261,10 @@
         $('#addtombol').click(function() {
             $('.val1tip').tooltipster('hide');   
             $('#mode').val('insert');
-            $('#modal-title').html('<i class="fa fa-wpforms"></i> Master Data - New sample<span id="my-another-cool-loader"></span>');
-            $('#id_sample').val('');
+            $('#modal-title').html('<i class="fa fa-wpforms"></i> Master Data - New objective<span id="my-another-cool-loader"></span>');
+            $('#id_objective').val('');
             // $("#date_ended").datepicker("setDate",'now');
-            $('#sample').val('');
+            $('#objective').val('');
             $('#compose-modal').modal('show');
         });
 
@@ -275,9 +275,9 @@
             console.log(data);
             // var data = this.parents('tr').data();
             $('#mode').val('edit');
-            $('#modal-title').html('<i class="fa fa-pencil-square"></i> Master Data - Update sample<span id="my-another-cool-loader"></span>');
-            $('#id_sample').val(data.id_sample);
-            $('#sample').val(data.sample);
+            $('#modal-title').html('<i class="fa fa-pencil-square"></i> Master Data - Update objective<span id="my-another-cool-loader"></span>');
+            $('#id_objective').val(data.id_objective);
+            $('#objective').val(data.objective);
             $('#compose-modal').modal('show');
         });  
 

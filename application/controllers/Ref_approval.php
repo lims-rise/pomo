@@ -6,13 +6,13 @@ if (!defined('BASEPATH'))
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     
-class Ref_vessel extends CI_Controller
+class Ref_approval extends CI_Controller
 {
     function __construct()
     {
         parent::__construct();
         is_login();
-        $this->load->model('Ref_vessel_model');
+        $this->load->model('Ref_approval_model');
         $this->load->library('form_validation');        
 	    $this->load->library('datatables');
 	    $this->load->library('uuid');
@@ -20,55 +20,56 @@ class Ref_vessel extends CI_Controller
 
     public function index()
     {
-        // $this->load->model('Ref_vessel_model');
-        // $data['person'] = $this->Ref_vessel_model->getLabtech();
-        // $data['type'] = $this->Ref_vessel_model->getSampleType();
-        // $this->template->load('template','Ref_vessel/index', $data);
-        $this->template->load('template','Ref_vessel/index');
+        // $this->load->model('Ref_approval_model');
+        // $data['person'] = $this->Ref_approval_model->getLabtech();
+        // $data['type'] = $this->Ref_approval_model->getSampleType();
+        // $this->template->load('template','Ref_approval/index', $data);
+        $this->template->load('template','Ref_approval/index');
     } 
     
     public function json() {
         header('Content-Type: application/json');
-        echo $this->Ref_vessel_model->json();
+        echo $this->Ref_approval_model->json();
     }
 
     public function save() 
     {
         $mode = $this->input->post('mode',TRUE);
-        $id = $this->input->post('id_vessel',TRUE);
+        $id = $this->input->post('id_objective',TRUE);
         $dt = new DateTime();
 
         if ($mode=="insert"){
             $data = array(
-            'id_vessel' => $this->input->post('id_vessel',TRUE),
-            'vessel' => $this->input->post('vessel',TRUE),
+            'id_objective' => $this->input->post('id_objective',TRUE),
+            'reviewed' => $this->input->post('reviewed',TRUE),
+            'approved' => $this->input->post('approved',TRUE),
             'uuid' => $this->uuid->v4(),
             'user_created' => $this->session->userdata('id_users'),
             'date_created' => $dt->format('Y-m-d H:i:s'),
             );
  
-            $this->Ref_vessel_model->insert($data);
+            $this->Ref_approval_model->insert($data);
             $this->session->set_flashdata('message', 'Create Record Success');    
         }
         else if ($mode=="edit"){
             $data = array(
-            'id_vessel' => $this->input->post('id_vessel',TRUE),
-            'vessel' => $this->input->post('vessel',TRUE),
+            'reviewed' => $this->input->post('reviewed',TRUE),
+            'approved' => $this->input->post('approved',TRUE),
             // 'uuid' => $this->uuid->v4(),
             'user_updated' => $this->session->userdata('id_users'),
             'date_updated' => $dt->format('Y-m-d H:i:s'),
             );
 
-            $this->Ref_vessel_model->update($id, $data);
+            $this->Ref_approval_model->update($id, $data);
             $this->session->set_flashdata('message', 'Create Record Success');    
         }
 
-        redirect(site_url("Ref_vessel"));
+        redirect(site_url("Ref_approval"));
     }
 
     public function delete($id) 
     {
-        $row = $this->Ref_vessel_model->get_by_id($id);
+        $row = $this->Ref_approval_model->get_by_id($id);
         // $id_user = $this->input->get('id', TRUE);
         // $lab = $this->input->post('id_lab');
         $data = array(
@@ -76,27 +77,27 @@ class Ref_vessel extends CI_Controller
             );
 
         if ($row) {
-            // $this->Ref_vessel_model->delete($id);
-            $this->Ref_vessel_model->update($id, $data);
+            // $this->Ref_approval_model->delete($id);
+            $this->Ref_approval_model->update($id, $data);
             $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('Ref_vessel'));
+            redirect(site_url('Ref_approval'));
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('Ref_vessel'));
+            redirect(site_url('Ref_approval'));
         }
     }
 
-    public function valid_bs() 
-    {
-        $id = $this->input->get('id1');
-        // echo $id;
-        $data = $this->Ref_vessel_model->validate1($id);
+    // public function valid_bs() 
+    // {
+    //     $id = $this->input->get('id1');
+    //     // echo $id;
+    //     $data = $this->Ref_approval_model->validate1($id);
 
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        // return $this->response->setJSON($data);
-        // $data['location'] = $this->O3_filter_paper_model->find_loc($id);
-    }
+    //     header('Content-Type: application/json');
+    //     echo json_encode($data);
+    //     // return $this->response->setJSON($data);
+    //     // $data['location'] = $this->O3_filter_paper_model->find_loc($id);
+    // }
 
 
     // public function _rules() 
@@ -121,18 +122,20 @@ class Ref_vessel extends CI_Controller
 
         $spreadsheet = new Spreadsheet();    
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', "ID_vessel"); 
-        $sheet->setCellValue('B1', "Vessel");
+        $sheet->setCellValue('A1', "ID Objective"); 
+        $sheet->setCellValue('B1', "Reviewed");
+        $sheet->setCellValue('C1', "Approved");
         // $sheet->getStyle('A1:H1')->getFont()->setBold(true); // Set bold kolom A1
 
         // Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
-        $rdeliver = $this->Ref_vessel_model->get_all();
+        $rdeliver = $this->Ref_approval_model->get_all();
     
         // $no = 1; // Untuk penomoran tabel, di awal set dengan 1
         $numrow = 2; // Set baris pertama untuk isi tabel adalah baris ke 4
         foreach($rdeliver as $data){ // Lakukan looping pada variabel siswa
-          $sheet->setCellValue('A'.$numrow, $data->id_vessel);
-          $sheet->setCellValue('B'.$numrow, $data->vessel);
+          $sheet->setCellValue('A'.$numrow, $data->id_objective);
+          $sheet->setCellValue('B'.$numrow, $data->reviewed);
+          $sheet->setCellValue('C'.$numrow, $data->approved);
         //   $no++; // Tambah 1 setiap kali looping
           $numrow++; // Tambah 1 setiap kali looping
         }
@@ -175,8 +178,8 @@ class Ref_vessel extends CI_Controller
     }
 }
 
-/* End of file Ref_vessel.php */
-/* Location: ./application/controllers/Ref_vessel.php */
+/* End of file Ref_approval.php */
+/* Location: ./application/controllers/Ref_approval.php */
 /* Please DO NOT modify this information : */
 /* Generated by Harviacode Codeigniter CRUD Generator 2022-12-14 03:38:42 */
 /* http://harviacode.com */

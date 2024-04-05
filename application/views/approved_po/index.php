@@ -52,6 +52,7 @@
                     <div class="modal-body">
                         <input id="mode" name="mode" type="hidden" class="form-control input-sm">
                         <input id="id_req" name="id_req" type="hidden" class="form-control input-sm">
+                        <input id="photo" name="photo" type="hidden" class="form-control input-sm">
 
                         <div class="form-group">
                             <label for="objective" class="col-sm-4 control-label">Objective</label>
@@ -69,7 +70,7 @@
                         <div class="form-group">
                             <label for="budged_req" class="col-sm-4 control-label">Budget Request</label>
                             <div class="col-sm-8">
-                                <input id="Budget_req" name="Budget_req" type="text" class="form-control" placeholder="Budget Request">
+                                <input id="budged_req" name="budged_req" type="text" class="form-control" placeholder="Budget Request">
                             </div>
                         </div>
                         <hr>
@@ -98,20 +99,9 @@
                         <div class='form-group'>
 						<label for='image' class='col-sm-4 control-label'>Approval email (SS)</label>
                             <div class='col-sm-8' style="margin-bottom:10px;">
-                                <input id="iima" name="iima" type="text" class="form-control">
                                 <input type="file" name="images" class="images" id="filex" accept="image/*">
-                                        <div class="input-group my-3"> 
-                                        <!-- <input type="hidden" class="form-control" disabled placeholder="Upload File" id="receipt"> -->
-                                        </div>
-                                        <!-- <img src="../img/white.jpg" id="preview" class="img-thumbnail"> -->
                                         <?php
-                                            if (empty($images)) {
-                                                $photo = base_url("assets/receipt/no_image.jpg");
-                                            }
-                                            else {
-                                                $photo = base_url("assets/receipt/". $images);
-                                            }
-                                            echo "<img id='preview' src='$photo' class='img-thumbnail' alt='Image Receipt'>";
+                                            echo "<a href='#' id='imageLink' target='_blank'><img id='preview' class='img-thumbnail' alt='Image Approval PO' style='cursor:pointer;'> </a>";
                                         ?>
                                     <p class="help-block">*File types allowed only JPG | PNG | GIF files <?php //echo $images ?></p>
                             </div>
@@ -253,7 +243,7 @@
             }
         });
 
-        // $base = base_url("assets/receipt/");
+        var base = "<?php echo base_url("assets/receipt/") ?>";
 
         $('#mytable').on('click', '.btn_edit', function(){
             let tr = $(this).parent().parent();
@@ -263,12 +253,14 @@
             // var data = this.parents('tr').data();
             if (data.po_number !== undefined && data.po_number !== null) {
                 $('#mode').val('edit');
+                $('#po_number').attr('readonly', true);
                 $('#date_po').val(data.date_po);
                 $('#modal-title').html('<i class="fa fa-pencil-square"></i> Budget Approved | Update<span id="my-another-cool-loader"></span>');
             }
             else {            
                 $('#modal-title').html('<i class="fa fa-pencil-square"></i> Budget Approved | New<span id="my-another-cool-loader"></span>');
                 $('#mode').val('insert');
+                $('#po_number').attr('readonly', false);
             }
             $('#objective').attr('readonly', true);
             $('#title').attr('readonly', true);
@@ -279,7 +271,11 @@
             $('#budged_req').val(data.budged_req);
             $('#po_number').val(data.po_number);
             $('#comments').val(data.comments);
-            $images = data.photo;
+            $('#photo').val(data.photo);
+            var photo = base + data.photo;
+            $('#preview').attr('src', photo);
+            $('#imageLink').attr('href', photo);
+            // document.getElementById('imageLink').href = photo;
             $('#compose-modal').modal('show');
         });  
 
@@ -294,11 +290,12 @@
 
         $('input[type="file"]').change(function(e) {
             var fileName = e.target.files[0].name;
-            $("#images").val(fileName);
+            // $("#images").val(fileName);
             var reader = new FileReader();
             reader.onload = function(e) {
                 // get loaded data and render thumbnail.
                 document.getElementById("preview").src = e.target.result;
+                // $('#preview').attr('src', e.target.result);
             };
             // read the image file as a data URL.
             reader.readAsDataURL(this.files[0]);

@@ -5,7 +5,7 @@
                 <div class="box box-black box-solid">
     
                     <div class="box-header">
-                        <h3 class="box-title">Master Data - Vessel</h3>
+                        <h3 class="box-title">Master Data - Approval</h3>
                     </div>
         
         <div class="box-body">
@@ -13,17 +13,18 @@
 <?php
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl != 7){
-            echo "<button class='btn btn-primary' id='addtombol'><i class='fa fa-wpforms' aria-hidden='true'></i> New Vessel </button>";
+            echo "<button class='btn btn-primary' id='addtombol'><i class='fa fa-wpforms' aria-hidden='true'></i> New Approval </button>";
         }
 ?>
         
-		<?php echo anchor(site_url('Ref_vessel/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
+		<?php echo anchor(site_url('Ref_approval/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
         <table class="table table-bordered table-striped tbody" id="mytable" style="width:100%">
             <thead>
                 <tr>
                     <!-- <th width="30px">No</th> -->
-		    <th>ID</th>
-		    <th>Sample</th>
+		    <th>ID Objective</th>
+		    <th>Reviewed</th>
+		    <th>Approved</th>
 		    <th>Action</th>
                 </tr>
             </thead>
@@ -49,12 +50,12 @@
             <div class="modal-content">
                 <div class="modal-header box">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="modal-title">Master Data - New vessel</h4>
+                    <h4 class="modal-title" id="modal-title">Master Data - New Approval</h4>
                 </div>
-                <form id="formSample"  action= <?php echo site_url('Ref_vessel/save') ?> method="post" class="form-horizontal">
+                <form id="formSample"  action= <?php echo site_url('Ref_approval/save') ?> method="post" class="form-horizontal">
                     <div class="modal-body">
                         <input id="mode" name="mode" type="hidden" class="form-control input-sm">
-                        <input id="id_vessel" name="id_vessel" type="hidden" class="form-control input-sm">
+                        <input id="id_objective" name="id_objective" type="hidden" class="form-control input-sm">
                         <!-- <div class="form-group">
                             <label for="barcode_sample" class="col-sm-4 control-label">ID</label>
                             <div class="col-sm-8">
@@ -64,11 +65,18 @@
                         </div> -->
 
                         <div class="form-group">
-                            <label for="vessel" class="col-sm-4 control-label">Vessel</label>
+                            <label for="reviewed" class="col-sm-4 control-label">Reviewed</label>
                             <div class="col-sm-8">
-                                <input id="vessel" name="vessel" type="text" class="form-control" placeholder="Vessel" value="<?php echo date("Y-m-d"); ?>">
+                                <input id="reviewed" name="reviewed" type="text" class="form-control" placeholder="Reviewed">
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="approved" class="col-sm-4 control-label">Approved</label>
+                            <div class="col-sm-8">
+                                <input id="approved" name="approved" type="text" class="form-control" placeholder="Approved">
                             </div>
+                        </div>
+
                     </div>
                     <div class="modal-footer clearfix">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
@@ -89,117 +97,11 @@
     var table
     $(document).ready(function() {
         
-        $('.clockpicker').clockpicker({
-        placement: 'bottom', // clock popover placement
-        align: 'left',       // popover arrow align
-        donetext: 'Done',     // done button text
-        autoclose: true,    // auto close when minute is selected
-        vibrate: true        // vibrate the device when dragging clock hand
-        });                
 
-        $('.val1tip').tooltipster({
-            animation: 'swing',
-            delay: 1,
-            theme: 'tooltipster-default',
-            // touchDevices: false,
-            // trigger: 'hover',
-            autoClose: true,
-            position: 'bottom',
-            // content: $('<span><i class="fa fa-exclamation-triangle"></i> <strong> This text is in bold case !</strong></span>')
-            // content: $('<span><img src="../assets/img/ttd.jpg" /> <strong>This text is in bold case !</strong></span>')
-            // content: 'Test tip'
-        });
-
-
-        // function checkBarcode() { col-sm-8
-        // $('.modal-body').click(function() {
-        $('#barcode_sample').click(function() {
-            $('.val1tip').tooltipster('hide');   
-        // $('#barcode_sample').val('');     
-        });
-
-        // $('.col-sm-8').click(function() {
-
-            // $('.val1tip').tooltipster('hide');   
-            // $('#barcode_sample').val('');     
-        // });
-
-        $("#compose-modal").on('hide.bs.modal', function(){
-            $('.val1tip').tooltipster('hide');   
-            // $('#barcode_sample').val('');     
-        });
-
-
-        // $('#barcode_sample').on("change", function() {
-        //     data1 = $('#barcode_sample').val();
-        //     ckbar = data1.substring(0,5);
-        //     ckarray = ["N-B0-", "N-F0-", "N-P1-", "F-B0-", "F-F0-", "F-P1-",];
-        //     // ckarray = [10, 11, 12];
-        //     ck = $.inArray(ckbar, ckarray);
-        //     if (ck == -1) {
-        //         tip = $('<span><i class="fa fa-exclamation-triangle"></i> Wrong barcode format !! <strong></br> ex.(N-B0-XXXXXX / F-B0-XXXXXX) </br> (N-F0-XXXXXX / F-F0-XXXXXX) </br> (N-P1-XXXXXX / F-P1-XXXXXX) </strong> </span>');
-        //         $('.val1tip').tooltipster('content', tip);
-        //         $('.val1tip').tooltipster('show');
-        //         $('#barcode_sample').val('');     
-        //         $('#barcode_sample').css({'background-color' : '#FFE6E7'});
-        //         setTimeout(function(){
-        //             $('#barcode_sample').css({'background-color' : '#FFFFFF'});
-        //             setTimeout(function(){
-        //                 $('#barcode_sample').css({'background-color' : '#FFE6E7'});
-        //                 setTimeout(function(){
-        //                     $('#barcode_sample').css({'background-color' : '#FFFFFF'});
-        //                     $('#barcode_sample').focus();
-        //                 }, 300);                            
-        //             }, 300);
-        //         }, 300);
-        //     }
-        //     else {
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "Ref_vessel/valid_bs?id1="+data1,
-        //         data:data1,
-        //         dataType: "json",
-        //         success: function(data) {
-        //             if (data.length > 0) {
-        //                 tip = $('<span><i class="fa fa-exclamation-triangle"></i> Barcode <strong> ' + data1 +'</strong> is already in the system !</span>');
-        //                 $('.val1tip').tooltipster('content', tip);
-        //                 $('.val1tip').tooltipster('show');
-        //                 $('#barcode_sample').focus();
-        //                 $('#barcode_sample').val('');     
-        //                 $('#barcode_sample').css({'background-color' : '#FFE6E7'});
-        //                 setTimeout(function(){
-        //                     $('#barcode_sample').css({'background-color' : '#FFFFFF'});
-        //                     setTimeout(function(){
-        //                         $('#barcode_sample').css({'background-color' : '#FFE6E7'});
-        //                         setTimeout(function(){
-        //                             $('#barcode_sample').css({'background-color' : '#FFFFFF'});
-        //                         }, 300);                            
-        //                     }, 300);
-        //                 }, 300);
-        //             }
-        //         }
-        //     });
-        //     }
-        // });
-
-        // $("input").focusout(function(){
-        //     if ($('#barcode_sample').val() == ""){
-        //         tip = $('<span><i class="fa fa-exclamation-triangle"></i> Barcode sample <strong> is required !</strong></span>');
-        //         $('.val1tip').tooltipster('content', tip);
-        //         $('.val1tip').tooltipster('show');
-        //         $('#barcode_sample').focus();
-        //         // $('.val1tip').tooltipster('hide');   
-        //     }
-        // });
-
-        $("input").keypress(function(){
-            // $('#barcode_sample').val('');     
-            $('.val1tip').tooltipster('hide');   
-        });
 
         $('#compose-modal').on('shown.bs.modal', function () {
             // $('#barcode_sample').val('');     
-            $('#vessel').focus();
+            $('#reviewed').focus();
         });        
                 
         var base_url = location.hostname;
@@ -233,14 +135,15 @@
             // select: true;
             processing: true,
             serverSide: true,
-            ajax: {"url": "Ref_vessel/json", "type": "POST"},
+            ajax: {"url": "Ref_approval/json", "type": "POST"},
             columns: [
                 // {
                 //     "data": "barcode_sample",
                 //     "orderable": false
                 // },
-                {"data": "id_vessel"},
-                {"data": "vessel"},
+                {"data": "id_objective"},
+                {"data": "reviewed"},
+                {"data": "approved"},
                 {
                     "data" : "action",
                     "orderable": false,
@@ -261,10 +164,10 @@
         $('#addtombol').click(function() {
             $('.val1tip').tooltipster('hide');   
             $('#mode').val('insert');
-            $('#modal-title').html('<i class="fa fa-wpforms"></i> Master Data - New vessel<span id="my-another-cool-loader"></span>');
-            $('#id_vessel').val('');
-            // $("#date_ended").datepicker("setDate",'now');
-            $('#vessel').val('');
+            $('#modal-title').html('<i class="fa fa-wpforms"></i> Master Data - New Approval<span id="my-another-cool-loader"></span>');
+            $('#id_objective').val('');
+            $('#reviewed').val('');
+            $('#approved').val('');
             $('#compose-modal').modal('show');
         });
 
@@ -275,9 +178,10 @@
             console.log(data);
             // var data = this.parents('tr').data();
             $('#mode').val('edit');
-            $('#modal-title').html('<i class="fa fa-pencil-square"></i> Master Data - Update vessel<span id="my-another-cool-loader"></span>');
-            $('#id_vessel').val(data.id_vessel);
-            $('#vessel').val(data.vessel);
+            $('#modal-title').html('<i class="fa fa-pencil-square"></i> Master Data - Update Approval<span id="my-another-cool-loader"></span>');
+            $('#id_objective').val(data.id_objective);
+            $('#reviewed').val(data.reviewed);
+            $('#approved').val(data.approved);
             $('#compose-modal').modal('show');
         });  
 

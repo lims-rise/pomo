@@ -35,13 +35,13 @@ class Ref_objective extends CI_Controller
     public function save() 
     {
         $mode = $this->input->post('mode',TRUE);
-        $id = $this->input->post('id_sample',TRUE);
+        $id = $this->input->post('id_objective',TRUE);
         $dt = new DateTime();
 
         if ($mode=="insert"){
             $data = array(
-            'id_sample' => $this->input->post('id_sample',TRUE),
-            'sample' => $this->input->post('sample',TRUE),
+            'id_objective' => $this->input->post('id_objective',TRUE),
+            'objective' => $this->input->post('objective',TRUE),
             'uuid' => $this->uuid->v4(),
             'user_created' => $this->session->userdata('id_users'),
             'date_created' => $dt->format('Y-m-d H:i:s'),
@@ -52,8 +52,8 @@ class Ref_objective extends CI_Controller
         }
         else if ($mode=="edit"){
             $data = array(
-            'id_sample' => $this->input->post('id_sample',TRUE),
-            'sample' => $this->input->post('sample',TRUE),
+            'id_objective' => $this->input->post('id_objective',TRUE),
+            'objective' => $this->input->post('objective',TRUE),
             // 'uuid' => $this->uuid->v4(),
             'user_updated' => $this->session->userdata('id_users'),
             'date_updated' => $dt->format('Y-m-d H:i:s'),
@@ -86,17 +86,17 @@ class Ref_objective extends CI_Controller
         }
     }
 
-    public function valid_bs() 
-    {
-        $id = $this->input->get('id1');
-        // echo $id;
-        $data = $this->Ref_objective_model->validate1($id);
+    // public function valid_bs() 
+    // {
+    //     $id = $this->input->get('id1');
+    //     // echo $id;
+    //     $data = $this->Ref_objective_model->validate1($id);
 
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        // return $this->response->setJSON($data);
-        // $data['location'] = $this->O3_filter_paper_model->find_loc($id);
-    }
+    //     header('Content-Type: application/json');
+    //     echo json_encode($data);
+    //     // return $this->response->setJSON($data);
+    //     // $data['location'] = $this->O3_filter_paper_model->find_loc($id);
+    // }
 
 
     // public function _rules() 
@@ -121,8 +121,8 @@ class Ref_objective extends CI_Controller
 
         $spreadsheet = new Spreadsheet();    
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', "ID_DNA_sample"); 
-        $sheet->setCellValue('B1', "DNA_sample"); 
+        $sheet->setCellValue('A1', "ID Objective"); 
+        $sheet->setCellValue('B1', "Objective"); 
         // $sheet->getStyle('A1:H1')->getFont()->setBold(true); // Set bold kolom A1
 
         // Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
@@ -131,14 +131,14 @@ class Ref_objective extends CI_Controller
         // $no = 1; // Untuk penomoran tabel, di awal set dengan 1
         $numrow = 2; // Set baris pertama untuk isi tabel adalah baris ke 4
         foreach($rdeliver as $data){ // Lakukan looping pada variabel siswa
-          $sheet->setCellValue('A'.$numrow, $data->id_sample);
-          $sheet->setCellValue('B'.$numrow, $data->sample);
+          $sheet->setCellValue('A'.$numrow, $data->id_objective);
+          $sheet->setCellValue('B'.$numrow, $data->objective);
         //   $no++; // Tambah 1 setiap kali looping
           $numrow++; // Tambah 1 setiap kali looping
         }
     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
     $datenow=date("Ymd");
-    $fileName = 'MASTER_DNA_sample_'.$datenow.'.csv';
+    $fileName = 'MASTER_Objective_'.$datenow.'.csv';
 
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header("Content-Disposition: attachment; filename=$fileName"); // Set nama file excel nya
