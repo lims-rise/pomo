@@ -17,8 +17,8 @@ class Master_budget_model extends CI_Model
 
     // datatables
     function json($date1, $date2, $obj) {
-        $this->datatables->select('a.id_req, a.date_req, b.po_number, c.objective, a.title, a.budged_req, a.id_country, a.flag');
-        $this->datatables->from('budged_request a');
+        $this->datatables->select('a.id_req, a.date_req, b.po_number, c.objective, a.title, a.budget_req, a.id_country, a.flag');
+        $this->datatables->from('budget_request a');
         $this->datatables->join('approved_po b', 'a.id_req=b.id_req', 'left');
         $this->datatables->join('ref_objective c', 'a.id_objective=c.id_objective', 'left');
         $this->datatables->where('a.id_country', $this->session->userdata('lab'));

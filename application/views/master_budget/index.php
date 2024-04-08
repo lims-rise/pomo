@@ -8,9 +8,11 @@
                     <h3 class="box-title">REPORTS - Master Budget</h3>
                 </div>
                 <div class="box-body">
-                    <a class="btn btn-success btn-sm" id="o2a_sample_reception" href="o2a_sample_reception/excel"><i class="fa fa-file-excel-o"></i><br /> Sample Reception</a>
-                    <a class="btn btn-success btn-sm" id="o2a_sample_logging" href="o2a_sample_logging/excel"><i class="fa fa-file-excel-o"></i><br /> Sample Logging</a>
-                    <a class="btn btn-success btn-sm" id="o2a_mosquito_identifications" href="o2a_mosquito_identifications/excel"><i class="fa fa-file-excel-o"></i><br /> Mosquito Identifications</a>
+                    <a class="btn btn-success" id="budget_request" href="budget_request/excel"><i class="fa fa-file-excel-o"></i><br /> Budget Request</a>
+                    <a class="btn btn-success" id="approved_po" href="approved_po/excel"><i class="fa fa-file-excel-o"></i><br /> Budget Approved</a>
+                    <a class="btn btn-success" id="budget_expenses" href="budget_expenses/excel"><i class="fa fa-file-excel-o"></i><br /> Budget Expenses</a>
+                    <a class="btn btn-success" id="budget_request_rem" href="budget_request_rem/excel"><i class="fa fa-file-excel-o"></i><br /> Budget Remaining Request</a>
+                    <a class="btn btn-success" id="budget_exp_rem" href="budget_exp_rem/excel"><i class="fa fa-file-excel-o"></i><br /> Budget Remaining Expenses</a>
                 </div> <!-- </box-body2 > -->
 
                 <div class="box-body">
@@ -255,7 +257,7 @@ const formattedDate = `${year}-${month}-${day}`;
                 {"data": "po_number"},
                 {"data": "objective"},
                 {"data": "title"},
-                {"data": "budged_req"},
+                {"data": "budget_req"},
             ],
             order: [[0, 'desc']],
             rowCallback: function(row, data, iDisplayIndex) {

@@ -15,30 +15,30 @@ class Welcome_model extends CI_Model
         parent::__construct();
     }
 
-    function get_budged_req()
+    function get_budget_req()
     {
-        $query = $this->db->query('SELECT COUNT(DISTINCT a.id_req) AS budged_request,
-        COUNT(DISTINCT b.id_reqdetail) AS budged_detail,
+        $query = $this->db->query('SELECT COUNT(DISTINCT a.id_req) AS budget_request,
+        COUNT(DISTINCT b.id_reqdetail) AS budget_detail,
         COUNT(DISTINCT c.po_number) AS po_aprv,
         COUNT(DISTINCT a.id_req) - COUNT(DISTINCT c.po_number) AS po_left,
-        FORMAT(SUM(DISTINCT a.budged_req), 0, "de_DE") AS total_request,
-        FORMAT(SUM(DISTINCT e.budged_req), 0, "de_DE") AS total_approved,
+        FORMAT(SUM(DISTINCT a.budget_req), 0, "de_DE") AS total_request,
+        FORMAT(SUM(DISTINCT e.budget_req), 0, "de_DE") AS total_approved,
         FORMAT(SUM(DISTINCT d.expenses), 0, "de_DE") AS total_expenses,
-        FORMAT(SUM(DISTINCT e.budged_req)-SUM(DISTINCT d.expenses), 0, "de_DE") AS total_remaining
-        FROM budged_request a
-        LEFT JOIN budged_request_detail b ON a.id_req=b.id_req
+        FORMAT(SUM(DISTINCT e.budget_req)-SUM(DISTINCT d.expenses), 0, "de_DE") AS total_remaining
+        FROM budget_request a
+        LEFT JOIN budget_request_detail b ON a.id_req=b.id_req
         LEFT JOIN approved_po c ON a.id_req=c.id_req
-        LEFT JOIN (SELECT z.budged_req, x.po_number
-        FROM budged_request z
+        LEFT JOIN (SELECT z.budget_req, x.po_number
+        FROM budget_request z
         JOIN approved_po x ON z.id_req=x.id_req
         ) e ON c.po_number = e.po_number
         LEFT JOIN v_tot_expenses d ON c.po_number=d.po_number
         ');
         $result = $query->row_array();
         return $result;        
-        // $this->db->select('COUNT(DISTINCT a.id_req) AS budged_request,
-        // COUNT(DISTINCT b.id_reqdetail) AS budged_detail');
-        // return $this->db->get('budged_request')->row();                
+        // $this->db->select('COUNT(DISTINCT a.id_req) AS budget_request,
+        // COUNT(DISTINCT b.id_reqdetail) AS budget_detail');
+        // return $this->db->get('budget_request')->row();                
     }
 
     // datatables

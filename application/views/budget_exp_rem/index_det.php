@@ -2,56 +2,42 @@
 	<section class="content">
 		<div class="box box-black box-solid">
 			<div class="box-header with-border">
-				<h3 class="box-title">Purchase Order | Budget Request Detail</h3>
+				<h3 class="box-title">Purchase Order | Budget Remaining Expenses Detail</h3>
 			</div>
 			<form role="form"  id="formKeg" method="post" class="form-horizontal">
 				<div class="box-body">
-					<input type="hidden" class="form-control " id="id_req" name="id_req" value="<?php echo $id_req ?>">
-					<!-- <input id="id_req" name="id_req" type="hidden" class="form-control input-sm"> -->
+					<input type="hidden" class="form-control " id="id_reqrem" name="id_reqrem" value="<?php echo $id_reqrem ?>">
+					<!-- <input id="id_reqrem" name="id_reqrem" type="hidden" class="form-control input-sm"> -->
 
 					<div class="form-group">
-						<label for="date_req" class="col-sm-2 control-label">Date request</label>
+						<label for="po_number2" class="col-sm-2 control-label">PO number</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="date_req" name="date_req" value="<?php echo $date_req ?>"  disabled>
+							<input class="form-control " id="po_number2" name="po_number2" value="<?php echo $po_number ?>"  disabled>
 						</div>
 
-						<label for="realname" class="col-sm-2 control-label">Requested by</label>
+						<label for="new_title" class="col-sm-2 control-label">New title</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="realname" name="realname" value="<?php echo $realname ?>"  disabled>
+							<input class="form-control " id="new_title" name="new_title" value="<?php echo $new_title ?>" disabled>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label for="objective" class="col-sm-2 control-label">Objective</label>
+						<label for="sum_tot" class="col-sm-2 control-label">Budget Request</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="objective" name="objective" value="<?php echo $objective ?>" disabled>
+							<input class="form-control " id="sum_tot" name="sum_tot" value="<?php echo $sum_tot ?>"  disabled>
 						</div>
-
-						<label for="title" class="col-sm-2 control-label">Title</label>
+						<label for="budget_tot" class="col-sm-2 control-label">Total Budget Expenses</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="title" name="title" value="<?php echo $title ?>"  disabled>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="budget_req" class="col-sm-2 control-label">Budget Request</label>
-						<div class="col-sm-4">
-							<input class="form-control " id="budget_req" name="budget_req" value="<?php echo $budget_req ?>"  disabled>
-						</div>
-
-						<label for="comments" class="col-sm-2 control-label">Comments</label>
-						<div class="col-sm-4">
-							<input class="form-control " id="comments" name="comments" value="<?php echo $comments ?>"  disabled>
+							<input class="form-control " id="budget_tot" name="budget_tot" value="<?php echo $budget_tot ?>"  disabled>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label for="budget_rem" class="col-sm-2 control-label">Budget Remaining</label>
+						<label for="rem_rem" class="col-sm-2 control-label">Budget Expenses Remaining</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="budget_rem" name="budget_rem" value="<?php echo $budget_rem ?>" disabled>
+							<input class="form-control " id="rem_rem" name="rem_rem" value="<?php echo $rem_rem ?>" disabled>
 						</div>
 					</div>
-
 
 				</div><!-- /.box-body -->
 				</form>
@@ -63,7 +49,7 @@
                         <div class="box box-primary box-solid">
             
                             <div class="box-header">
-                                <h3 class="box-title">Detail Items</h3>
+                                <h3 class="box-title">Detail Remaining Expenses</h3>
                             </div>
 							<div class="box-body pad table-responsive">
 							<?php
@@ -77,12 +63,12 @@
 							<table id="example2" class="table display table-bordered table-striped" width="100%">
 								<thead>
 									<tr>
-										<!-- <th>PO Number</th> -->
+										<th>Date Expenses</th>
 										<th>Items</th>
 										<th>Qty</th>
 										<th>Unit</th>
-										<th>Estimate Price</th>
-										<th>Total Estimate</th>
+										<th>Unit Price</th>
+										<th>Total Price</th>
 										<th>Remarks</th>
 										<th>Action</th>
 									</tr>
@@ -93,18 +79,15 @@
                         </div><!-- box box-warning -->
                     </div>  <!--col-xs-12 -->
                 <!--</div> row -->    
-
-				<div class="form-group">
+					<div class="form-group">
 						<div class="modal-footer clearfix">
-	<!--                                            <button type="submit" name="Save" value="simpan" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> -->
-							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('budget_request/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button> -->
-							<button type="button" name="excel" id="excel" class="btn btn-success" onclick="javascript:void(0);"><i class="fa fa-file-excel-o"></i> Excel</button>
-							<button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button>
+							<button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('budget_exp_rem/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
+							<!-- <button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button> -->
 							<button type="button" name="batal" value="batal" class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button>
 						</div>
 					</div>
-				
-				</div> <!--footer -->
+
+				</div> <!--footer-->
 
 		</div>
 	</section>
@@ -117,18 +100,18 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="modal-title-detail">
-							<span id="my-another-cool-loader"></span></h4>
-                        <!-- <h4 class="modal-title" id="modal-title-detail">Add budget Items<span id="my-another-cool-loader"></span></h4> -->
+                        <h4 class="modal-title" id="modal-title-detail">Add Budget Items<span id="my-another-cool-loader"></span></h4>
                     </div>
-                    <form id="formDetail" action=<?php echo site_url('budget_request/savedetail') ?> method="post" class="form-horizontal">
+                    <form id="formDetail" action=<?php echo site_url('budget_exp_rem/savedetail') ?> method="post" class="form-horizontal">
                         <div class="modal-body">
 						<div class="form-group">
                                 <div class="col-sm-9">
                                     <input id="mode_det" name="mode_det" type="hidden" class="form-control input-sm">
-                                    <!-- <input id="id_reqdet" name="id_reqdet" type="hidden" class="form-control input-sm"> -->
-									<input id="id_req2" name="id_req2" type="hidden" class="form-control input-sm">
-                                    <input id="id_reqdetail" name="id_reqdetail" type="hidden" class="form-control input-sm noEnterSubmit" placeholder="PO Number" required>
+                                    <!-- <input id="id_reqremdet" name="id_reqdet" type="hidden" class="form-control input-sm"> -->
+									<input id="id_exprem" name="id_exprem" type="hidden" class="form-control input-sm">
+									<input id="id_reqrem" name="id_reqrem" type="hidden" class="form-control input-sm" value="<?php echo $id_reqrem ?>">
+									<!-- <input type="hidden" class="form-control " id="id_req" name="id_req" value="<?php //echo $id_req ?>"> -->
+									<input class="form-control" type="hidden" id="po_number" name="po_number" value="<?php echo $po_number ?>">
                                 </div>
                             </div>
                             <!-- <div class="form-group">
@@ -137,10 +120,16 @@
                                     <input id="id_reqdetail" name="id_reqdetail" type="text" class="form-control input-sm noEnterSubmit" placeholder="PO Number" required>
                                 </div>
                             </div> -->
-
+                            <div class="form-group">
+                                <label for="date_expenses" class="col-sm-4 control-label">Date Expenses</label>
+                                <div class="col-sm-8">
+									<input class="form-control" type="date" id="date_expenses" name="date_expenses" value="<?php echo date("Y-m-d"); ?>" >
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="items" class="col-sm-4 control-label">Item</label>
                                 <div class="col-sm-8">
+									<!-- <input class="form-control" type="hidden" id="po_number" name="po_number" value="<?php echo $po_number ?>"  disabled> -->
                                     <input id="items" name="items" type="text" placeholder="Item" class="form-control" required>
                                 </div>
                             </div>
@@ -172,9 +161,9 @@
 							</div>
 														
 							<div class="form-group">
-								<label for="estimate_price" class="col-sm-4 control-label">Estimate Price</label>
+								<label for="expenses" class="col-sm-4 control-label">Actual Price</label>
 								<div class="col-sm-8">
-									<input id="estimate_price" name="estimate_price" type="text" class="form-control" placeholder="Estimate Price">
+									<input id="expenses" name="expenses" type="text" class="form-control" placeholder="Actual Price" required>
 								</div>
 							</div>							
 							<div class="form-group">
@@ -205,10 +194,10 @@
 		});
 						
         $('#compose-modal').on('shown.bs.modal', function () {
-			$('#items').focus();
-			$('#estimate_price').on('input', function() {
+			$('#date_expenses').focus();
+			$('#expenses').on('input', function() {
                 formatNumber(this);
-                });
+                });				
             });
 
         function formatNumber(input) {
@@ -221,7 +210,7 @@
         }
 
 		
-		var id_req = $('#id_req').val();
+		var id = $('#po_number').val();
 		var base_url = location.hostname;
 		$.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings)
 		{
@@ -246,14 +235,14 @@
 			// ordering: false,
 			info: false,
 			bFilter: false,
-			ajax: {"url": "../../budget_request/subjson?id="+id_req, "type": "POST"},
+			ajax: {"url": "../../budget_exp_rem/subjson?id="+id, "type": "POST"},
 			columns: [
-				// {"data": "id_reqdetail"},
+				{"data": "date_expenses"},
 				{"data": "items"}, 
 				{"data": "qty"},
 				{"data": "unit"},
-				{"data": "estimate_price"},
-				{"data": "tot_estimate"},
+				{"data": "expenses"},
+				{"data": "tot_expenses"},
 				{"data": "remarks"},
 				{
 					"data" : "action",
@@ -263,10 +252,16 @@
 			],
 			columnDefs: [
 				{
-					targets: [3, 4], // Index of the 'estimate_price' column
+					targets: [4, 5], // Index of the 'estimate_price' column
 					className: 'text-right' // Apply right alignment to this column
 				}
 			],
+			// columnDefs: [
+			// 	{
+			// 		targets: [0, 1, 2, 3, 6, 7], // Index of the 'estimate_price' column
+			// 		className: 'text-center' // Apply right alignment to this column
+			// 	}
+			// ],
 			order: [[0, 'asc']],
 			rowCallback: function(row, data, iDisplayIndex) {
 				var info = this.fnPagingInfo();
@@ -285,7 +280,6 @@
                 $(this).addClass('active');
             }
         })   		
-				
 		// $('#compose-modal').on('shown.bs.modal', function () {
 		// 	if ($('#mode_det').val() == 'insert') {
 		// 		let table = $('#example2').DataTable(); 
@@ -295,25 +289,20 @@
         //     $('#result').focus();
 		// });        
 
-		$('#print').click(function() {
-			location.href = '../../budget_request/budreq_print/'+id_req;
-		});
-
-		$('#excel').click(function() {
-			location.href = '../../budget_request/excel_print/'+id_req;
-		});
+		// $('#print').click(function() {
+		// 	location.href = '../../budget_exp_rem/budreq_print/'+id_req;
+		// });
 
 
 		$('#addtombol_det').click(function() {
 			$('#mode_det').val('insert');
-            $('#modal-title-detail').html('<i class="fa fa-wpforms"></i> New detailed items<span id="my-another-cool-loader"></span>');
-			$('#id_reqdetail').attr('readonly', false);
-		    $('#id_reqdetail').val('');
+            $('#modal-title-detail').html('<i class="fa fa-wpforms"></i> New detail remaining expenses<span id="my-another-cool-loader"></span>');
+			$('#id_exprem').attr('readonly', false);
+		    $('#id_exprem').val('');
 		    $('#items').val('');
-		    $('#id_req2').val(id_req);
 		    $('#qty').val('');
 		    $('#id_unit').val('');
-		    $('#estimate_price').val('');
+		    $('#expenses').val('');
 		    $('#remarks').val('');
 			$('#compose-modal').modal('show');
 		});
@@ -324,17 +313,18 @@
 			let data = table.row(tr).data();
 			console.log(data);
 			$('#mode_det').val('edit');
-			$('#modal-title-detail').html('<i class="fa fa-pencil-square"></i> Update detailed items<span id="my-another-cool-loader"></span>');
-			$('#id_reqdetail').attr('readonly', true);
-		    $('#id_reqdetail').val(data.id_reqdetail);
+			$('#modal-title-detail').html('<i class="fa fa-pencil-square"></i> Update detail remaining expenses<span id="my-another-cool-loader"></span>');
+			$('#id_exprem').attr('readonly', true);
+		    $('#id_exprem').val(data.id_exprem);
+		    $('#po_number').val(data.po_number);
+		    $('#date_expenses').val(data.date_expenses);
 		    $('#items').val(data.items);
-		    $('#id_req2').val(data.id_req);
 		    $('#qty').val(data.qty);
 		    $('#id_unit').val(data.id_unit).trigger('change');
-		    $('#estimate_price').val(data.estimate_price);
+		    $('#expenses').val(data.expenses);
 		    $('#remarks').val(data.remarks);
 			$('#compose-modal').modal('show');
 		});  
 
 	});
-</script>--
+</script>

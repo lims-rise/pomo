@@ -34,9 +34,9 @@
 					</div>
 
 					<div class="form-group">
-						<label for="budged_req" class="col-sm-2 control-label">Budget Request</label>
+						<label for="budget_req" class="col-sm-2 control-label">Budget Request</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="budged_req" name="budged_req" value="<?php echo $budged_req ?>"  disabled>
+							<input class="form-control " id="budget_req" name="budget_req" value="<?php echo $budget_req ?>"  disabled>
 						</div>
 
 						<label for="comments" class="col-sm-2 control-label">Comments</label>
@@ -46,9 +46,9 @@
 					</div>
 
 					<!-- <div class="form-group">
-						<label for="budged_rem" class="col-sm-2 control-label">Budged Remaining</label>
+						<label for="budget_rem" class="col-sm-2 control-label">budget Remaining</label>
 						<div class="col-sm-4">
-							<input class="form-control " id="budged_rem" name="budged_rem" value="<?php// echo $budged_rem ?>" disabled>
+							<input class="form-control " id="budget_rem" name="budget_rem" value="<?php// echo $budget_rem ?>" disabled>
 						</div>
 					</div> -->
 
@@ -90,7 +90,7 @@
 					<div class="form-group">
 						<div class="modal-footer clearfix">
 	<!--                                            <button type="submit" name="Save" value="simpan" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> -->
-							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('Budged_request/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
+							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('budget_request/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
 							<button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button> -->
 							<button type="button" name="batal" value="batal" class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button>
 						</div>
@@ -139,7 +139,7 @@
 			// ordering: false,
 			info: false,
 			bFilter: false,
-			ajax: {"url": "../../Budged_request/subjson?id="+id_req, "type": "POST"},
+			ajax: {"url": "../../budget_request/subjson?id="+id_req, "type": "POST"},
 			columns: [
 				// {"data": "id_reqdetail"},
 				{"data": "items"}, 

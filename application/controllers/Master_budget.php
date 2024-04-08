@@ -14,14 +14,14 @@ class Master_budget extends CI_Controller
         parent::__construct();
         is_login();
         $this->load->model('Master_budget_model');
-        $this->load->model('Budged_request_model');
+        $this->load->model('budget_request_model');
         // $this->load->library('form_validation');        
 	    $this->load->library('datatables');
     }
 
     public function index()
     {
-        $data['objective'] = $this->Budged_request_model->getObjective();
+        $data['objective'] = $this->budget_request_model->getObjective();
 
         $this->template->load('template','Master_budget/index', $data);
     } 
@@ -65,22 +65,22 @@ class Master_budget extends CI_Controller
         $spreadsheet = new Spreadsheet();
 
         $qr = 'SELECT a.id_req AS ID_Request, a.date_req AS Date_Request, c.objective AS Objective, 
-        a.title AS Title, a.budged_req AS Budget_request, b.po_number AS PO_number, b.date_po AS Date_PO, 
-        d.expenses AS Expenses, a.budged_req-d.expenses AS Budget_remaining, e.req_rem AS Request_budget_remaining, 
+        a.title AS Title, a.budget_req AS Budget_request, b.po_number AS PO_number, b.date_po AS Date_PO, 
+        d.expenses AS Expenses, a.budget_req-d.expenses AS Budget_remaining, e.req_rem AS Request_budget_remaining, 
         e.date_req AS Date_request_remaining, f.exp_rem AS Expenses_remaining,
-        a.budged_req-(d.expenses+f.exp_rem) AS Total_budget_remaining, a.id_objective
-        FROM budged_request a
+        a.budget_req-(d.expenses+f.exp_rem) AS Total_budget_remaining, a.id_objective
+        FROM budget_request a
         LEFT JOIN approved_po b ON a.id_req=b.id_req
         LEFT JOIN ref_objective c ON a.id_objective=c.id_objective
         LEFT JOIN (SELECT po_number, SUM(qty*expenses) AS expenses
-        FROM budged_expenses_detail
+        FROM budget_expenses_detail
         GROUP BY po_number) d ON b.po_number=d.po_number
         LEFT JOIN (SELECT a.po_number, a.date_req, SUM(b.qty*b.estimate_price) AS req_rem
-        FROM budged_req_remaining a
-        LEFT JOIN budged_req_rem_det b ON a.id_reqrem=b.id_reqrem
+        FROM budget_req_remaining a
+        LEFT JOIN budget_req_rem_det b ON a.id_reqrem=b.id_reqrem
         GROUP BY a.id_reqrem) e ON b.po_number=e.po_number
         LEFT JOIN (SELECT po_number, SUM(qty*expenses) AS exp_rem
-        FROM budged_exp_rem_detail
+        FROM budget_exp_rem_detail
         GROUP BY po_number) f ON b.po_number=f.po_number
         WHERE a.id_country = "'.$this->session->userdata('lab').'" 
         AND a.flag = 0 ';

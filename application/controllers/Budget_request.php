@@ -6,7 +6,7 @@ if (!defined('BASEPATH'))
     use PhpOffice\PhpSpreadsheet\IOFactory;
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
     use PhpOffice\PhpSpreadsheet\Reader\Csv;
-    use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+    use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     use Google\Client as google_client;
     use Google\Service\Drive as google_drive;
 
@@ -14,13 +14,13 @@ if (!defined('BASEPATH'))
 // use PhpOffice\PhpSpreadsheet\Spreadsheet;
 // use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     
-class Budget_history extends CI_Controller
+class budget_request extends CI_Controller
 {
     function __construct()
     {
         parent::__construct();
         is_login();
-        $this->load->model('Budget_history_model');
+        $this->load->model('budget_request_model');
         $this->load->library('form_validation');        
 	    $this->load->library('datatables');
 	    $this->load->library('uuid');
@@ -28,44 +28,44 @@ class Budget_history extends CI_Controller
 
     public function index()
     {
-        // $this->load->model('Budget_history_model');
-        $data['person'] = $this->Budget_history_model->getLabtech();
-        $data['objective'] = $this->Budget_history_model->getObjective();
-        // $data['freezer'] = $this->Budget_history_model->getFreezer();
-        // $data['shelf'] = $this->Budget_history_model->getShelf();
-        // $data['rack'] = $this->Budget_history_model->getRack();
-        // $data['rack_level'] = $this->Budget_history_model->getDrawer();
-        $this->template->load('template','Budget_history/index', $data);
+        // $this->load->model('budget_request_model');
+        $data['person'] = $this->budget_request_model->getLabtech();
+        $data['objective'] = $this->budget_request_model->getObjective();
+        // $data['freezer'] = $this->budget_request_model->getFreezer();
+        // $data['shelf'] = $this->budget_request_model->getShelf();
+        // $data['rack'] = $this->budget_request_model->getRack();
+        // $data['rack_level'] = $this->budget_request_model->getDrawer();
+        $this->template->load('template','budget_request/index', $data);
     } 
     
     public function json() {
         header('Content-Type: application/json');
-        echo $this->Budget_history_model->json();
+        echo $this->budget_request_model->json();
     }
 
     public function subjson() {
         $id = $this->input->get('id',TRUE);
         header('Content-Type: application/json');
-        echo $this->Budget_history_model->subjson($id);
+        echo $this->budget_request_model->subjson($id);
     }
 
     public function getSumEstimatePrice($id_req) {
         // Load the model
-        // $this->load->model('Budget_history_model');
+        // $this->load->model('budget_request_model');
         // Call the method to get the sum of Estimate Price
-        $sumEstimatePrice = $this->Budget_history_model->getSumEstimatePrice($id_req);
+        $sumEstimatePrice = $this->budget_request_model->getSumEstimatePrice($id_req);
     
         // Return the sum of Estimate Price
         echo $sumEstimatePrice;
     }
     public function read($id)
     {
-        // $this->template->load('template','Budget_history/index_det', $data);
+        // $this->template->load('template','budget_request/index_det', $data);
         // $id_spec = $this->input->post('id_spec',TRUE);
-        // $data['unit'] = $this->Budget_history_model->getUnits();
-        $row = $this->Budget_history_model->get_detail($id);
+        // $data['unit'] = $this->budget_request_model->getUnits();
+        $row = $this->budget_request_model->get_detail($id);
         if ($row) {
-            // $inv = $this->Budget_history_model->getInv();            
+            // $inv = $this->budget_request_model->getInv();            
             $data = array(
                 'id_req' => $row->id_req,
                 'date_req' => $row->date_req,
@@ -75,18 +75,118 @@ class Budget_history extends CI_Controller
                 'budget_req' => $row->budget_req,
                 'budget_rem' => $row->budget_rem,
                 'comments' => $row->comments,
-                'unit' => $this->Budget_history_model->getUnits(),
+                'unit' => $this->budget_request_model->getUnits(),
                 );
-                $this->template->load('template','Budget_history/index_rep', $data);
+                $this->template->load('template','budget_request/index_det', $data);
         }
         else {
-            // $this->template->load('template','Budget_history/index_det');
+            // $this->template->load('template','budget_request/index_det');
         }
     } 
 
-    public function budhist_print($id) 
+    public function save() 
     {
-        $row = $this->Budget_history_model->get_rep($id);
+        $mode = $this->input->post('mode',TRUE);
+        $id = $this->input->post('id_req',TRUE);
+        // $f = $this->input->post('freezer',TRUE);
+        // $s = $this->input->post('shelf',TRUE);
+        // $r = $this->input->post('rack',TRUE);
+        // $rl = $this->input->post('rack_level',TRUE);
+
+        // $freezerloc = $this->budget_request_model->getFreezLoc($f,$s,$r,$rl);
+        $dt = new DateTime();
+
+        if ($mode=="insert"){
+            $data = array(
+                'date_req' => $this->input->post('date_req',TRUE),
+                'id_person' => $this->input->post('id_person',TRUE),
+                'id_objective' => $this->input->post('id_objective',TRUE),
+                'title' => $this->input->post('title',TRUE),
+                'budget_req' => str_replace('.', '', $this->input->post('budget_req')),
+                'comments' => trim($this->input->post('comments',TRUE)),
+                'uuid' => $this->uuid->v4(),
+                'id_country' => $this->session->userdata('lab'),
+                'user_created' => $this->session->userdata('id_users'),
+                'date_created' => $dt->format('Y-m-d H:i:s'),
+                );
+
+            $this->budget_request_model->insert($data);
+            $this->session->set_flashdata('message', 'Create Record Success');    
+      
+        }
+        else if ($mode=="edit"){
+            $data = array(
+                'date_req' => $this->input->post('date_req',TRUE),
+                'id_person' => $this->input->post('id_person',TRUE),
+                'id_objective' => $this->input->post('id_objective',TRUE),
+                'title' => $this->input->post('title',TRUE),
+                'budget_req' => str_replace('.', '', $this->input->post('budget_req')),
+                'comments' => trim($this->input->post('comments',TRUE)),
+                // 'uuid' => $this->uuid->v4(),
+                'id_country' => $this->session->userdata('lab'),
+                'user_updated' => $this->session->userdata('id_users'),
+                'date_updated' => $dt->format('Y-m-d H:i:s'),
+                );
+    
+            $this->budget_request_model->update($id, $data);
+            $this->session->set_flashdata('message', 'Create Record Success');    
+        }
+
+        redirect(site_url("budget_request"));
+    }
+
+
+    public function savedetail() 
+    {
+        $mode = $this->input->post('mode_det',TRUE);
+        $id_reqdetail = $this->input->post('id_reqdetail',TRUE);
+        $id_req = $this->input->post('id_req2',TRUE);
+        $dt = new DateTime();
+
+        if ($mode=="insert"){
+            $data = array(
+                'id_reqdetail' => $this->input->post('id_reqdetail',TRUE),
+                'id_req' => $this->input->post('id_req2',TRUE),
+                'items' => $this->input->post('items',TRUE),
+                'qty' => $this->input->post('qty',TRUE),
+                'id_unit' => $this->input->post('id_unit',TRUE),
+                'estimate_price' => str_replace('.', '', $this->input->post('estimate_price')),
+                'remarks' => $this->input->post('remarks',TRUE),
+                'uuid' => $this->uuid->v4(),
+                // 'lab' => $this->session->userdata('lab'),
+                'user_created' => $this->session->userdata('id_users'),
+                'date_created' => $dt->format('Y-m-d H:i:s'),
+                );
+
+            $this->budget_request_model->insert_det($data);
+            $this->session->set_flashdata('message', 'Create Record Success');    
+      
+        }
+        else if ($mode=="edit"){
+            $data = array(
+                'id_reqdetail' => $this->input->post('id_reqdetail',TRUE),
+                'id_req' => $this->input->post('id_req2',TRUE),
+                'items' => $this->input->post('items',TRUE),
+                'qty' => $this->input->post('qty',TRUE),
+                'id_unit' => $this->input->post('id_unit',TRUE),
+                'estimate_price' => str_replace('.', '', $this->input->post('estimate_price')),
+                'remarks' => $this->input->post('remarks',TRUE),
+                // 'uuid' => $this->uuid->v4(),
+                // 'lab' => $this->session->userdata('lab'),
+                'user_updated' => $this->session->userdata('id_users'),
+                'date_updated' => $dt->format('Y-m-d H:i:s'),
+                );
+    
+            $this->budget_request_model->update_det($id_reqdetail, $data);
+            $this->session->set_flashdata('message', 'Create Record Success');    
+        }
+
+        redirect(site_url("budget_request/read/".$id_req));
+    }
+
+    public function budreq_print($id) 
+    {
+        $row = $this->budget_request_model->get_rep($id);
         if ($row) {
             $data = array(
             'id_req' => $row->id_req,
@@ -94,43 +194,41 @@ class Budget_history extends CI_Controller
             'realname' => $row->realname,
             'objective' => $row->objective,
             'title' => $row->title,
-            'po_number' => $row->po_number,
             'periode' => $row->periode,
-            'photo' => $row->photo,
             'budget_req' => $row->budget_req,
             'reviewed' => $row->reviewed,
             'approved' => $row->approved,
             'comments' => $row->comments,
             );
         // $data['items'] = $this->Tbl_receive_old_model->getItems();
-            $this->template->load('template','Budget_history/index_rep', $data);
+            $this->template->load('template','budget_request/index_rep', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url("Budget_history/read/".$id));
+            redirect(site_url("budget_request/read/".$id));
         }
     }
 
-    public function spec_printdet() 
-    {
-        $id = $this->input->post('id',TRUE);
-        header('Content-Type: application/json');
-        echo $this->Budget_history_model->get_repdet($id);
-    }    
+    // public function spec_printdet() 
+    // {
+    //     $id = $this->input->post('id',TRUE);
+    //     header('Content-Type: application/json');
+    //     echo $this->budget_request_model->get_repdet($id);
+    // }    
 
     public function delete($id) 
     {
-        $row = $this->Budget_history_model->get_by_id($id);
+        $row = $this->budget_request_model->get_by_id($id);
         $data = array(
             'flag' => 1,
             );
 
         if ($row) {
-            $this->Budget_history_model->update($id, $data);
+            $this->budget_request_model->update($id, $data);
             $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('Budget_history'));
+            redirect(site_url('budget_request'));
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('Budget_history'));
+            redirect(site_url('budget_request'));
         }
     }
 
@@ -138,7 +236,7 @@ class Budget_history extends CI_Controller
     {
         $id = $this->input->get('id1');
         $type = $this->input->get('id2');
-        $data = $this->Budget_history_model->validate1($id, $type);
+        $data = $this->budget_request_model->validate1($id, $type);
         header('Content-Type: application/json');
         echo json_encode($data);
     }
@@ -159,54 +257,38 @@ class Budget_history extends CI_Controller
 
     public function excel()
     {
-        // $date1=$this->input->get('date1');
-        // $date2=$this->input->get('date2');
-
         $this->load->database();
 
-        // Database connection settings
-        // $host = 'localhost';
-        // $user = 'root';
-        // $password = '';
-
-        // // Create a database connection
-        // $mysqli = new mysqli($host, $user, $password, $database);
-
-        // // Check for connection errors
-        // if ($mysqli->connect_error) {
-        //     die('Connection failed: ' . $mysqli->connect_error);
-        // }        
         $spreadsheet = new Spreadsheet();
 
         $sheets = array(
             array(
-                'Water_Spectro',
-                'SELECT a.id_spec AS ID_spectro, a.date_spec AS Date_spectro, c.initial AS Lab_tech, a.chem_parameter AS Chemistry_parameter, a.mixture_name AS Mixture_name, a.sample_no AS Sample_number, 
-                a.lot_no AS Lot_number, a.date_expired AS Date_expired, a.cert_value AS Certified_value, a.uncertainty AS Uncertainty, TRIM(a.notes) AS Comments, a.tot_result AS Total_result, a.tot_trueness AS Total_trueness,
-                a.tot_bias AS Total_bias, a.avg_result AS AVG_result, a.avg_trueness AS AVG_trueness, a.avg_bias AS AVG_bias, a.sd AS SD, a.rsd AS `%RSD`, a.cv_horwits AS `%CV_horwits`, a.cv AS `0.67x%CV`,
-                a.prec AS Test_Precision, a.accuracy AS Test_Accuracy, a.bias AS `Test_Bias`
-                FROM obj2b_spectro_crm a
-                LEFT JOIN ref_person c ON a.id_person = c.id_person
-                WHERE
-                a.lab = "'.$this->session->userdata('lab').'" 
+                'Budget_request',
+                'SELECT a.id_req AS ID_Request, a.date_req AS Date_Request, c.objective AS Objective, 
+                a.title AS Title, b.realname AS Requested, a.budget_req AS Budget_req, a.comments AS Comments
+                FROM budget_request a
+                LEFT JOIN ref_person b ON a.id_person=b.id_person
+                LEFT JOIN ref_objective c ON a.id_objective=c.id_objective                
+                WHERE a.id_country = "'.$this->session->userdata('lab').'" 
                 AND a.flag = 0 
-                ORDER BY a.date_spec, a.id_spec
+                ORDER BY a.date_req, a.id_req
                 ',
-                array('ID_spectro', 'Date_spectro', 'Lab_tech', 'Chemistry_parameter', 'Mixture_name', 
-                'Sample_number', 'Lot_number', 'Date_expired', 'Certified_value', 'Uncertainty', 
-                'Comments', 'Total_result', 'Total_trueness', 'Total_bias', 'AVG_result', 'AVG_trueness',
-                'AVG_bias', 'SD', '%RSD', '%CV_horwits', '0.67x%CV', 'Test_Precision', 'Test_Accuracy', 'Test_Bias'), // Columns for Sheet1
+                array('ID_Request', 'Date_Request', 'Objective', 'Title', 'Requested', 
+                'Budget_req', 'Comments'), // Columns for Sheet1
             ),
             array(
-                'Water_spectro_QC_detail',
-                'SELECT b.id_dspec AS ID_detail_spectro, b.id_spec AS ID_parent_spectro, b.duplication AS Duplication, 
-                b.result AS Result, b.trueness AS Trueness, b.bias_method AS Bias_method, b.result2 AS `Result^2`
-                FROM obj2b_spectro_crm_det b
-                WHERE b.lab = "'.$this->session->userdata('lab').'" 
+                'Budget_request_detail',
+                'SELECT a.id_req AS ID_Request, a.id_reqdetail AS ID_Request_Det, a.items AS Descriptions, 
+                a.qty AS Qty, b.unit AS Unit, a.estimate_price AS Estimate_price, a.remarks AS Remarks 
+                FROM budget_request_detail a
+                LEFT JOIN budget_request c ON a.id_req=c.id_req
+                LEFT JOIN ref_unit b ON a.id_unit=b.id_unit
+                WHERE 
+                c.id_country = "'.$this->session->userdata('lab').'" 
                 AND b.flag = 0 
-                ORDER BY b.id_spec, b.id_dspec ASC
+                ORDER BY a.id_reqdetail ASC
                 ', // Different columns for Sheet2
-                array('ID_detail_spectro', 'ID_parent_spectro', 'Duplication', 'Result', 'Trueness', 'Bias_method', 'Result^2'), // Columns for Sheet2
+                array('ID_Request', 'ID_Request_Det', 'Descriptions', 'Qty', 'Unit', 'Estimate_price', 'Remarks'), // Columns for Sheet2
             ),
             // Add more sheets as needed
         );
@@ -225,6 +307,7 @@ class Budget_history extends CI_Controller
             $query = $this->db->query($sql);
             $result = $query->result_array();
             
+            // var_dump($result); 
             // Column headers for this sheet
             $columns = $sheetInfo[2];
     
@@ -252,7 +335,7 @@ class Budget_history extends CI_Controller
         
         // Set the HTTP headers to download the Excel file
         $datenow=date("Ymd");
-        $filename = 'Water_Spectro_QC_'.$datenow.'.xlsx';
+        $filename = 'Budget_Request_'.$datenow.'.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
@@ -264,7 +347,7 @@ class Budget_history extends CI_Controller
     public function excel_print($id)
 	{
         /* Data */
-        $data = $this->Budget_history_model->get_all_with_detail_excel($id);
+        $data = $this->budget_request_model->get_all_with_detail_excel($id);
 
         /* Spreadsheet Init */
         $spreadsheet = new Spreadsheet();
@@ -391,7 +474,7 @@ class Budget_history extends CI_Controller
         /* Excel File Format */
         $writer = new Xlsx($spreadsheet);
         ob_clean();
-        $filename = 'Budget_history_' . date('Ymd');
+        $filename = 'Budget_Request_' . date('Ymd');
         
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
@@ -421,7 +504,7 @@ class Budget_history extends CI_Controller
     //     // $sheet->getStyle('A1:H1')->getFont()->setBold(true); // Set bold kolom A1
 
     //     // Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
-    //     $rdeliver = $this->Budget_history_model->get_all();
+    //     $rdeliver = $this->budget_request_model->get_all();
     
     //     // $no = 1; // Untuk penomoran tabel, di awal set dengan 1
     //     $numrow = 2; // Set baris pertama untuk isi tabel adalah baris ke 4
@@ -437,7 +520,7 @@ class Budget_history extends CI_Controller
     //     }
     // $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
     // $datenow=date("Ymd");
-    // $fileName = 'Budget_history_'.$datenow.'.csv';
+    // $fileName = 'budget_request_'.$datenow.'.csv';
 
     // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     // header("Content-Disposition: attachment; filename=$fileName"); // Set nama file excel nya
@@ -447,8 +530,8 @@ class Budget_history extends CI_Controller
     // }
 }
 
-/* End of file Budget_history.php */
-/* Location: ./application/controllers/Budget_history.php */
+/* End of file budget_request.php */
+/* Location: ./application/controllers/budget_request.php */
 /* Please DO NOT modify this information : */
 /* Generated by Harviacode Codeigniter CRUD Generator 2022-12-14 03:38:42 */
 /* http://harviacode.com */

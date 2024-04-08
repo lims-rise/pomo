@@ -120,67 +120,152 @@ class Ref_person extends CI_Controller
 
     public function excel()
     {
-        // $date1=$this->input->get('date1');
-        // $date2=$this->input->get('date2');
+        $this->load->database();
 
-        $spreadsheet = new Spreadsheet();    
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', "ID_person"); 
-        $sheet->setCellValue('B1', "Real_name"); 
-        $sheet->setCellValue('C1', "Initial");
-        $sheet->setCellValue('D1', "Position");
-        // $sheet->getStyle('A1:H1')->getFont()->setBold(true); // Set bold kolom A1
+        $spreadsheet = new Spreadsheet();
 
-        // Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
-        $rdeliver = $this->Ref_person_model->get_all();
+        $sheets = array(
+            array(
+                'Master_Person',
+                'SELECT id_person AS ID_Person, realname AS FullName, initial AS Initial, 
+                position AS Position
+                FROM ref_person
+                WHERE id_person <> 999
+                ORDER BY id_person
+                ',
+                array('ID_Person', 'FullName', 'Initial', 'Position'), // Columns for Sheet1
+            ),
+            // array(
+            //     'Budget_request_detail',
+            //     'SELECT a.id_req AS ID_Request, a.id_reqdetail AS ID_Request_Det, a.items AS Descriptions, 
+            //     a.qty AS Qty, b.unit AS Unit, a.estimate_price AS Estimate_price, a.remarks AS Remarks 
+            //     FROM budget_request_detail a
+            //     LEFT JOIN budget_request c ON a.id_req=c.id_req
+            //     LEFT JOIN ref_unit b ON a.id_unit=b.id_unit
+            //     WHERE 
+            //     c.id_country = "'.$this->session->userdata('lab').'" 
+            //     AND b.flag = 0 
+            //     ORDER BY a.id_reqdetail ASC
+            //     ', // Different columns for Sheet2
+            //     array('ID_Request', 'ID_Request_Det', 'Descriptions', 'Qty', 'Unit', 'Estimate_price', 'Remarks'), // Columns for Sheet2
+            // ),
+            // Add more sheets as needed
+        );
+        
+        $spreadsheet->removeSheetByIndex(0);
+
+        foreach ($sheets as $sheetInfo) {
+            // Create a new worksheet for each sheet
+            $worksheet = $spreadsheet->createSheet();
+            $worksheet->setTitle($sheetInfo[0]);
     
-        // $no = 1; // Untuk penomoran tabel, di awal set dengan 1
-        $numrow = 2; // Set baris pertama untuk isi tabel adalah baris ke 4
-        foreach($rdeliver as $data){ // Lakukan looping pada variabel siswa
-          $sheet->setCellValue('A'.$numrow, $data->id_person);
-          $sheet->setCellValue('B'.$numrow, $data->realname);
-          $sheet->setCellValue('C'.$numrow, $data->initial);
-          $sheet->setCellValue('D'.$numrow, $data->position);
-        //   $no++; // Tambah 1 setiap kali looping
-          $numrow++; // Tambah 1 setiap kali looping
+            // SQL query to fetch data for this sheet
+            $sql = $sheetInfo[1];
+            
+            // Use the query builder to fetch data
+            $query = $this->db->query($sql);
+            $result = $query->result_array();
+            
+            // var_dump($result); 
+            // Column headers for this sheet
+            $columns = $sheetInfo[2];
+    
+            // Add column headers
+            $col = 1;
+            foreach ($columns as $column) {
+                $worksheet->setCellValueByColumnAndRow($col, 1, $column);
+                $col++;
+            }
+    
+            // Add data rows
+            $row = 2;
+            foreach ($result as $row_data) {
+                $col = 1;
+                foreach ($columns as $column) {
+                    $worksheet->setCellValueByColumnAndRow($col, $row, $row_data[$column]);
+                    $col++;
+                }
+                $row++;
+            }
         }
-    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
-    $datenow=date("Ymd");
-    $fileName = 'MASTER_person_'.$datenow.'.csv';
 
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header("Content-Disposition: attachment; filename=$fileName"); // Set nama file excel nya
-    header('Cache-Control: max-age=0');
-
-    // $this->output->set_header('Content-Type: application/vnd.ms-excel');
-    // $this->output->set_header("Content-type: application/csv");
-    // $this->output->set_header('Cache-Control: max-age=0');
-    $writer->save('php://output');
-    //     $writer->save($fileName); 
-    // //redirect(HTTP_UPLOAD_PATH.$fileName); 
-    // $filepath = file_get_contents($fileName);
-    // force_download($fileName, $filepath);
-
-        // // Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
-        // $sheet->getDefaultRowDimension()->setRowHeight(-1);
-    
-        // // Set orientasi kertas jadi LANDSCAPE
-        // $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
-    
-        // // Set judul file excel nya
-        // $sheet->setTitle("Delivery Reports");
-    
-        // // Proses file excel
-        // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        // header('Content-Disposition: attachment; filename="Delivery_Reports.xlsx"'); // Set nama file excel nya
-        // header('Cache-Control: max-age=0');
-    
-        // // $writer = new Xlsx($spreadsheet);
-        // $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
-        // // $fileName = $fileName.'.csv';
-        // $writer->save('php://output');
-           
+        // Create a new Xlsx writer
+        $writer = new Xlsx($spreadsheet);
+        
+        // Set the HTTP headers to download the Excel file
+        $datenow=date("Ymd");
+        $filename = 'MASTER_Person_'.$datenow.'.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        
+        // Save the Excel file to the output stream
+        $writer->save('php://output');
     }
+
+    // public function excel()
+    // {
+    //     // $date1=$this->input->get('date1');
+    //     // $date2=$this->input->get('date2');
+
+    //     $spreadsheet = new Spreadsheet();    
+    //     $sheet = $spreadsheet->getActiveSheet();
+    //     $sheet->setCellValue('A1', "ID_person"); 
+    //     $sheet->setCellValue('B1', "Real_name"); 
+    //     $sheet->setCellValue('C1', "Initial");
+    //     $sheet->setCellValue('D1', "Position");
+    //     // $sheet->getStyle('A1:H1')->getFont()->setBold(true); // Set bold kolom A1
+
+    //     // Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
+    //     $rdeliver = $this->Ref_person_model->get_all();
+    
+    //     // $no = 1; // Untuk penomoran tabel, di awal set dengan 1
+    //     $numrow = 2; // Set baris pertama untuk isi tabel adalah baris ke 4
+    //     foreach($rdeliver as $data){ // Lakukan looping pada variabel siswa
+    //       $sheet->setCellValue('A'.$numrow, $data->id_person);
+    //       $sheet->setCellValue('B'.$numrow, $data->realname);
+    //       $sheet->setCellValue('C'.$numrow, $data->initial);
+    //       $sheet->setCellValue('D'.$numrow, $data->position);
+    //     //   $no++; // Tambah 1 setiap kali looping
+    //       $numrow++; // Tambah 1 setiap kali looping
+    //     }
+    // $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
+    // $datenow=date("Ymd");
+    // $fileName = 'MASTER_person_'.$datenow.'.csv';
+
+    // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    // header("Content-Disposition: attachment; filename=$fileName"); // Set nama file excel nya
+    // header('Cache-Control: max-age=0');
+
+    // // $this->output->set_header('Content-Type: application/vnd.ms-excel');
+    // // $this->output->set_header("Content-type: application/csv");
+    // // $this->output->set_header('Cache-Control: max-age=0');
+    // $writer->save('php://output');
+    // //     $writer->save($fileName); 
+    // // //redirect(HTTP_UPLOAD_PATH.$fileName); 
+    // // $filepath = file_get_contents($fileName);
+    // // force_download($fileName, $filepath);
+
+    //     // // Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
+    //     // $sheet->getDefaultRowDimension()->setRowHeight(-1);
+    
+    //     // // Set orientasi kertas jadi LANDSCAPE
+    //     // $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+    
+    //     // // Set judul file excel nya
+    //     // $sheet->setTitle("Delivery Reports");
+    
+    //     // // Proses file excel
+    //     // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    //     // header('Content-Disposition: attachment; filename="Delivery_Reports.xlsx"'); // Set nama file excel nya
+    //     // header('Cache-Control: max-age=0');
+    
+    //     // // $writer = new Xlsx($spreadsheet);
+    //     // $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
+    //     // // $fileName = $fileName.'.csv';
+    //     // $writer->save('php://output');
+           
+    // }
 }
 
 /* End of file Ref_person.php */

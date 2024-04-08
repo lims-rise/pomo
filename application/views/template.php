@@ -185,7 +185,7 @@
             <div class="noprint">
             <footer class="main-footer">
                 <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.1.0
+                    <b>Version</b> 1.1.0
                 </div>
                 <strong><img src="../img/lims_logo4.png" height='25px' onerror="this.src='../../../img/lims_logo4.png'">  Copyright &copy; 2023-2024 POMO-RISE | 
                 <a href="https://www.linkedin.com/in/zainal-enal-452b4414a/" target="_blank">RISE Data Team</a>.</strong> All rights reserved.

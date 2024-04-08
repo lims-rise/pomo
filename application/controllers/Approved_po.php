@@ -6,7 +6,7 @@ if (!defined('BASEPATH'))
     use PhpOffice\PhpSpreadsheet\IOFactory;
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
     use PhpOffice\PhpSpreadsheet\Reader\Csv;
-    use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+    use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     use Google\Client as google_client;
     use Google\Service\Drive as google_drive;
 
@@ -72,8 +72,8 @@ class Approved_po extends CI_Controller
                 'realname' => $row->realname,
                 'objective' => $row->objective,
                 'title' => $row->title,
-                'budged_req' => $row->budged_req,
-                'budged_rem' => $row->budged_rem,
+                'budget_req' => $row->budget_req,
+                'budget_rem' => $row->budget_rem,
                 'comments' => $row->comments,
                 // 'photo' => $row->photo,
                 'unit' => $this->Approved_po_model->getUnits(),
@@ -279,34 +279,33 @@ class Approved_po extends CI_Controller
 
         $sheets = array(
             array(
-                'Water_Spectro',
-                'SELECT a.id_spec AS ID_spectro, a.date_spec AS Date_spectro, c.initial AS Lab_tech, a.chem_parameter AS Chemistry_parameter, a.mixture_name AS Mixture_name, a.sample_no AS Sample_number, 
-                a.lot_no AS Lot_number, a.date_expired AS Date_expired, a.cert_value AS Certified_value, a.uncertainty AS Uncertainty, TRIM(a.notes) AS Comments, a.tot_result AS Total_result, a.tot_trueness AS Total_trueness,
-                a.tot_bias AS Total_bias, a.avg_result AS AVG_result, a.avg_trueness AS AVG_trueness, a.avg_bias AS AVG_bias, a.sd AS SD, a.rsd AS `%RSD`, a.cv_horwits AS `%CV_horwits`, a.cv AS `0.67x%CV`,
-                a.prec AS Test_Precision, a.accuracy AS Test_Accuracy, a.bias AS `Test_Bias`
-                FROM obj2b_spectro_crm a
+                'Approved_PO',
+                'SELECT b.po_number AS PO_Number, b.date_po AS Date_PO, b.comments AS Comments, 
+                a.date_req AS Date_req, c.realname AS Requested, d.objective AS Objective, a.title AS Title, 
+                a.budget_req AS Budget_Request, a.id_country, 
+                a.id_person, a.id_objective, a.id_req AS ID_Request, a.flag
+                FROM budget_request a
+                LEFT JOIN approved_po b ON b.id_req = a.id_req
                 LEFT JOIN ref_person c ON a.id_person = c.id_person
-                WHERE
-                a.lab = "'.$this->session->userdata('lab').'" 
+                LEFT JOIN ref_objective d ON a.id_objective = d.id_objective
+                WHERE a.id_country = "'.$this->session->userdata('lab').'" 
                 AND a.flag = 0 
-                ORDER BY a.date_spec, a.id_spec
+                ORDER BY b.date_po, a.id_req
                 ',
-                array('ID_spectro', 'Date_spectro', 'Lab_tech', 'Chemistry_parameter', 'Mixture_name', 
-                'Sample_number', 'Lot_number', 'Date_expired', 'Certified_value', 'Uncertainty', 
-                'Comments', 'Total_result', 'Total_trueness', 'Total_bias', 'AVG_result', 'AVG_trueness',
-                'AVG_bias', 'SD', '%RSD', '%CV_horwits', '0.67x%CV', 'Test_Precision', 'Test_Accuracy', 'Test_Bias'), // Columns for Sheet1
+                array('ID_Request', 'Date_req', 'PO_Number', 'Date_PO', 'Comments', 'Requested', 
+                'Objective', 'Title', 'Budget_Request'), // Columns for Sheet1
             ),
-            array(
-                'Water_spectro_QC_detail',
-                'SELECT b.id_dspec AS ID_detail_spectro, b.id_spec AS ID_parent_spectro, b.duplication AS Duplication, 
-                b.result AS Result, b.trueness AS Trueness, b.bias_method AS Bias_method, b.result2 AS `Result^2`
-                FROM obj2b_spectro_crm_det b
-                WHERE b.lab = "'.$this->session->userdata('lab').'" 
-                AND b.flag = 0 
-                ORDER BY b.id_spec, b.id_dspec ASC
-                ', // Different columns for Sheet2
-                array('ID_detail_spectro', 'ID_parent_spectro', 'Duplication', 'Result', 'Trueness', 'Bias_method', 'Result^2'), // Columns for Sheet2
-            ),
+            // array(
+            //     'Water_spectro_QC_detail',
+            //     'SELECT b.id_dspec AS ID_detail_spectro, b.id_spec AS ID_parent_spectro, b.duplication AS Duplication, 
+            //     b.result AS Result, b.trueness AS Trueness, b.bias_method AS Bias_method, b.result2 AS `Result^2`
+            //     FROM obj2b_spectro_crm_det b
+            //     WHERE b.lab = "'.$this->session->userdata('lab').'" 
+            //     AND b.flag = 0 
+            //     ORDER BY b.id_spec, b.id_dspec ASC
+            //     ', // Different columns for Sheet2
+            //     array('ID_detail_spectro', 'ID_parent_spectro', 'Duplication', 'Result', 'Trueness', 'Bias_method', 'Result^2'), // Columns for Sheet2
+            // ),
             // Add more sheets as needed
         );
         
@@ -351,7 +350,7 @@ class Approved_po extends CI_Controller
         
         // Set the HTTP headers to download the Excel file
         $datenow=date("Ymd");
-        $filename = 'Water_Spectro_QC_'.$datenow.'.xlsx';
+        $filename = 'Budget_Approved(PO)_'.$datenow.'.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');

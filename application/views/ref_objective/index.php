@@ -17,14 +17,16 @@
         }
 ?>
         
-		<?php echo anchor(site_url('Ref_objective/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
+		<?php echo anchor(site_url('Ref_objective/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to XLS', 'class="btn btn-success"'); ?></div>
         <table class="table table-bordered table-striped tbody" id="mytable" style="width:100%">
             <thead>
                 <tr>
                     <!-- <th width="30px">No</th> -->
-		    <th>ID</th>
-		    <th>Objectives</th>
-		    <th>Action</th>
+                <th>ID</th>
+                <th>Objectives</th>
+                <th>Reviewed</th>
+                <th>Approved</th>
+                <th>Action</th>
                 </tr>
             </thead>
 	    
@@ -68,7 +70,20 @@
                             <div class="col-sm-8">
                                 <input id="objective" name="objective" type="text" class="form-control" placeholder="Objective">
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reviewed" class="col-sm-4 control-label">Reviewed</label>
+                            <div class="col-sm-8">
+                                <input id="reviewed" name="reviewed" type="text" class="form-control" placeholder="Reviewed">
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="approved" class="col-sm-4 control-label">Approved</label>
+                            <div class="col-sm-8">
+                                <input id="approved" name="approved" type="text" class="form-control" placeholder="Approved">
+                            </div>
+                        </div>
+
                     </div>
                     <div class="modal-footer clearfix">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
@@ -199,7 +214,7 @@
 
         $('#compose-modal').on('shown.bs.modal', function () {
             // $('#barcode_sample').val('');     
-            $('#sample').focus();
+            $('#objective').focus();
         });        
                 
         var base_url = location.hostname;
@@ -241,6 +256,8 @@
                 // },
                 {"data": "id_objective"},
                 {"data": "objective"},
+                {"data": "reviewed"},
+                {"data": "approved"},
                 {
                     "data" : "action",
                     "orderable": false,
@@ -263,8 +280,9 @@
             $('#mode').val('insert');
             $('#modal-title').html('<i class="fa fa-wpforms"></i> Master Data - New objective<span id="my-another-cool-loader"></span>');
             $('#id_objective').val('');
-            // $("#date_ended").datepicker("setDate",'now');
             $('#objective').val('');
+            $('#reviewed').val('');
+            $('#approved').val('');
             $('#compose-modal').modal('show');
         });
 
@@ -278,6 +296,8 @@
             $('#modal-title').html('<i class="fa fa-pencil-square"></i> Master Data - Update objective<span id="my-another-cool-loader"></span>');
             $('#id_objective').val(data.id_objective);
             $('#objective').val(data.objective);
+            $('#reviewed').val(data.reviewed);
+            $('#approved').val(data.approved);
             $('#compose-modal').modal('show');
         });  
 

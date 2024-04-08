@@ -27,10 +27,10 @@
         echo alert('alert-error', 'Welcome '.$this->session->userdata('full_name') . ' to the '. $labname .' Accounting data', 
         "<i class='fa fa-hand-o-left' aria-hidden='true'></i>" . ' To switch accounting data between country, please select countries on the left side panel.');
         
-        $data = $this->Welcome_model->get_budged_req(); 
+        $data = $this->Welcome_model->get_budget_req(); 
 
-        $budged_request = $data['budged_request'];
-        $budged_detail = $data['budged_detail'];
+        $budget_request = $data['budget_request'];
+        $budget_detail = $data['budget_detail'];
         $po_aprv = $data['po_aprv'];
         $po_left = $data['po_left'];
         $total_request = $data['total_request'];
@@ -46,16 +46,16 @@
             <div class="small-box bg-aqua">
                     <div class="inner">
                         <h3>
-                            <?php echo $budged_request;?> <p>Number of Budget Request</p>
+                            <?php echo $budget_request;?> <p>Number of Budget Request</p>
                         </h3>
                         <p>
-                            Detail item request : <?php echo $budged_detail;?>
+                            Detail item request : <?php echo $budget_detail;?>
                         </p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-paper-airplane"></i>
                     </div>
-                    <a href="budged_request" class="small-box-footer">
+                    <a href="budget_request" class="small-box-footer">
                         More info <i class="fa fa-arrow-circle-right"></i>
                     </a>
                 </div>

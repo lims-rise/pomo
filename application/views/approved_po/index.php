@@ -10,7 +10,7 @@
         
         <div class="box-body">
         <div style="padding-bottom: 10px;">
-		<?php echo anchor(site_url('Approved_po/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to CSV', 'class="btn btn-success"'); ?></div>
+		<?php echo anchor(site_url('Approved_po/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to XLS', 'class="btn btn-success"'); ?></div>
         <table class="table table-bordered table-striped tbody" id="mytable" style="width:100%">
             <thead>
                 <tr>
@@ -68,9 +68,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="budged_req" class="col-sm-4 control-label">Budget Request</label>
+                            <label for="budget_req" class="col-sm-4 control-label">Budget Request</label>
                             <div class="col-sm-8">
-                                <input id="budged_req" name="budged_req" type="text" class="form-control" placeholder="Budget Request">
+                                <input id="budget_req" name="budget_req" type="text" class="form-control" placeholder="Budget Request">
                             </div>
                         </div>
                         <hr>
@@ -101,7 +101,7 @@
                             <div class='col-sm-8' style="margin-bottom:10px;">
                                 <input type="file" name="images" class="images" id="filex" accept="image/*">
                                         <?php
-                                            echo "<a href='#' id='imageLink' target='_blank'><img id='preview' class='img-thumbnail' alt='Image Approval PO' style='cursor:pointer;'> </a>";
+                                            echo "<a href='#' id='imageLink' target='_blank'><img id='preview' class='img-thumbnail' alt='No Image Approval' style='cursor:pointer;'> </a>";
                                         ?>
                                     <p class="help-block">*File types allowed only JPG | PNG | GIF files <?php //echo $images ?></p>
                             </div>
@@ -216,7 +216,7 @@
                 {"data": "date_req"},
                 {"data": "objective"},
                 {"data": "title"},
-                {"data": "budged_req"},
+                {"data": "budget_req"},
                 {"data": "po_number"},
                 {"data": "date_po"},
                 {"data": "comments"},
@@ -264,11 +264,11 @@
             }
             $('#objective').attr('readonly', true);
             $('#title').attr('readonly', true);
-            $('#budged_req').attr('readonly', true);
+            $('#budget_req').attr('readonly', true);
             $('#id_req').val(data.id_req);
             $('#objective').val(data.objective);
             $('#title').val(data.title);
-            $('#budged_req').val(data.budged_req);
+            $('#budget_req').val(data.budget_req);
             $('#po_number').val(data.po_number);
             $('#comments').val(data.comments);
             $('#photo').val(data.photo);
