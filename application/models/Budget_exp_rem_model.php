@@ -28,7 +28,7 @@ class budget_exp_rem_model extends CI_Model
         $this->datatables->where('a.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){
-            $this->datatables->add_column('action', '', 'id_reqrem');
+            $this->datatables->add_column('action', anchor(site_url('budget_exp_rem/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_reqrem');
         }
         else if (($lvl == 2) | ($lvl == 3)){
             $this->datatables->add_column('action', anchor(site_url('budget_exp_rem/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_reqrem');

@@ -31,7 +31,7 @@ class Budget_history_model extends CI_Model
         $this->datatables->where('a.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){
-            $this->datatables->add_column('action', '', 'id_req');
+            $this->datatables->add_column('action', anchor(site_url('budget_history/budhist_print/$1'),'<i class="fa fa-print" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
         }
         else {
             $this->datatables->add_column('action', anchor(site_url('budget_history/budhist_print/$1'),'<i class="fa fa-print" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');

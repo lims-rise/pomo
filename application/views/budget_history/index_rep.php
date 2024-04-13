@@ -11,7 +11,8 @@
     @page { margin: 2cm; }
     body { margin: 1.6cm; }
     .page-break {
-        page-break-before: always;
+        page-break-before: auto;
+        margin-top: 20px; 
     }    
  }
 
@@ -175,8 +176,10 @@ $response4 = $q4->result();
         <!-- <thead> -->
     </table>
     </tr>
+    <hr>
     <tr>
     <!-- </br> -->
+    <div class="page-break">
     <table id="mytable3" width=95%; style="border:0px solid black; margin-left:auto;margin-right:auto;">
         <thead>
             </br>
@@ -191,14 +194,17 @@ $response4 = $q4->result();
                     echo '<img src="../../../assets/receipt/'.$photo.'" width="70%" class="img-thumbnail" alt="No Image Approval" style="padding: 0px; float: left;">';
                 }             
                 ?>
-
-                <!-- <img src="../../../assets/receipt/<?php //echo $photo; ?>" width="70%" class="icon" style="padding: 0px; float: left;">                     -->
                 </td>
             </tr>
             <tr><td></br></td></tr>
         </thead>
     </table>
-    <table id="mytable4" width=95%; style="border:0px solid black; margin-left:auto;margin-right:auto;" class="page-break">
+    </div>
+    </tr>
+    <hr>
+    <tr>
+    <div class="page-break">
+    <table id="mytable4" width=95%; style="border:0px solid black; margin-left:auto;margin-right:auto;">
         <thead>
             <tr>
                 <td width=100px; style="border:0px solid black; padding: 5px; " align="left" colspan="7"><b>Budget Expenses : </b></td>
@@ -239,8 +245,12 @@ $response4 = $q4->result();
         </thead>
         <thead>
     </table>    
-
-    <table id="mytable5" width=95%; style="border:0px solid black; margin-left:auto;margin-right:auto;">
+    </div>
+    </tr>
+    <hr>
+    <tr>
+    <div class="page-break">
+    <table id="mytable5" width=95%; style="border:0px solid black; margin-left:auto;margin-right:auto;" class="page-break">
         <thead>
             <tr>
                 <td width=100px; style="border:0px solid black; padding: 5px; " align="left" colspan="7"><b>Budget Remaining Request : </b></td>
@@ -280,9 +290,13 @@ $response4 = $q4->result();
             
         </thead>
         <thead>
-    </table>        
-
-    <table id="mytable6" width=95%; style="border:0px solid black; margin-left:auto;margin-right:auto;">
+    </table>
+    </div>        
+    </tr>
+    <hr>
+    <tr>
+    <div class="page-break">
+    <table id="mytable6" width=95%; style="border:0px solid black; margin-left:auto;margin-right:auto;" class="page-break">
         <thead>
             <tr>
                 <td width=100px; style="border:0px solid black; padding: 5px; " align="left" colspan="7"><b>Budget Remaining Expenses : </b></td>
@@ -322,7 +336,8 @@ $response4 = $q4->result();
             
         </thead>
         <thead>
-    </table>            
+    </table>      
+    </div>      
     </tr>
 <!-- 
     <tfoot>

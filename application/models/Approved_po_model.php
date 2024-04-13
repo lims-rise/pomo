@@ -29,7 +29,7 @@ class Approved_po_model extends CI_Model
         $this->datatables->where('budget_request.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){
-            $this->datatables->add_column('action', '', 'id_req');
+            $this->datatables->add_column('action', anchor(site_url('Approved_po/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
         }
         else if (($lvl == 2) | ($lvl == 3)){
             $this->datatables->add_column('action', '<button type="button" class="btn_edit btn btn-success btn-sm" aria-hidden="true"><i class="fa fa-check" aria-hidden="true"></i></button>'."
