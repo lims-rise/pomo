@@ -159,10 +159,10 @@
                         if ($this->session->userdata('lab') == 1) {
                             // echo "<span class=\"\"><b>Welcome to the LIMS2.0</b>RISE Indonesia</span>
                             // <h6><i class='fa fa-flag'></i> Indonesia Lab data </h6>
-                            echo "<h6><i class='fa fa-qrcode'></i> Indonesia Accounting </h6>";
+                            echo "<h6><i class='fa fa-qrcode'></i> Indonesia Administration </h6>";
                         }
                         else {
-                            echo "<h6><i class='fa fa-qrcode'></i> Fiji Accounting </h6>";
+                            echo "<h6><i class='fa fa-qrcode'></i> Fiji Administration </h6>";
                             // echo "<span class=\"\"><b>Welcome to the LIMS2.0</b>RISE Fiji</span>";
                         }
                     ?>

@@ -32,7 +32,8 @@ class Welcome_model extends CI_Model
         FROM budget_request z
         JOIN approved_po x ON z.id_req=x.id_req
         ) e ON c.po_number = e.po_number
-        LEFT JOIN v_tot_expenses d ON c.po_number=d.po_number
+        LEFT JOIN v_tot_all_expenses d ON c.po_number=d.po_number
+        WHERE a.flag = 0
         ');
         $result = $query->row_array();
         return $result;        

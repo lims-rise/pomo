@@ -219,17 +219,14 @@ class budget_exp_rem extends CI_Controller
     public function delete($id) 
     {
         $row = $this->budget_exp_rem_model->get_by_id($id);
-        $data = array(
-            'flag' => 1,
-            );
-
         if ($row) {
-            $this->budget_exp_rem_model->update($id, $data);
+            $id_parent = $row->id_reqrem; // Retrieve id_req before updating the record
+            $this->budget_exp_rem_model->delete($id);
             $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('budget_exp_rem'));
+            redirect(site_url('budget_exp_rem/read/'.$id_parent));
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('budget_exp_rem'));
+            redirect(site_url('budget_exp_rem/read/'.$id_parent));
         }
     }
 

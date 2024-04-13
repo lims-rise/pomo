@@ -18,8 +18,9 @@
 		    <th>Objectives</th>
 		    <th>Title</th>
 		    <th>Budget remaining</th>
-		    <th>Date Request</th>
-		    <th>New Title</th>
+		    <th>Date request</th>
+		    <th>New title</th>
+		    <th>Budget request</th>
 		    <th>Comments</th>
 		    <th width="120px">Action</th>
                 </tr>
@@ -214,6 +215,7 @@
                 {"data": "budget_rem"},
                 {"data": "date_req"},
                 {"data": "new_title"},
+                {"data": "budget_rem_req"},
                 {"data": "comments"},
                 {
                     "data" : "action",
@@ -223,7 +225,7 @@
             ],
 			columnDefs: [
 				{
-					targets: [3], // Index of the 'estimate_price' column
+					targets: [3,6], // Index of the 'estimate_price' column
 					className: 'text-right' // Apply right alignment to this column
 				}
 			],

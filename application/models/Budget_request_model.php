@@ -37,7 +37,7 @@ class budget_request_model extends CI_Model
         else {
             $this->datatables->add_column('action', anchor(site_url('budget_request/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')) ."
                 ".'<button type="button" class="btn_edit btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('budget_request/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_req');
+                ".anchor(site_url('budget_request/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting budget request number : $1 ?\')"'), 'id_req');
         }
         return $this->datatables->generate();
     }
@@ -60,49 +60,15 @@ class budget_request_model extends CI_Model
             $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>', 'id_reqdetail');
       }
       else {
+        // $this->datatables->add_column('action', function($row) {
+        //     return '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
+        //         ".anchor(site_url('budget_request/delete_detail/'.$row['id_reqdetail']),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting item : '.$row['id_reqdetail'].' ?\')"');
+        //     });
             $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('budget_request/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_reqdetail');
+                ".anchor(site_url('budget_request/delete_detail/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting this item?\')"'), 'id_reqdetail');
         }
       return $this->datatables->generate();
   }
-
-    // function get_all()
-    // {
-    //     $q = $this->db->query('SELECT a.id_spec, a.date_spec, c.initial, a.chem_parameter, a.mixture_name, a.sample_no, 
-    //     a.lot_no, a.date_expired, a.cert_value, a.uncertainty, a.notes, a.tot_result, a.tot_trueness,
-    //     a.tot_bias, a.avg_result, a.avg_trueness, a.avg_bias, a.sd, a.rsd, a.cv_horwits, a.cv,
-    //     a.prec, a.accuracy, a.bias, b.id_reqdetail, b.duplication, b.result, b.trueness, b.bias_method, b.result2 
-    //     FROM obj2b_spectro_crm a
-    //     LEFT JOIN budget_request_detail b ON a.id_spec=b.id_spec
-    //     LEFT JOIN ref_person c ON a.id_person = c.id_person    
-    //     WHERE a.lab="'.$this->session->userdata('lab').'"
-    //     AND a.flag = 0 
-    //     ');        
-    //     $response = $q->result();
-    //     return $response;
-
-    //     // $this->db->order_by($this->id, $this->order);
-    //     // $this->db->where('lab', $this->session->userdata('lab'));
-    //     // $this->db->where('flag', '0');
-    //     // return $this->db->get('budget_request_detail')->result();
-    // }
-
-    // function get_all_with_detail_excel()
-    // {
-    //     return $this->db->select('a.date_req, a.title, c.realname , d.objective, a.budget_req, a.comments, 
-    //     b.id_reqdetail, b.items, b.qty, e.unit, 
-    //     FORMAT(b.estimate_price, 0, "de_DE") AS estimate_price,
-    //     (b.estimate_price * b.qty) AS total, b.remarks')
-    //         ->from("budget_request a")
-    //         ->join('budget_request_detail b', 'a.id_req = b.id_req', 'left')
-    //         ->join('ref_person c', 'a.id_person = c.id_person', 'left')
-    //         ->join('ref_objective d', 'a.id_objective = d.id_objective ', 'left')
-    //         ->join('ref_unit e', 'b.id_unit = e.id_unit ', 'left')
-    //         ->where('a.flag', 0)
-    //         ->where('b.flag', 0)
-    //         // ->where('l.id', $this->session->userdata('location_id'))
-    //         ->get()->result();
-    // }
 
     function get_all_with_detail_excel($id)
     {
@@ -135,6 +101,14 @@ class budget_request_model extends CI_Model
         $this->db->where('flag', '0');
         // $this->db->where('lab', $this->session->userdata('lab'));
         return $this->db->get($this->table)->row();
+    }
+
+    function get_by_id_detail($id)
+    {
+        $this->db->where('id_reqdetail', $id);
+        $this->db->where('flag', '0');
+        // $this->db->where('lab', $this->session->userdata('lab'));
+        return $this->db->get('budget_request_detail')->row();
     }
 
     function get_detail($id)
@@ -216,6 +190,12 @@ class budget_request_model extends CI_Model
         $this->db->delete($this->table);
     }
 
+    function delete_detail($id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->delete($this->table);
+    }
+
     function getLabtech(){
         $response = array();
         $this->db->select('*');
@@ -245,17 +225,6 @@ class budget_request_model extends CI_Model
         $q = $this->db->get('ref_unit');
         $response = $q->result_array();
         return $response;
-      }
-
-      function validate1($id, $type){
-        if($type == 1) {
-            $this->db->where('barcode_sample', $id);
-        }
-        $this->db->where('flag', '0');
-        $q = $this->db->get($this->table);
-        $response = $q->result_array();
-        return $response;
-        // return $this->db->get('ref_location_80')->row();
       }
       
 }

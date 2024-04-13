@@ -56,11 +56,11 @@ class budget_exp_rem_model extends CI_Model
           $this->datatables->add_column('action', '', 'id_exp');
       }
       else if (($lvl == 2) | ($lvl == 3)){
-            $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>', 'id_exp');
+            $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>', 'id_exprem');
       }
       else {
             $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('budget_exp_rem/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_exp');
+                ".anchor(site_url('budget_exp_rem/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting this item?\')"'), 'id_exprem');
         }
       return $this->datatables->generate();
   }
@@ -129,8 +129,10 @@ class budget_exp_rem_model extends CI_Model
 
     function get_by_id($id)
     {
+        $this->db->select('*');
+        $this->db->join('budget_req_remaining', 'budget_exp_rem_detail.po_number=budget_req_remaining.po_number', 'left');
         $this->db->where($this->id, $id);
-        $this->db->where('flag', '0');
+        // $this->db->where('flag', '0');
         // $this->db->where('lab', $this->session->userdata('lab'));
         return $this->db->get($this->table)->row();
     }

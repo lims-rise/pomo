@@ -168,27 +168,15 @@ class budget_expenses extends CI_Controller
     public function delete($id) 
     {
         $row = $this->budget_expenses_model->get_by_id($id);
-        $data = array(
-            'flag' => 1,
-            );
-
         if ($row) {
-            $this->budget_expenses_model->update($id, $data);
+            $id_parent = $row->id_req;
+            $this->budget_expenses_model->delete($id);
             $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('budget_expenses'));
+            redirect(site_url('budget_expenses/read/'.$id_parent));
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('budget_expenses'));
+            redirect(site_url('budget_expenses/read/'.$id_parent));
         }
-    }
-
-    public function valid_bs()
-    {
-        $id = $this->input->get('id1');
-        $type = $this->input->get('id2');
-        $data = $this->budget_expenses_model->validate1($id, $type);
-        header('Content-Type: application/json');
-        echo json_encode($data);
     }
 
     // public function _rules() 
@@ -207,23 +195,7 @@ class budget_expenses extends CI_Controller
 
     public function excel()
     {
-        // $date1=$this->input->get('date1');
-        // $date2=$this->input->get('date2');
-
         $this->load->database();
-
-        // Database connection settings
-        // $host = 'localhost';
-        // $user = 'root';
-        // $password = '';
-
-        // // Create a database connection
-        // $mysqli = new mysqli($host, $user, $password, $database);
-
-        // // Check for connection errors
-        // if ($mysqli->connect_error) {
-        //     die('Connection failed: ' . $mysqli->connect_error);
-        // }        
         $spreadsheet = new Spreadsheet();
 
         $sheets = array(

@@ -37,63 +37,11 @@ class Approved_po_model extends CI_Model
         }
         else {
             $this->datatables->add_column('action', '<button type="button" class="btn_edit btn btn-success btn-sm" aria-hidden="true"><i class="fa fa-check" aria-hidden="true"></i></button>'."
-            ".anchor(site_url('Approved_po/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
+            ".anchor(site_url('Approved_po/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm'))." 
+            ".anchor(site_url('Approved_po/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting this approved PO?\')"'), 'id_req');
         }
         return $this->datatables->generate();
     }
-
-    // function json() {
-    //     $this->datatables->select('approved_po.po_number, approved_po.date_po, approved_po.comments, budget_request.date_req, 
-    //     ref_person.realname, ref_objective.objective, budget_request.title, 
-    //     FORMAT(budget_request.budget_req, 0, "de_DE") AS budget_req, budget_request.id_country, 
-    //     budget_request.id_person, budget_request.id_objective, budget_request.id_req, budget_request.flag');
-    //     $this->datatables->from('budget_request');
-    //     $this->datatables->join('approved_po', 'approved_po.id_req = budget_request.id_req', 'left');
-    //     $this->datatables->join('ref_person', 'budget_request.id_person = ref_person.id_person', 'left');
-    //     $this->datatables->join('ref_objective', 'budget_request.id_objective = ref_objective.id_objective', 'left');
-    //     $this->datatables->where('budget_request.id_country', $this->session->userdata('lab'));
-    //     $this->datatables->where('budget_request.flag', '0');
-    
-    //     // Generate DataTables data
-    //     $data = $this->datatables->generate();
-    
-    //     // Define array to store buttons for each row
-    //     $buttons = array();
-    
-    //     // Loop through each row to determine the button for each row
-    //     foreach ($data as $row) {
-    //         // Check if po_number exists for this row
-    //         if (!empty($row['po_number'])) {
-    //             // Change button HTML here if po_number exists
-    //             $button_html = '<button type="button" class="new_button_class btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
-    //         } else {
-    //             // Default button HTML
-    //             $button_html = '<button type="button" class="btn_edit btn btn-success btn-sm" aria-hidden="true"><i class="fa fa-check" aria-hidden="true"></i></button>';
-    //         }
-    
-    //         // Add button HTML to buttons array
-    //         $buttons[] = $button_html;
-    //     }
-    
-    //     $lvl = $this->session->userdata('id_user_level');
-    //     if ($lvl == 7){
-    //         $this->datatables->add_column('action', '', 'id_req');
-    //     }
-    //     else if (($lvl == 2) | ($lvl == 3)){
-    //         $this->datatables->add_column('action', '$1' . anchor(site_url('Approved_po/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
-    //     }
-    //     else {
-    //         $this->datatables->add_column('action', '$1' . anchor(site_url('Approved_po/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_req');
-    //     }
-    
-    //     // Merge buttons array with DataTables data
-    //     $result = array();
-    //     foreach ($data as $key => $row) {
-    //         $result[] = array_merge($row, array($buttons[$key]));
-    //     }
-    
-    //     return $result;
-    // }
     
     function subjson($id) {
       $this->datatables->select('budget_request_detail.id_reqdetail, budget_request_detail.items, budget_request_detail.qty, 

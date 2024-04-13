@@ -7,7 +7,7 @@ class budget_expenses_model extends CI_Model
 {
 
     public $table = 'budget_expenses_detail';
-    public $id = 'id_req';
+    public $id = 'id_exp';
     public $order = 'DESC';
 
     function __construct()
@@ -62,7 +62,7 @@ class budget_expenses_model extends CI_Model
       }
       else {
             $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('budget_expenses/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_exp');
+                ".anchor(site_url('budget_expenses/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting this item?\')"'), 'id_exp');
         }
       return $this->datatables->generate();
   }
@@ -94,8 +94,10 @@ class budget_expenses_model extends CI_Model
 
     function get_by_id($id)
     {
+        $this->db->select('budget_expenses_detail.id_exp, budget_expenses_detail.po_number, approved_po.id_req');
+        $this->db->join('approved_po', 'budget_expenses_detail.po_number=approved_po.po_number', 'left');
         $this->db->where($this->id, $id);
-        $this->db->where('flag', '0');
+        // $this->db->where('flag', '0');
         // $this->db->where('lab', $this->session->userdata('lab'));
         return $this->db->get($this->table)->row();
     }

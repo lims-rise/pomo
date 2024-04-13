@@ -220,12 +220,16 @@ class Approved_po extends CI_Controller
     public function delete($id) 
     {
         $row = $this->Approved_po_model->get_by_id($id);
-        $data = array(
-            'flag' => 1,
-            );
-
         if ($row) {
-            $this->Approved_po_model->update($id, $data);
+            $file_name = $row->photo; // Assuming the column name in your database is "file_name"
+
+            // Delete the physical file
+            $file_path = './assets/receipt/' . $file_name;
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+
+            $this->Approved_po_model->delete($id);
             $this->session->set_flashdata('message', 'Delete Record Success');
             redirect(site_url('approved_po'));
         } else {

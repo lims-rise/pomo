@@ -208,13 +208,6 @@ class budget_request extends CI_Controller
         }
     }
 
-    // public function spec_printdet() 
-    // {
-    //     $id = $this->input->post('id',TRUE);
-    //     header('Content-Type: application/json');
-    //     echo $this->budget_request_model->get_repdet($id);
-    // }    
-
     public function delete($id) 
     {
         $row = $this->budget_request_model->get_by_id($id);
@@ -232,14 +225,25 @@ class budget_request extends CI_Controller
         }
     }
 
-    public function valid_bs()
+    public function delete_detail($id) 
     {
-        $id = $this->input->get('id1');
-        $type = $this->input->get('id2');
-        $data = $this->budget_request_model->validate1($id, $type);
-        header('Content-Type: application/json');
-        echo json_encode($data);
+        $row = $this->budget_request_model->get_by_id_detail($id);
+
+        if ($row) {
+            $id_parent = $row->id_req; // Retrieve id_req before updating the record
+            $data = array(
+                'flag' => 1,
+            );
+    
+            $this->budget_request_model->update_det($id, $data);
+            $this->session->set_flashdata('message', 'Delete Record Success');
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+        }
+    
+        redirect(site_url('budget_request/read/'.$id_parent));
     }
+
 
     // public function _rules() 
     // {
@@ -422,6 +426,7 @@ class budget_request extends CI_Controller
 
         foreach($data as $key => $row)
         {
+            $obj = $row->objective;
             $sheet->getStyle('C2')->getFont()->setBold(true);        
             $sheet->setCellValue('C2', "RISE Makassar | Budget Request");
             $sheet->getStyle('C3')->getFont()->setBold(true);        
@@ -474,7 +479,7 @@ class budget_request extends CI_Controller
         /* Excel File Format */
         $writer = new Xlsx($spreadsheet);
         ob_clean();
-        $filename = 'Budget_Request_' . date('Ymd');
+        $filename = 'Budget_Request_'. $obj .'_'. date('Ymd');
         
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
@@ -484,50 +489,6 @@ class budget_request extends CI_Controller
         $writer->save('php://output');
     }
 
-
-    // public function excel()
-    // {
-    //     $spreadsheet = new Spreadsheet();    
-    //     $sheet = $spreadsheet->getActiveSheet();
-    //     $sheet->setCellValue('A1', "ID_spectro"); 
-    //     $sheet->setCellValue('B1', "Date_spectro"); 
-    //     $sheet->setCellValue('C1', "Lab_tech");
-    //     $sheet->setCellValue('D1', "Chemistry_parameter");
-    //     $sheet->setCellValue('E1', "Mixture_name");
-    //     $sheet->setCellValue('F1', "Sample_number");
-    //     $sheet->setCellValue('G1', "Lot_number");
-    //     $sheet->setCellValue('G1', "Date_expired");
-    //     $sheet->setCellValue('G1', "Certified_value");
-    //     $sheet->setCellValue('G1', "Uncertainty");
-    //     $sheet->setCellValue('G1', "Comments");
-
-    //     // $sheet->getStyle('A1:H1')->getFont()->setBold(true); // Set bold kolom A1
-
-    //     // Panggil function view yang ada di SiswaModel untuk menampilkan semua data siswanya
-    //     $rdeliver = $this->budget_request_model->get_all();
-    
-    //     // $no = 1; // Untuk penomoran tabel, di awal set dengan 1
-    //     $numrow = 2; // Set baris pertama untuk isi tabel adalah baris ke 4
-    //     foreach($rdeliver as $data){ // Lakukan looping pada variabel siswa
-    //       $sheet->setCellValue('A'.$numrow, $data->barcode_sample);
-    //       $sheet->setCellValue('B'.$numrow, $data->date_process);
-    //       $sheet->setCellValue('C'.$numrow, $data->time_process);
-    //       $sheet->setCellValue('D'.$numrow, $data->initial);
-    //       $sheet->setCellValue('E'.$numrow, $data->freezer_bag);
-    //       $sheet->setCellValue('F'.$numrow, $data->location);
-    //       $sheet->setCellValue('G'.$numrow, $data->comments);
-    //       $numrow++; // Tambah 1 setiap kali looping
-    //     }
-    // $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
-    // $datenow=date("Ymd");
-    // $fileName = 'budget_request_'.$datenow.'.csv';
-
-    // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    // header("Content-Disposition: attachment; filename=$fileName"); // Set nama file excel nya
-    // header('Cache-Control: max-age=0');
-
-    // $writer->save('php://output');
-    // }
 }
 
 /* End of file budget_request.php */

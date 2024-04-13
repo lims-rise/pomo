@@ -24,8 +24,8 @@
         else {
             $labname = "Fiji";
         }
-        echo alert('alert-error', 'Welcome '.$this->session->userdata('full_name') . ' to the '. $labname .' Accounting data', 
-        "<i class='fa fa-hand-o-left' aria-hidden='true'></i>" . ' To switch accounting data between country, please select countries on the left side panel.');
+        echo alert('alert-error', 'Welcome '.$this->session->userdata('full_name') . ' to the '. $labname .' Purchase Order data', 
+        "<i class='fa fa-hand-o-left' aria-hidden='true'></i>" . ' To switch purchase order between country, please select countries on the left side panel.');
         
         $data = $this->Welcome_model->get_budget_req(); 
 

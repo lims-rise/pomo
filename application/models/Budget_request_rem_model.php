@@ -19,27 +19,30 @@ class budget_request_rem_model extends CI_Model
     function json() {
         $this->datatables->select('a.po_number, a.date_po, d.objective, b.title, 
         FORMAT(b.budget_req - c.expenses, 0, "de_DE") AS budget_rem, e.new_title, e.comments,
-        e.date_req, e.id_reqrem AS id_reqrem, b.id_req, e.id_person');
+        e.date_req, IFNULL(e.id_reqrem ,0) AS id_reqrem, b.id_req, e.id_person,
+        FORMAT(budget_rem_req, 0, "de_DE") AS budget_rem_req');
         $this->datatables->from('approved_po a');
         $this->datatables->join('budget_request b', 'a.id_req=b.id_req', 'left');
         $this->datatables->join('ref_objective d', 'b.id_objective=d.id_objective', 'left');
         $this->datatables->join('v_tot_expenses c', 'a.po_number=c.po_number', 'left');
         $this->datatables->join('budget_req_remaining e', 'a.po_number=e.po_number', 'left');
+        $this->datatables->join('v_req_rem_detail f', 'e.id_reqrem=f.id_reqrem', 'left');
         // $this->datatables->where('b.id_country', $this->session->userdata('lab'));
         $this->datatables->where('b.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){
-            $this->datatables->add_column('action', '', 'id_req');
+            $this->datatables->add_column('action', '', 'id_reqrem');
         }
         else if (($lvl == 2) | ($lvl == 3)){
-            $this->datatables->add_column('action', anchor(site_url('budget_request_rem/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')) ."
-                ".'<button type="button" class="btn_edit btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>', 'id_req');
+            $this->datatables->add_column('action', 
+                '<button type="button" class="btn_edit btn btn-success btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
+                ".anchor(site_url("budget_request_rem/read/$1"),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')), 'id_reqrem');
         }
         else {
             $this->datatables->add_column('action', 
                 '<button type="button" class="btn_edit btn btn-success btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('budget_request_rem/read/$1'),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')) ."
-                ".anchor(site_url('budget_request_rem/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_req');
+                ".anchor(site_url("budget_request_rem/read/$1"),'<i class="fa fa-th-list" aria-hidden="true"></i>', array('class' => 'btn btn-info btn-sm')) ."
+                ".anchor(site_url("budget_request_rem/delete/$1"),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting this request?\')"'), 'id_reqrem');
         }
         return $this->datatables->generate();
     }
@@ -63,7 +66,7 @@ class budget_request_rem_model extends CI_Model
       }
       else {
             $this->datatables->add_column('action', '<button type="button" class="btn_edit_det btn btn-info btn-sm" aria-hidden="true"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>'." 
-                ".anchor(site_url('budget_request_rem/delete/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting sample : $1 ?\')"'), 'id_reqrem_det');
+                ".anchor(site_url('budget_request_rem/delete_detail/$1'),'<i class="fa fa-trash-o" aria-hidden="true"></i>','class="btn btn-danger btn-sm" onclick="javasciprt: return confirm(\'Confirm deleting this item?\')"'), 'id_reqrem_det');
         }
       return $this->datatables->generate();
   }
@@ -142,16 +145,27 @@ class budget_request_rem_model extends CI_Model
     function get_by_id($id)
     {
         $this->db->where($this->id, $id);
-        $this->db->where('flag', '0');
+        // $this->db->where('flag', '0');
         // $this->db->where('lab', $this->session->userdata('lab'));
         return $this->db->get($this->table)->row();
+    }
+
+    function get_detail_by_id($id)
+    {
+        // $this->db->select('approved_po.id_req, budget_req_remaining.po_number, budget_req_remaining.id_reqrem, budget_req_rem_det.id_reqrem_det');
+        // $this->db->join('budget_req_remaining', 'budget_req_rem_det.id_reqrem=budget_req_remaining.id_reqrem', 'left');
+        // $this->db->join('approved_po', 'budget_req_remaining.po_number=approved_po.po_number', 'left');
+        $this->db->where('id_reqrem_det', $id);
+        // $this->db->where('flag', '0');
+        // $this->db->where('lab', $this->session->userdata('lab'));
+        return $this->db->get('budget_req_rem_det')->row();
     }
 
     function get_detail($id)
     {
       $response = array();
       $this->db->select('*');
-      $this->db->where('id_req', $id);
+      $this->db->where('id_reqrem', $id);
       // $this->db->where('lab', $this->session->userdata('lab'));
     //   $this->db->where('flag', '0');
       $q = $this->db->get('v_req_bud_rem');
@@ -232,11 +246,24 @@ class budget_request_rem_model extends CI_Model
         $this->db->delete($this->table);
     }
 
+    function delete_all_detail($id)
+    {
+        $this->db->where('id_reqrem', $id);
+        $this->db->delete('budget_req_rem_det');
+    }
+
+    function delete_detail($id)
+    {
+        $this->db->where('id_reqrem_det', $id);
+        $this->db->delete('budget_req_rem_det');
+    }
+
     function getLabtech(){
         $response = array();
         $this->db->select('*');
         // $this->db->where('position', 'Lab Tech');
         $this->db->where('flag', '0');
+        $this->db->order_by('realname');
         $q = $this->db->get('ref_person');
         $response = $q->result_array();
         return $response;

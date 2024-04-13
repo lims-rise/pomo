@@ -58,8 +58,15 @@ class budget_request_rem extends CI_Controller
         // Return the sum of Estimate Price
         echo $sumEstimatePrice;
     }
+
     public function read($id)
     {
+        if(empty($id) || is_null($id)) {
+            // Redirect back to the previous page
+            header("Location: {$_SERVER['HTTP_REFERER']}");
+            exit();
+        }
+    
         // $this->template->load('template','budget_request_rem/index_det', $data);
         // $id_spec = $this->input->post('id_spec',TRUE);
         // $data['unit'] = $this->budget_request_rem_model->getUnits();
@@ -81,7 +88,8 @@ class budget_request_rem extends CI_Controller
                 $this->template->load('template','budget_request_rem/index_det', $data);
         }
         else {
-            // $this->template->load('template','budget_request_rem/index_det');
+            header("Location: {$_SERVER['HTTP_REFERER']}");
+            exit();            
         }
     } 
 
@@ -209,22 +217,12 @@ class budget_request_rem extends CI_Controller
         }
     }
 
-    public function spec_printdet() 
-    {
-        $id = $this->input->post('id',TRUE);
-        header('Content-Type: application/json');
-        echo $this->budget_request_rem_model->get_repdet($id);
-    }    
-
     public function delete($id) 
     {
         $row = $this->budget_request_rem_model->get_by_id($id);
-        $data = array(
-            'flag' => 1,
-            );
-
         if ($row) {
-            $this->budget_request_rem_model->update($id, $data);
+            $this->budget_request_rem_model->delete($id);
+            $this->budget_request_rem_model->delete_all_detail($id);
             $this->session->set_flashdata('message', 'Delete Record Success');
             redirect(site_url('budget_request_rem'));
         } else {
@@ -232,6 +230,37 @@ class budget_request_rem extends CI_Controller
             redirect(site_url('budget_request_rem'));
         }
     }
+
+    public function delete_detail($id) 
+    {
+        $row = $this->budget_request_rem_model->get_detail_by_id($id);
+        if ($row) {
+            $id_parent = $row->id_reqrem; // Retrieve id_req before updating the record
+            $this->budget_request_rem_model->delete_detail($id, $data);
+            $this->session->set_flashdata('message', 'Delete Record Success');
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+        }
+    
+        redirect(site_url('budget_request_rem/read/'.$id_parent));
+    }
+
+    // public function delete($id) 
+    // {
+    //     $row = $this->budget_request_rem_model->get_by_id($id);
+    //     $data = array(
+    //         'flag' => 1,
+    //         );
+
+    //     if ($row) {
+    //         $this->budget_request_rem_model->update($id, $data);
+    //         $this->session->set_flashdata('message', 'Delete Record Success');
+    //         redirect(site_url('budget_request_rem'));
+    //     } else {
+    //         $this->session->set_flashdata('message', 'Record Not Found');
+    //         redirect(site_url('budget_request_rem'));
+    //     }
+    // }
 
     public function valid_bs()
     {

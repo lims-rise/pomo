@@ -21,8 +21,8 @@
             <thead>
                 <tr>
 		    <th>PO number</th>
-		    <th>Date Request</th>
-		    <th>New Title</th>
+		    <th>Date request</th>
+		    <th>New title</th>
 		    <th>Budget request</th>
 		    <th>Total expenses</th>
 		    <th>Budget remaining</th>

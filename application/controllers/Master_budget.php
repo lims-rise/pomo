@@ -68,6 +68,7 @@ class Master_budget extends CI_Controller
         a.title AS Title, a.budget_req AS Budget_request, b.po_number AS PO_number, b.date_po AS Date_PO, 
         d.expenses AS Expenses, a.budget_req-d.expenses AS Budget_remaining, e.req_rem AS Request_budget_remaining, 
         e.date_req AS Date_request_remaining, f.exp_rem AS Expenses_remaining,
+        d.expenses+f.exp_rem AS Total_Expenses,
         a.budget_req-(d.expenses+f.exp_rem) AS Total_budget_remaining, a.id_objective
         FROM budget_request a
         LEFT JOIN approved_po b ON a.id_req=b.id_req
@@ -97,8 +98,8 @@ class Master_budget extends CI_Controller
                 'Master_budget',
                 $qr . $date . $obj .' ORDER BY a.date_req',
                 array('ID_Request', 'Date_Request', 'Objective', 'Title', 'Budget_request', 'PO_number',
-                        'Date_PO', 'Expenses', 'Budget_remaining', 'Request_budget_remaining', 
-                        'Date_request_remaining', 'Expenses_remaining', 'Total_budget_remaining'), // Columns for Sheet1
+                        'Date_PO', 'Expenses', 'Budget_remaining', 'Date_request_remaining', 'Request_budget_remaining', 
+                         'Expenses_remaining', 'Total_Expenses', 'Total_budget_remaining'), // Columns for Sheet1
             ),
             // Add more sheets as needed
         );
