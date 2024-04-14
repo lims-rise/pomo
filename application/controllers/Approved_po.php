@@ -133,7 +133,7 @@ class Approved_po extends CI_Controller
             $this->session->set_flashdata('message', 'Create Record Success');    
         }
 
-        $this->session->set_userdata('images',$foto['file_name']);
+        // $this->session->set_userdata('images',$foto['file_name']);
         redirect(site_url("approved_po"));
     }
 
