@@ -19,7 +19,7 @@ class Ref_objective_model extends CI_Model
     function json() {
         $this->datatables->select('id_objective, objective, reviewed, approved');
         $this->datatables->from('ref_objective');
-        // $this->datatables->where('lab', $this->session->userdata('lab'));
+        $this->datatables->where('id_country', $this->session->userdata('lab'));
         $this->datatables->where('flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){

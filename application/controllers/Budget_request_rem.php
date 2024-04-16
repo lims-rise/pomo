@@ -331,6 +331,8 @@ class budget_request_rem extends CI_Controller
                 a.comments AS Comments, a.id_unit, a.flag, a.id_reqrem_det
                 FROM budget_req_rem_det a
                 LEFT JOIN ref_unit b ON a.id_unit = b.id_unit
+                LEFT JOIN budget_req_remaining c ON a.id_reqrem = c.id_reqrem
+                WHERE c.id_country = "'.$this->session->userdata('lab').'" 
                 ORDER BY a.id_reqrem ASC
                 ', // Different columns for Sheet2
                 array('ID_Request_Remaining', 'Descriptions', 'Qty', 'Unit', 'Estimate_Price', 'Total_Estimate', 'Comments'), // Columns for Sheet2

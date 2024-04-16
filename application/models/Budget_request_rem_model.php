@@ -27,7 +27,7 @@ class budget_request_rem_model extends CI_Model
         $this->datatables->join('v_tot_expenses c', 'a.po_number=c.po_number', 'left');
         $this->datatables->join('budget_req_remaining e', 'a.po_number=e.po_number', 'left');
         $this->datatables->join('v_req_rem_detail f', 'e.id_reqrem=f.id_reqrem', 'left');
-        // $this->datatables->where('b.id_country', $this->session->userdata('lab'));
+        $this->datatables->where('b.id_country', $this->session->userdata('lab'));
         $this->datatables->where('b.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){

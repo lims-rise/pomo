@@ -224,6 +224,9 @@ class budget_expenses extends CI_Controller
                 a.remarks AS Remarks, a.id_exp, a.id_unit, a.flag
                 FROM budget_expenses_detail a
                 LEFT JOIN ref_unit b ON a.id_unit=b.id_unit                
+                LEFT JOIN approved_po c ON a.po_number=c.po_number
+                LEFT JOIN budget_request d ON c.id_req=d.id_req
+                WHERE d.id_country = '. $this->session->userdata("lab") .' 
                 AND a.flag = 0 
                 ORDER BY a.po_number, a.date_expenses ASC
                 ', // Different columns for Sheet2

@@ -24,7 +24,7 @@ class budget_exp_rem_model extends CI_Model
         $this->datatables->from('budget_req_remaining a');
         $this->datatables->join('v_reqrem_sum b', 'a.id_reqrem=b.id_reqrem', 'left');
         $this->datatables->join('v_tot_exprem c', 'a.po_number=c.po_number', 'left');
-        // $this->datatables->where('b.id_country', $this->session->userdata('lab'));
+        $this->datatables->where('b.id_country', $this->session->userdata('lab'));
         $this->datatables->where('a.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){
@@ -116,7 +116,7 @@ class budget_exp_rem_model extends CI_Model
             ->join('v_budexprem_sum h', 'a.po_number = h.po_number', 'left')
             // ->where('a.flag', 0)
             ->where('b.flag', 0)
-            // ->where('l.id', $this->session->userdata('location_id'))
+            ->where('a.id_country', $this->session->userdata('lab'))
             ->get()->result();
             foreach ($data as $row) {
                 // Format estimate_price to show as money value

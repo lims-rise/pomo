@@ -26,7 +26,7 @@ class budget_expenses_model extends CI_Model
         $this->datatables->join('budget_request b', 'a.id_req=b.id_req', 'left');
         $this->datatables->join('ref_objective d', 'b.id_objective=d.id_objective', 'left');
         $this->datatables->join('v_tot_expenses c', 'a.po_number=c.po_number', 'left');
-        // $this->datatables->where('b.id_country', $this->session->userdata('lab'));
+        $this->datatables->where('b.id_country', $this->session->userdata('lab'));
         $this->datatables->where('b.flag', '0');
         $lvl = $this->session->userdata('id_user_level');
         if ($lvl == 7){

@@ -283,8 +283,8 @@ class budget_exp_rem extends CI_Controller
                 FROM budget_req_remaining a
                 LEFT JOIN v_reqrem_sum b ON a.id_reqrem=b.id_reqrem
                 LEFT JOIN v_tot_exprem c ON a.po_number=c.po_number
-                ORDER BY a.date_req
-                ',
+                WHERE b.id_country = '. $this->session->userdata("lab") .' 
+                ORDER BY a.date_req',
                 array('ID_Request_Remaining', 'PO_Number', 'Date_Request', 'New_Title', 'Request_Remaining', 
                 'Total_Expenses', 'Expenses_Remaining'), // Columns for Sheet1
             ),
@@ -295,6 +295,9 @@ class budget_exp_rem extends CI_Controller
                 a.remarks AS Remarks, a.id_unit, a.flag
                 FROM budget_exp_rem_detail a
                 LEFT JOIN ref_unit b ON a.id_unit=b.id_unit
+                LEFT JOIN approved_po c ON a.po_number=c.po_number
+                LEFT JOIN budget_request d ON c.id_req=d.id_req
+                WHERE d.id_country = '. $this->session->userdata("lab") .' 
                 ORDER BY a.date_expenses ASC
                 ', // Different columns for Sheet2
                 array('PO_Number', 'Date_Expenses', 'Descriptions', 'Qty', 'Unit', 'Expenses', 'Total_Expenses', 'Remarks'), // Columns for Sheet2
