@@ -34,7 +34,7 @@ class Welcome_model extends CI_Model
         ) e ON c.po_number = e.po_number
         LEFT JOIN v_tot_all_expenses d ON c.po_number=d.po_number
         WHERE a.flag = 0
-        ');
+        AND a.id_country = '. $this->session->userdata('lab'));
         $result = $query->row_array();
         return $result;        
         // $this->db->select('COUNT(DISTINCT a.id_req) AS budget_request,
