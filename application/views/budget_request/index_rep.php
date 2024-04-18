@@ -24,6 +24,19 @@ h3 {
 <div class="content-wrapper">
 
 <section class="content">
+<?php
+    if(!empty($this->session->userdata('lab'))) {
+        if ($this->session->userdata('lab')==1) {
+            $country = 'ID';
+            $office = 'RISE MAKASSAR';
+        }
+        else {
+            $country = 'FJ';
+            $office = 'RISE SUVA';
+        }
+    }                            
+?>
+
 <div class="row">
     <div class="col-md-12">
         <div class="box box-primary">
@@ -31,15 +44,16 @@ h3 {
             <div style="display: flex; align-items: center; justify-content: space-between;">
                 <img src="../../../img/rise_logo_x.jpg" width="80px" class="icon" style="padding: 0px; float: left;">
                 <div style="text-align: center;">            
-                    <h3 class="text-center">RISE MAKASSAR - budget Request</h3>
+                    <h3 class="text-center"><?php echo $office; ?> - BUDGET REQUEST</h3>
                     <h4 class="text-center"><?php echo $objective; ?></h2>
+                    <h4 class="text-center">Title : <?php echo $title; ?></h2>
                     <h4 class="text-center">Period : <?php echo $periode; ?></h4>
                 </div>
                 <img src="../../../img/monash.png" width="160px" class="icon" style="padding: 0px; float: right;">
             </div>
             <div class="noprint">
                 <div class="modal-footer clearfix">
-                    <button id='print' class="btn btn-primary no-print" onclick="document.title = '<?php echo 'Print_budget_Request_'. date('Ymd')?>'; window.print();"><i class="fa fa-print"></i> Print</button>
+                    <button id='print' class="btn btn-primary no-print" onclick="document.title = '<?php echo $country .'_'. date('Ymd') . '_BR_' . $title ?>'; window.print();"><i class="fa fa-print"></i> Print</button>
                     <button id='close' class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button> 
                 </div>
             </div>

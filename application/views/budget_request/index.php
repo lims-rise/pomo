@@ -111,12 +111,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="budget_req" class="col-sm-4 control-label">Budget Request</label>
                             <div class="col-sm-8">
                                 <input id="budget_req" name="budget_req" type="text" class="form-control" placeholder="Budget Request">
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group">
                                 <label for="comments" class="col-sm-4 control-label">Comments</label>
@@ -270,7 +270,7 @@
             $('#id_person').val('');
             $('#id_objective').val('');
             $('#title').val('');
-            $('#budget_req').val('');
+            // $('#budget_req').val('');
             $('#comments').val('');
             $('#compose-modal').modal('show');
         });
@@ -288,7 +288,7 @@
             $('#id_person').val(data.id_person).trigger('change');
             $('#id_objective').val(data.id_objective).trigger('change');
             $('#title').val(data.title);
-            $('#budget_req').val(data.budget_req);
+            // $('#budget_req').val(data.budget_req);
             $('#comments').val(data.comments);
             $('#compose-modal').modal('show');
         });  

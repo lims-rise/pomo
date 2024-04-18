@@ -73,7 +73,7 @@ class budget_request extends CI_Controller
                 'objective' => $row->objective,
                 'title' => $row->title,
                 'budget_req' => $row->budget_req,
-                'budget_rem' => $row->budget_rem,
+                // 'budget_rem' => $row->budget_rem,
                 'comments' => $row->comments,
                 'unit' => $this->budget_request_model->getUnits(),
                 );
@@ -102,7 +102,7 @@ class budget_request extends CI_Controller
                 'id_person' => $this->input->post('id_person',TRUE),
                 'id_objective' => $this->input->post('id_objective',TRUE),
                 'title' => $this->input->post('title',TRUE),
-                'budget_req' => str_replace('.', '', $this->input->post('budget_req')),
+                // 'budget_req' => str_replace('.', '', $this->input->post('budget_req')),
                 'comments' => trim($this->input->post('comments',TRUE)),
                 'uuid' => $this->uuid->v4(),
                 'id_country' => $this->session->userdata('lab'),
@@ -120,7 +120,7 @@ class budget_request extends CI_Controller
                 'id_person' => $this->input->post('id_person',TRUE),
                 'id_objective' => $this->input->post('id_objective',TRUE),
                 'title' => $this->input->post('title',TRUE),
-                'budget_req' => str_replace('.', '', $this->input->post('budget_req')),
+                // 'budget_req' => str_replace('.', '', $this->input->post('budget_req')),
                 'comments' => trim($this->input->post('comments',TRUE)),
                 // 'uuid' => $this->uuid->v4(),
                 'id_country' => $this->session->userdata('lab'),
@@ -181,6 +181,15 @@ class budget_request extends CI_Controller
             $this->session->set_flashdata('message', 'Create Record Success');    
         }
 
+        $row = $this->budget_request_model->get_by_id2($id_req);
+        $data2 = array(
+            'budget_req' => $row->budget_req,
+            );
+
+        if ($row) {
+            $this->budget_request_model->update($id_req, $data2);
+        } else {
+        }
         redirect(site_url("budget_request/read/".$id_req));
     }
 
@@ -207,6 +216,19 @@ class budget_request extends CI_Controller
             redirect(site_url("budget_request/read/".$id));
         }
     }
+
+    public function update_bud_req($id, $breq) 
+    {
+        $row = $this->budget_request_model->get_by_id($id);
+        $data = array(
+            'budget_req' => $breq,
+            );
+
+        if ($row) {
+            $this->budget_request_model->update($id, $data);
+        } else {
+        }
+    }    
 
     public function delete($id) 
     {

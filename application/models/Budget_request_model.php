@@ -103,6 +103,14 @@ class budget_request_model extends CI_Model
         return $this->db->get($this->table)->row();
     }
 
+    function get_by_id2($id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->where('flag', '0');
+        // $this->db->where('lab', $this->session->userdata('lab'));
+        return $this->db->get('v_get_bud_req')->row();
+    }
+
     function get_by_id_detail($id)
     {
         $this->db->where('id_reqdetail', $id);
@@ -201,6 +209,7 @@ class budget_request_model extends CI_Model
         $this->db->select('*');
         // $this->db->where('position', 'Lab Tech');
         $this->db->where('flag', '0');
+        $this->db->where('id_country', $this->session->userdata('lab'));
         $this->db->order_by('realname');
         $q = $this->db->get('ref_person');
         $response = $q->result_array();
@@ -212,6 +221,7 @@ class budget_request_model extends CI_Model
         $this->db->select('*');
         // $this->db->where('position', 'Lab Tech');
         $this->db->where('flag', '0');
+        $this->db->where('id_country', $this->session->userdata('lab'));
         $q = $this->db->get('ref_objective');
         $response = $q->result_array();
         return $response;

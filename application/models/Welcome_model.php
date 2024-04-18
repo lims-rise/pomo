@@ -17,6 +17,12 @@ class Welcome_model extends CI_Model
 
     function get_budget_req()
     {
+        if(empty($this->session->userdata('lab'))) {
+            // Redirect to login page
+            $this->load->view('auth/login');
+            // You may also want to exit the function to prevent further execution
+            return;
+        }        
         $query = $this->db->query('SELECT COUNT(DISTINCT a.id_req) AS budget_request,
         COUNT(DISTINCT b.id_reqdetail) AS budget_detail,
         COUNT(DISTINCT c.po_number) AS po_aprv,

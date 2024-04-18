@@ -45,13 +45,12 @@
 						</div>
 					</div>
 
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label for="budget_rem" class="col-sm-2 control-label">Budget Remaining</label>
 						<div class="col-sm-4">
 							<input class="form-control " id="budget_rem" name="budget_rem" value="<?php echo $budget_rem ?>" disabled>
 						</div>
-					</div>
-
+					</div> -->
 
 				</div><!-- /.box-body -->
 				</form>
