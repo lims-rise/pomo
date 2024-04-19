@@ -67,7 +67,7 @@ class budget_expenses_model extends CI_Model
       return $this->datatables->generate();
   }
 
-    function get_all_with_detail_excel()
+    function get_all_with_detail_excel($id)
     {
         $data = $this->db->select('g.po_number, b.date_expenses, a.title, c.realname , d.objective, 
         a.budget_req, a.comments, b.id_exp, b.items, b.qty, e.unit, b.expenses,
@@ -79,6 +79,7 @@ class budget_expenses_model extends CI_Model
             ->join('ref_objective d', 'a.id_objective = d.id_objective ', 'left')
             ->join('ref_unit e', 'b.id_unit = e.id_unit ', 'left')
             ->join('v_budexp_sum h', 'g.po_number = h.po_number ', 'left')
+            ->where('g.po_number', $id)
             ->where('a.flag', 0)
             ->where('b.flag', 0)
             // ->where('l.id', $this->session->userdata('location_id'))

@@ -112,7 +112,7 @@ class budget_request_rem_model extends CI_Model
     // DATE_FORMAT(a.date_req, "%M %Y") AS periode, 
     // FORMAT(d.budget_req - h.expenses, 0, "de_DE") AS budget_rem, a.comments, 
 
-    function get_all_with_detail_excel()
+    function get_all_with_detail_excel($id)
     {
         $data = $this->db->select('a.id_reqrem, a.date_req, a.new_title, f.realname, e.objective, 
         DATE_FORMAT(a.date_req, "%M %Y") AS periode, 
@@ -129,6 +129,7 @@ class budget_request_rem_model extends CI_Model
             ->join('v_tot_expenses h', 'c.po_number=h.po_number', 'left')
             ->join('ref_unit i', 'b.id_unit=i.id_unit', 'left')
             ->join('v_reqrem_sum j', 'a.id_reqrem=j.id_reqrem', 'left')
+            ->where('a.id_reqrem', $id)
             ->where('a.flag', 0)
             ->where('b.flag', 0)
             // ->where('l.id', $this->session->userdata('location_id'))

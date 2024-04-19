@@ -103,7 +103,7 @@ class budget_exp_rem_model extends CI_Model
     //         ->get()->result();
     // }
 
-    function get_all_with_detail_excel()
+    function get_all_with_detail_excel($id)
     {
         $data = $this->db->select('a.po_number, b.date_expenses, a.new_title, c.realname , a.objective, 
         a.sum_tot AS budget_req, b.id_exprem, b.items, b.qty, e.unit, b.expenses,
@@ -114,7 +114,7 @@ class budget_exp_rem_model extends CI_Model
             ->join('ref_unit e', 'b.id_unit = e.id_unit ', 'left')
             ->join('ref_objective f', 'a.id_objective = f.id_objective ', 'left')
             ->join('v_budexprem_sum h', 'a.po_number = h.po_number', 'left')
-            // ->where('a.flag', 0)
+            ->where('a.po_number', $id)
             ->where('b.flag', 0)
             ->where('a.id_country', $this->session->userdata('lab'))
             ->get()->result();

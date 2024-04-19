@@ -81,7 +81,8 @@
                 <!--</div> row -->    
 					<div class="form-group">
 						<div class="modal-footer clearfix">
-							<button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php echo site_url('budget_exp_rem/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button>
+							<button type="button" name="excel" id="excel" class="btn btn-success" onclick="javascript:void(0);"><i class="fa fa-file-excel-o"></i> Excel</button>
+							<!-- <button type="button" name="excel" id="excel" class="btn btn-success" onclick="location.href='<?php //echo site_url('budget_exp_rem/excel_print'); ?>';"><i class="fa fa-file-excel-o"></i> Excel</button> -->
 							<!-- <button type="button" name="print" id="print" class="btn btn-primary" onclick="javascript:void(0);"><i class="fa fa-print"></i> Print</button> -->
 							<button type="button" name="batal" value="batal" class="btn btn-warning" onclick="javascript:history.go(-1);"><i class="fa fa-times"></i> Close</button>
 						</div>
@@ -293,6 +294,9 @@
 		// 	location.href = '../../budget_exp_rem/budreq_print/'+id_req;
 		// });
 
+		$('#excel').click(function() {
+			location.href = '../../budget_exp_rem/excel_print/'+id;
+		});
 
 		$('#addtombol_det').click(function() {
 			$('#mode_det').val('insert');

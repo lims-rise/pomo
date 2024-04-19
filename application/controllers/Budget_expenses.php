@@ -285,10 +285,10 @@ class budget_expenses extends CI_Controller
         $writer->save('php://output');
     }
 
-    public function excel_print()
+    public function excel_print($id)
 	{
         /* Data */
-        $data = $this->budget_expenses_model->get_all_with_detail_excel();
+        $data = $this->budget_expenses_model->get_all_with_detail_excel($id);
 
         /* Spreadsheet Init */
         $spreadsheet = new Spreadsheet();
@@ -301,8 +301,8 @@ class budget_expenses extends CI_Controller
         $sheet->getColumnDimension('C')->setWidth(30); // Set width for column B
         $sheet->getColumnDimension('D')->setWidth(5); // Set width for column B
         $sheet->getColumnDimension('E')->setWidth(7); // Set width for column B
-        $sheet->getColumnDimension('F')->setWidth(15); // Set width for column B
-        $sheet->getColumnDimension('G')->setWidth(17); // Set width for column B
+        $sheet->getColumnDimension('F')->setWidth(16); // Set width for column B
+        $sheet->getColumnDimension('G')->setWidth(20); // Set width for column B
         $sheet->getColumnDimension('H')->setWidth(30); // Set width for column B
 
         //logo

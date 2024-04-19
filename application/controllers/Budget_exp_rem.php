@@ -355,10 +355,10 @@ class budget_exp_rem extends CI_Controller
         $writer->save('php://output');
     }
 
-    public function excel_print()
+    public function excel_print($id)
 	{
         /* Data */
-        $data = $this->budget_exp_rem_model->get_all_with_detail_excel();
+        $data = $this->budget_exp_rem_model->get_all_with_detail_excel($id);
 
         /* Spreadsheet Init */
         $spreadsheet = new Spreadsheet();
